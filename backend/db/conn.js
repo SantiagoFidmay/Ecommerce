@@ -1,0 +1,23 @@
+require('dotenv').config() // Carrega as variáveis de ambiente
+const { Sequelize } = require('sequelize')
+
+const db = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASS,
+    {
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        dialect: 'mysql'
+    }
+)
+
+db.authenticate()
+.then(() => {
+    console.log('Conexão realizada com sucesso!')
+})
+.catch((err) => {
+    console.error('Erro ao conectar com banco de dados!', err)
+})
+
+module.exports = db

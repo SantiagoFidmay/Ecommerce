@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Detalhes do produto Sport Kicks.">
+  <title>Produto | Sport Kicks</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/produto.css">
+</head>
+<body class="page-wrapper">
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="navbar-inner">
+      <a href="../index.html" class="navbar-logo">SPORT<span>KICKS</span></a>
+      <div class="navbar-menu" id="navMenu">
+        <a href="../index.html" class="navbar-link">Início</a>
+        <a href="catalogo.html" class="navbar-link">Catálogo</a>
+        <a href="pedidos.html" class="navbar-link">Meus Pedidos</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="login.html" class="btn btn-ghost btn-sm" id="btnLogin">Entrar</a>
+        <a href="carrinho.html" class="cart-btn" id="cartBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          <span id="cartCount">0</span>
+          <span class="cart-badge" id="cartBadge" style="display:none">0</span>
+        </a>
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb container">
+    <a href="../index.html" style="color:var(--text-muted); text-decoration:none;">Início</a> <span style="margin:0 0.5rem">/</span>
+    <a href="catalogo.html" style="color:var(--text-muted); text-decoration:none;">Catálogo</a> <span style="margin:0 0.5rem">/</span>
+    <span id="breadcrumbProduto" style="color:var(--text-primary);">Carregando...</span>
+  </div>
+
+  <!-- MAIN PRODUCT SECTION -->
+  <main class="container pdp-container">
+    
+    <!-- Lado Esquerdo: Galeria -->
+    <div class="pdp-gallery">
+      <div class="main-image-container">
+        <div class="pdp-badge" id="pdpBadge" style="display:none">Promoção</div>
+        <img id="mainImage" src="../assets/images/placeholder.svg" alt="Imagem do Produto">
+      </div>
+      <div class="thumbnails-container" id="thumbnailsContainer">
+        <!-- As fotos serão inseridas dinamicamente via JS -->
+      </div>
+    </div>
+
+    <!-- Lado Direito: Informações e Compra -->
+    <div class="pdp-info">
+      <div class="pdp-brand" id="pdpBrand">CARREGANDO...</div>
+      <h1 class="pdp-title" id="pdpTitle">Nome do Produto</h1>
+      <div class="pdp-rating">
+        <span style="color:#f59e0b; letter-spacing:2px; font-size:1.1rem">★★★★★</span> 
+        <span style="color:var(--text-muted); font-size: 0.9rem; margin-left:0.5rem">(41)</span>
+      </div>
+
+      <div class="pdp-price-container">
+        <div id="pdpOldPrice" class="pdp-price-old" style="display:none">R$ 0,00</div>
+        <div id="pdpPrice" class="pdp-price">R$ 0,00</div>
+        <div class="pdp-installments">Até 10x de <span id="pdpInstallment">R$ 0,00</span> sem juros</div>
+        <div style="font-size:0.8rem; text-decoration:underline; color:var(--text-secondary); margin-top:0.2rem">Outras opções de pagamento</div>
+      </div>
+
+      <div class="pdp-alert">
+        ✨ <strong>Tendência!</strong> Este artigo tem muita procura.
+      </div>
+
+      <!-- Cores -->
+      <div class="pdp-section">
+        <h3 class="pdp-section-title">Cores</h3>
+        <div class="pdp-colors">
+          <div class="color-swatch active" style="background:#0d0d14"></div>
+          <div class="color-swatch" style="background:#e2e8f0"></div>
+          <div class="color-swatch" style="background:#ef4444"></div>
+        </div>
+      </div>
+
+      <!-- Tamanhos -->
+      <div class="pdp-section">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+          <h3 class="pdp-section-title">Tamanhos</h3>
+          <a href="#" style="font-size:0.8rem; color:var(--text-muted); text-decoration:underline;">Guia de tamanhos</a>
+        </div>
+        <div class="pdp-sizes">
+          <button class="size-btn">38</button>
+          <button class="size-btn">39</button>
+          <button class="size-btn active">40</button>
+          <button class="size-btn">41</button>
+          <button class="size-btn">42</button>
+          <button class="size-btn disabled">43</button>
+        </div>
+      </div>
+
+      <!-- Ações -->
+      <div class="pdp-actions">
+        <button class="btn btn-primary btn-xl" id="btnAddToCart" style="width: 100%; justify-content:center">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ACCORDION DETALHES -->
+  <section class="container" style="margin-top: 4rem; margin-bottom: 6rem; max-width: 800px; margin-left: auto; margin-right: auto;">
+    
+    <!-- Características Topo -->
+    <div class="pdp-features-top">
+      <div class="feature-top-item">
+        <span style="font-size: 1.8rem;">🏃</span>
+        <div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Ideal para</div>
+          <div style="font-weight: 700; letter-spacing: 1px;">CORRIDA DE RUA</div>
+        </div>
+      </div>
+      <div class="feature-top-item">
+        <span style="font-size: 1.8rem;">👣</span>
+        <div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Tipo de pisada</div>
+          <div style="font-weight: 700; letter-spacing: 1px;">NEUTRA</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-item">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          Avaliações (41)
+          <span class="accordion-icon">★★★★★ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+        </button>
+        <div class="accordion-content">
+          <p>Os clientes elogiam bastante o amortecimento e o ajuste perfeito deste modelo. Excelente custo-benefício.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          Tamanho e ajuste
+          <span class="accordion-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+        </button>
+        <div class="accordion-content">
+          <p>Forma padrão. Recomendamos comprar o tamanho que você costuma usar para corrida. O cabedal se adapta bem a pés mais largos.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          Descrição
+          <span class="accordion-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+        </button>
+        <div class="accordion-content" id="pdpDescription">
+          <p>Carregando descrição do produto...</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          Detalhes
+          <span class="accordion-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+        </button>
+        <div class="accordion-content">
+          <ul style="padding-left:1.5rem; color:var(--text-secondary); line-height:1.6">
+            <li>Cabedal em malha respirável para maior ventilação</li>
+            <li>Entressola com amortecimento responsivo e tecnologia de retorno de energia</li>
+            <li>Solado de borracha continental para máxima aderência</li>
+            <li>Peso: aprox. 250g</li>
+            <li>Drop da entressola: 10mm</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          Tecnologia
+          <span class="accordion-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+        </button>
+        <div class="accordion-content">
+          <p>Equipado com a mais recente espuma de dupla densidade, garante absorção de impacto no calcanhar e impulso extra na ponta dos pés.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER OMITTED FOR BREVITY, WILL JUST USE THE NAVBAR ONE -->
+
+  <script src="../js/auth.js"></script>
+  <script src="../js/carrinho.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/produto.js"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Sport Kicks</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body class="auth-body">
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <div class="auth-container">
+    <!-- Lado visual -->
+    <div class="auth-visual" id="authVisual">
+      <video class="auth-video" src="../videos/Tenis_Adizero_EVO_SL_Vermelho_JQ4442_video.webm"
+        autoplay muted loop playsinline></video>
+      <div class="auth-video-overlay"></div>
+      <div class="auth-visual-content">
+        <a href="../index.html" class="navbar-logo" style="margin-bottom:2rem;display:inline-flex">
+          SPORT<span style="color:var(--accent-primary)">KICKS</span>
+        </a>
+        <h2 class="auth-visual-title">Bem-vindo de volta!</h2>
+        <p class="auth-visual-sub">Faça login para acessar seu histórico de pedidos, acompanhar entregas e muito mais.</p>
+        <div class="auth-visual-benefits">
+          <div class="auth-benefit">✅ Histórico de pedidos</div>
+          <div class="auth-benefit">✅ Rastreamento de entrega</div>
+          <div class="auth-benefit">✅ Ofertas exclusivas</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulário -->
+    <div class="auth-form-side">
+      <div class="auth-form-wrapper">
+        <div class="auth-header">
+          <h1 class="auth-title">Entrar</h1>
+          <p class="auth-subtitle">Acesse sua conta Sport Kicks</p>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)" novalidate>
+          <div class="form-group mb-lg">
+            <label class="form-label" for="email">E-mail</label>
+            <input type="email" id="email" name="email" class="form-control" 
+              placeholder="seu@email.com" required autocomplete="email">
+            <span class="form-error" id="emailError">E-mail inválido</span>
+          </div>
+
+          <div class="form-group mb-lg">
+            <label class="form-label" for="senha">Senha</label>
+            <div style="position:relative">
+              <input type="password" id="senha" name="senha" class="form-control"
+                placeholder="••••••••" required autocomplete="current-password">
+              <button type="button" class="toggle-pass" onclick="togglePassword('senha', this)" title="Ver senha">
+                👁
+              </button>
+            </div>
+            <span class="form-error" id="senhaError">Senha obrigatória</span>
+          </div>
+
+          <div class="auth-error hidden" id="loginError"></div>
+
+          <button type="submit" class="btn btn-primary w-full btn-lg" id="btnSubmit">
+            Entrar na minha conta
+          </button>
+        </form>
+
+        <div class="auth-divider"><span>ou</span></div>
+
+        <p class="auth-switch">
+          Não tem conta? <a href="cadastro.html" class="text-accent">Criar conta grátis</a>
+        </p>
+
+        <p class="auth-switch" style="margin-top:0.75rem;font-size:0.8rem">
+          <a href="../index.html" style="color:var(--text-muted)">← Voltar para a loja</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/auth.js"></script>
+  <script src="../js/api.js"></script>
+  <script>
+    // Redireciona se já logado
+    if (Auth.isLoggedIn()) {
+      const redirect = sessionStorage.getItem('sk_redirect') || '../index.html';
+      window.location.href = redirect;
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value;
+      const btn = document.getElementById('btnSubmit');
+      const errEl = document.getElementById('loginError');
+
+      errEl.classList.add('hidden');
+
+      if (!email || !senha) {
+        errEl.textContent = 'Preencha e-mail e senha.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px"></div> Entrando...';
+
+      try {
+        const res = await Api.login(email, senha);
+        Auth.setToken(res.token, res.usuario);
+        showToast(`Bem-vindo, ${res.usuario.nome.split(' ')[0]}! 🎉`, 'success');
+        setTimeout(() => {
+          const redirect = sessionStorage.getItem('sk_redirect');
+          sessionStorage.removeItem('sk_redirect');
+          window.location.href = redirect || (res.usuario.tipo === 'admin' ? 'admin/dashboard.html' : '../index.html');
+        }, 1000);
+      } catch (err) {
+        errEl.textContent = err.message || 'Credenciais inválidas.';
+        errEl.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Entrar na minha conta';
+      }
+    }
+
+    function togglePassword(id, btn) {
+      const input = document.getElementById(id);
+      if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+      else { input.type = 'password'; btn.textContent = '👁'; }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Catálogo de tênis e artigos esportivos Sport Kicks. Encontre o modelo ideal para seu esporte.">
+  <title>Catálogo | Sport Kicks</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/catalogo.css">
+</head>
+<body class="page-wrapper">
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="navbar-inner">
+      <a href="../index.html" class="navbar-logo">SPORT<span>KICKS</span></a>
+      <div class="navbar-menu" id="navMenu">
+        <a href="../index.html" class="navbar-link">Início</a>
+        <a href="catalogo.html" class="navbar-link active">Catálogo</a>
+        <a href="pedidos.html" class="navbar-link">Meus Pedidos</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="login.html" class="btn btn-ghost btn-sm" id="btnLogin">Entrar</a>
+        <a href="carrinho.html" class="cart-btn" id="cartBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          <span id="cartCount">0</span>
+          <span class="cart-badge" id="cartBadge" style="display:none">0</span>
+        </a>
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- PAGE HEADER -->
+  <header class="catalog-header">
+    <div class="container">
+      <h1 class="section-title font-display">Catálogo <span class="gradient-text">Completo</span></h1>
+      <p style="color:var(--text-secondary)">Encontre o par perfeito entre +500 modelos disponíveis</p>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container" style="padding-bottom:5rem">
+    <div class="catalog-layout">
+
+      <!-- SIDEBAR FILTROS -->
+      <aside class="catalog-sidebar" id="sidebar">
+        <div class="sidebar-card">
+          <h3 class="sidebar-title">Filtros</h3>
+
+          <!-- Busca -->
+          <div class="form-group" style="margin-bottom:1.5rem">
+            <label class="form-label">Buscar produto</label>
+            <div style="position:relative">
+              <input type="text" id="inputBusca" class="form-control" placeholder="Ex: Adizero, Running..."
+                oninput="debounce(filtrar, 400)()">
+              <svg style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);color:var(--text-muted)" 
+                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Categorias -->
+          <div class="form-group" style="margin-bottom:1.5rem">
+            <label class="form-label">Categoria</label>
+            <select id="selectCategoria" class="form-control form-select" onchange="filtrar()">
+              <option value="">Todas as categorias</option>
+            </select>
+          </div>
+
+          <!-- Preço -->
+          <div class="form-group" style="margin-bottom:1.5rem">
+            <label class="form-label">Preço máximo: <span id="precoLabel">R$ 2.000</span></label>
+            <input type="range" id="rangePreco" min="0" max="2000" value="2000" step="50"
+              style="width:100%;accent-color:var(--accent-primary)"
+              oninput="document.getElementById('precoLabel').textContent='R$ '+this.value; filtrar()">
+          </div>
+
+          <!-- Ordenação -->
+          <div class="form-group">
+            <label class="form-label">Ordenar por</label>
+            <select id="selectOrdem" class="form-control form-select" onchange="filtrar()">
+              <option value="recent">Mais recentes</option>
+              <option value="preco_asc">Menor preço</option>
+              <option value="preco_desc">Maior preço</option>
+              <option value="nome">Nome A-Z</option>
+            </select>
+          </div>
+
+          <button class="btn btn-ghost w-full mt-md" onclick="limparFiltros()" id="btnLimpar">Limpar filtros</button>
+        </div>
+      </aside>
+
+      <!-- PRODUCTS AREA -->
+      <section class="catalog-main">
+        <!-- Toolbar -->
+        <div class="catalog-toolbar">
+          <span class="catalog-count" id="catalogCount">Carregando...</span>
+          <button class="btn btn-ghost btn-sm" onclick="toggleSidebar()" id="btnFiltros">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/>
+              <line x1="10" y1="18" x2="14" y2="18"/>
+            </svg>
+            Filtros
+          </button>
+        </div>
+
+        <!-- Grid de produtos -->
+        <div class="produtos-grid" id="produtosGrid" style="grid-template-columns:repeat(3,1fr)">
+          <!-- Preenchido via JS -->
+        </div>
+
+        <!-- Empty state -->
+        <div class="catalog-empty hidden" id="catalogEmpty">
+          <div style="font-size:3rem;margin-bottom:1rem">🔍</div>
+          <h3 class="font-display" style="font-size:1.25rem;margin-bottom:0.5rem">Nenhum produto encontrado</h3>
+          <p style="color:var(--text-secondary)">Tente outros filtros ou termos de busca</p>
+          <button class="btn btn-primary mt-md" onclick="limparFiltros()">Ver todos</button>
+        </div>
+
+        <!-- Paginação -->
+        <div class="pagination" id="pagination"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../js/auth.js"></script>
+  <script src="../js/carrinho.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/catalogo.js"></script>
+</body>
+</html>
