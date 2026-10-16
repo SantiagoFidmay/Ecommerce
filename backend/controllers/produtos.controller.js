@@ -1,11 +1,33 @@
-const { Op }  = require('sequelize')
+const { Op, literal }  = require('sequelize')
 const { Produto, Categoria, Estoque } = require('../models/rel')
 
 // GET /api/produtos (público)
 const listar = async (req, res) => {
     try {
-        const { categoria_id, busca, destaque, pagina = 1, limite = 20 } = req.query
+        const { categoria_id, busca, destaque, preco_max, ordem = 'recomendados', pagina = 1, limite = 20 } = req.query
+        const numeroPagina = Number(pagina)
+        const tamanhoPagina = Number(limite)
+        if (!Number.isSafeInteger(numeroPagina) || numeroPagina < 1 ||
+            !Number.isSafeInteger(tamanhoPagina) || tamanhoPagina < 1 || tamanhoPagina > 100) {
+            return res.status(400).json({ erro: 'Página e limite devem ser inteiros positivos; limite máximo de 100.' })
+        }
         const where = { ativo: true }
+        const precoEfetivo = literal('COALESCE(`produto`.`preco_promocional`, `produto`.`preco`)')
+        if (preco_max !== undefined) {
+            const valorMaximo = Number(preco_max)
+            if (!Number.isFinite(valorMaximo) || valorMaximo < 0) {
+                return res.status(400).json({ erro: 'Preço máximo inválido.' })
+            }
+            where[Op.and] = [require('sequelize').where(precoEfetivo, { [Op.lte]: valorMaximo })]
+        }
+        const ordenacoes = {
+            // Mistura estável: o preço tem maior peso, sem repetir itens entre páginas.
+            recomendados: [[literal('COALESCE(`produto`.`preco_promocional`, `produto`.`preco`) * (0.7 + MOD(CRC32(CONCAT(\'sport-kicks-\', `produto`.`codProduto`)), 1000) / 1665.0)'), 'DESC'], ['codProduto', 'ASC']],
+            recent: [['codProduto', 'DESC']],
+            nome: [['nome', 'ASC'], ['codProduto', 'ASC']],
+            preco_asc: [[precoEfetivo, 'ASC'], ['codProduto', 'ASC']],
+            preco_desc: [[precoEfetivo, 'DESC'], ['codProduto', 'ASC']]
+        }
 
         if (categoria_id) where.idCategoria = categoria_id
         if (destaque === 'true') where.destaque = true
@@ -17,7 +39,7 @@ const listar = async (req, res) => {
             ]
         }
 
-        const offset = (parseInt(pagina) - 1) * parseInt(limite)
+        const offset = (numeroPagina - 1) * tamanhoPagina
 
         const { count, rows } = await Produto.findAndCountAll({
             where,
@@ -25,15 +47,15 @@ const listar = async (req, res) => {
                 { model: Categoria, as: 'categoriaProduto', attributes: ['codCategoria', 'nome', 'icone'] },
                 { model: Estoque,   as: 'estoqueProduto',   attributes: ['quantidade', 'quantidade_minima'] }
             ],
-            order: [['nome', 'ASC']],
-            limit:  parseInt(limite),
+            order: Object.hasOwn(ordenacoes, ordem) ? ordenacoes[ordem] : ordenacoes.recomendados,
+            limit: tamanhoPagina,
             offset
         })
 
         return res.json({
             total:       count,
-            pagina:      parseInt(pagina),
-            totalPaginas: Math.ceil(count / parseInt(limite)),
+            pagina: numeroPagina,
+            totalPaginas: Math.ceil(count / tamanhoPagina),
             produtos:    rows
         })
     } catch (err) {

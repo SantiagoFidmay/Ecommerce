@@ -5,11 +5,13 @@
 let produtosCache = [];
 let paginaAtual = 1;
 const porPagina = 12;
+let filtrosAtuais = {};
+let ultimaRequisicao = 0;
 
 document.addEventListener('DOMContentLoaded', async () => {
   await carregarCategorias();
-  await carregarProdutos();
   verificarQueryParams();
+  await filtrar();
 });
 
 async function carregarCategorias() {
@@ -19,7 +21,7 @@ async function carregarCategorias() {
     const res = await Api.getCategorias();
     (res.categorias || []).forEach(cat => {
       const opt = document.createElement('option');
-      opt.value = cat.id;
+      opt.value = cat.codCategoria;
       opt.textContent = `${cat.icone || ''} ${cat.nome}`;
       select.appendChild(opt);
     });
@@ -30,18 +32,21 @@ function verificarQueryParams() {
   const params = new URLSearchParams(window.location.search);
   if (params.get('categoria')) {
     const sel = document.getElementById('selectCategoria');
-    if (sel) { sel.value = params.get('categoria'); filtrar(); }
+    if (sel) sel.value = params.get('categoria');
   }
   if (params.get('destaque') === 'true') {
-    filtrar({ destaque: true });
+    filtrosAtuais.destaque = 'true';
   }
 }
 
-async function carregarProdutos(params = {}) {
+async function carregarProdutos(params = filtrosAtuais) {
+  const requisicao = ++ultimaRequisicao;
   const grid = document.getElementById('produtosGrid');
   const countEl = document.getElementById('catalogCount');
   const emptyEl = document.getElementById('catalogEmpty');
   if (!grid) return;
+  emptyEl?.classList.add('hidden');
+  renderizarPaginacao(0);
 
   // Skeleton
   grid.innerHTML = Array(6).fill('').map(() => `
@@ -58,6 +63,7 @@ async function carregarProdutos(params = {}) {
       pagina: paginaAtual,
       limite: porPagina
     });
+    if (requisicao !== ultimaRequisicao) return;
     produtosCache = res.produtos || [];
     const total = res.total || 0;
 
@@ -74,6 +80,7 @@ async function carregarProdutos(params = {}) {
     renderizarGrid(produtosCache);
     renderizarPaginacao(total);
   } catch (err) {
+    if (requisicao !== ultimaRequisicao) return;
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-secondary)">
       <p style="font-size:2rem;margin-bottom:1rem">⚠️</p>
       <p>Não foi possível conectar ao servidor.</p>
@@ -84,17 +91,21 @@ async function carregarProdutos(params = {}) {
 }
 
 function getImagemCatalogo(p) {
+  if (p.imagem_url) {
+    return p.imagem_url.replace(/^(?:\.\.\/)*imagens\//, '../../imagens/');
+  }
   const nomeLower = (p.nome || '').toLowerCase();
-  if (nomeLower.includes('boston') || p.codProduto == 1 || p.id == 1) return '../../imagens/boston13-1.webp';
-  if (nomeLower.includes('adios') || p.codProduto == 2 || p.id == 2) return '../../imagens/adiospro1.avif';
-  if (nomeLower.includes('hyperboost') || p.codProduto == 3 || p.id == 3) return '../../imagens/hyperboostEdge1.avif';
-  if (nomeLower.includes('evo') || p.codProduto == 4 || p.id == 4) return '../../imagens/evosl1.avif';
+  if (nomeLower.includes('boston')) return '../../imagens/boston13-1.webp';
+  if (nomeLower.includes('adios')) return '../../imagens/adiospro1.avif';
+  if (nomeLower.includes('hyperboost')) return '../../imagens/hyperboostEdge1.avif';
+  if (nomeLower.includes('evo')) return '../../imagens/evosl1.avif';
   return p.imagem_url || '../assets/images/placeholder.svg';
 }
 
 function renderizarGrid(produtos) {
   const grid = document.getElementById('produtosGrid');
   grid.innerHTML = produtos.map(p => {
+    p = { ...p, id: p.codProduto, estoque: p.estoqueProduto, categoria: p.categoriaProduto };
     const semEstoque = p.estoque && p.estoque.quantidade === 0;
     const temPromo = p.preco_promocional && parseFloat(p.preco_promocional) < parseFloat(p.preco);
     const imgSrc = getImagemCatalogo(p);
@@ -102,13 +113,12 @@ function renderizarGrid(produtos) {
       <div class="produto-card" id="prod-${p.id}" onclick="abrirDetalhe(${p.id})">
         <div class="produto-card-img">
           ${temPromo ? '<span class="produto-card-badge">Promoção</span>' : ''}
-          ${p.destaque ? '<span class="produto-card-badge" style="left:auto;right:0.75rem;background:linear-gradient(135deg,#f59e0b,#ef4444)">★ Destaque</span>' : ''}
-          <img src="${imgSrc}" alt="${p.nome}" onerror="this.src='../assets/images/placeholder.svg'">
+          <img src="${imgSrc}" alt="${p.nome}" loading="lazy" onerror="this.onerror=null;this.src='../assets/images/placeholder.svg'">
           ${semEstoque ? '<div class="produto-card-estoque-zero"><span>Esgotado</span></div>' : ''}
         </div>
         <div class="produto-card-body">
           <div class="produto-card-marca">${p.marca || ''}</div>
-          <div class="produto-card-nome">${p.nome}</div>
+          <h3 class="produto-card-nome"><a href="produto.html?id=${p.id}">${p.nome}</a></h3>
           <div class="produto-card-categoria">${p.categoria?.icone || ''} ${p.categoria?.nome || ''}</div>
           <div class="produto-card-footer">
             <div class="produto-card-preco">
@@ -116,9 +126,10 @@ function renderizarGrid(produtos) {
               <span class="produto-card-preco-current${temPromo ? ' em-promo' : ''}">
                 R$ ${parseFloat(p.preco_promocional || p.preco).toFixed(2).replace('.', ',')}
               </span>
+              <span class="produto-card-parcelas">10x de R$ ${(parseFloat(p.preco_promocional || p.preco) / 10).toFixed(2).replace('.', ',')}</span>
             </div>
             <button class="btn-cart" title="Adicionar ao carrinho"
-              onclick="event.stopPropagation(); addCart(${JSON.stringify(p).replace(/"/g, '&quot;')})"
+              onclick="event.stopPropagation(); addCart(${p.id})"
               ${semEstoque ? 'disabled' : ''}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
@@ -140,14 +151,15 @@ function renderizarPaginacao(total) {
 
   paginacao.innerHTML = Array.from({ length: totalPaginas }, (_, i) => `
     <button class="page-btn${paginaAtual === i + 1 ? ' active' : ''}"
-      onclick="mudarPagina(${i + 1})">${i + 1}</button>
+      ${paginaAtual === i + 1 ? 'aria-current="page"' : ''} aria-label="Página ${i + 1}" onclick="mudarPagina(${i + 1})">${i + 1}</button>
   `).join('');
 }
 
 function mudarPagina(pagina) {
   paginaAtual = pagina;
-  filtrar();
+  const carregamento = carregarProdutos();
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  return carregamento;
 }
 
 let debounceTimer = null;
@@ -167,35 +179,40 @@ function filtrar(extra = {}) {
   const params = {};
   if (busca) params.busca = busca;
   if (categoria_id) params.categoria_id = categoria_id;
-  if (precoMax && precoMax < 2000) params.preco_max = precoMax;
+  if (precoMax && Number(precoMax) < Number(document.getElementById('rangePreco').max)) params.preco_max = precoMax;
   if (ordem) params.ordem = ordem;
   Object.assign(params, extra);
+  if (filtrosAtuais.destaque && extra.destaque === undefined) params.destaque = filtrosAtuais.destaque;
+  filtrosAtuais = params;
 
   paginaAtual = 1;
-  carregarProdutos(params);
+  return carregarProdutos();
 }
 
 function limparFiltros() {
   ['inputBusca', 'selectCategoria', 'selectOrdem'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.value = id === 'selectOrdem' ? 'recent' : '';
+    if (el) el.value = id === 'selectOrdem' ? 'recomendados' : '';
   });
   const range = document.getElementById('rangePreco');
-  if (range) { range.value = 2000; document.getElementById('precoLabel').textContent = 'R$ 2.000'; }
+  if (range) { range.value = range.max; document.getElementById('precoLabel').textContent = 'Sem limite'; }
   paginaAtual = 1;
-  carregarProdutos();
+  filtrosAtuais = {};
+  filtrar();
 }
 
 function toggleSidebar() {
-  document.getElementById('sidebar')?.classList.toggle('open');
+  const aberto = document.getElementById('sidebar')?.classList.toggle('open');
+  document.getElementById('btnFiltros')?.setAttribute('aria-expanded', String(Boolean(aberto)));
 }
 
 function abrirDetalhe(id) {
   window.location.href = `produto.html?id=${id}`;
 }
 
-function addCart(produto) {
-  Carrinho.adicionar(produto);
+function addCart(id) {
+  const produto = produtosCache.find(p => p.codProduto === id);
+  if (produto) Carrinho.adicionar({ ...produto, id: produto.codProduto, estoque: produto.estoqueProduto });
 }
 
 window.filtrar = filtrar;

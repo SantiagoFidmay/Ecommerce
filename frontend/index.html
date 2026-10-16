@@ -46,18 +46,11 @@
   <!-- Toast container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- ══════════ HERO — VIDEO SCROLL-DRIVEN ══════════ -->
+  <!-- ══════════ HERO — VÍDEO DE ABERTURA ══════════ -->
   <div class="hero-container" id="heroContainer">
     <section class="hero" id="hero">
-      <div class="hero-video-wrapper" id="heroVideoWrapper">
-        <video
-          id="heroVideo"
-          class="hero-video"
-          src="../videos/Tenis_Adizero_Boston13_video.mp4"
-          muted
-          playsinline
-          preload="auto"
-        ></video>
+      <div class="hero-video-wrapper" aria-hidden="true">
+        <video id="heroVideo" class="hero-video" src="../videos/tela%20inicial.mp4" autoplay loop muted playsinline preload="auto"></video>
         <div class="hero-overlay"></div>
         <div class="hero-noise"></div>
       </div>
@@ -103,22 +96,9 @@
       </div>
     </div>
 
-    <!-- Scroll indicator -->
-    <div class="scroll-indicator" id="scrollIndicator">
-      <span>Scroll para ver o tênis em ação</span>
-      <div class="scroll-arrow">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 5v14M5 12l7 7 7-7"/>
-        </svg>
-      </div>
-    </div>
   </section>
   </div>
 
-  <!-- ══════════ PROGRESS BAR VÍDEO ══════════ -->
-  <div class="video-progress-bar" id="videoProgressBar">
-    <div class="video-progress-fill" id="videoProgressFill"></div>
-  </div>
 
   <!-- ══════════ CATEGORIAS ══════════ -->
   <section class="section-categories page-section" id="categorias">
@@ -173,35 +153,35 @@
       </div>
 
       <div class="showcase-grid">
-        <div class="showcase-item" id="showcase1">
+        <a class="showcase-item" id="showcase1" href="pages/produto.html?id=3">
           <video class="showcase-video" src="../videos/Tenis_Adizero_Adios_Pro_4_Branco_JR1094_video.webm" muted loop playsinline></video>
           <div class="showcase-overlay">
             <span class="showcase-tag">Adidas</span>
             <h3 class="showcase-name">Adizero Adios Pro 4</h3>
             <p class="showcase-desc">Velocidade de nível olímpico</p>
-            <a href="pages/catalogo.html" class="btn btn-outline btn-sm">Ver Produto</a>
+            <span class="btn btn-outline btn-sm">Ver Produto</span>
           </div>
-        </div>
+        </a>
 
-        <div class="showcase-item" id="showcase2">
+        <a class="showcase-item" id="showcase2" href="pages/produto.html?id=5">
           <video class="showcase-video" src="../videos/Tenis_Adizero_EVO_SL_Vermelho_JQ4442_video.webm" muted loop playsinline></video>
           <div class="showcase-overlay">
             <span class="showcase-tag">Adidas</span>
             <h3 class="showcase-name">Adizero EVO SL</h3>
             <p class="showcase-desc">Leveza e explosão máxima</p>
-            <a href="pages/catalogo.html" class="btn btn-outline btn-sm">Ver Produto</a>
+            <span class="btn btn-outline btn-sm">Ver Produto</span>
           </div>
-        </div>
+        </a>
 
-        <div class="showcase-item" id="showcase3">
+        <a class="showcase-item" id="showcase3" href="pages/produto.html?id=4">
           <video class="showcase-video" src="../videos/Tenis_de_Corrida_HYPERBOOST_EDGE_Branco_KI1913_video.webm" muted loop playsinline></video>
           <div class="showcase-overlay">
             <span class="showcase-tag">Adidas</span>
             <h3 class="showcase-name">Hyperboost Edge</h3>
             <p class="showcase-desc">Amortecimento extremo</p>
-            <a href="pages/catalogo.html" class="btn btn-outline btn-sm">Ver Produto</a>
+            <span class="btn btn-outline btn-sm">Ver Produto</span>
           </div>
-        </div>
+        </a>
       </div>
     </div>
   </section>

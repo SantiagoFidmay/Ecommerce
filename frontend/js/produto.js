@@ -21,7 +21,7 @@ async function carregarProduto(id) {
     const res = await Api.getProduto(id);
     if (!res || res.error) throw new Error('Produto não encontrado na API');
     
-    produtoAtual = res;
+    produtoAtual = { ...res, id: res.codProduto, estoque: res.estoqueProduto, categoria: res.categoriaProduto };
     renderizarProduto(produtoAtual);
   } catch (err) {
     console.warn('API falhou ou produto inexistente, carregando mock data...', err);
@@ -31,7 +31,7 @@ async function carregarProduto(id) {
         { id: 1, codProduto: 1, nome: 'Adizero Boston 13',  marca: 'Adidas', preco: '1099.90', preco_promocional: '899.90',  categoria: { nome: 'Corrida', icone: '🏃' }, imagem_url: '../../imagens/boston13-1.webp', estoque: { quantidade: 5  }, descricao: 'O Adizero Boston 13 foi projetado para corredores de alta performance. Apresenta amortecimento Lightstrike Pro e uma malha superior extremamente respirável para máximo conforto.' },
         { id: 2, codProduto: 2, nome: 'Adizero Adios Pro 4', marca: 'Adidas', preco: '1599.90', preco_promocional: null,     categoria: { nome: 'Corrida', icone: '🏃' }, imagem_url: '../../imagens/adiospro1.avif', estoque: { quantidade: 10 }, descricao: 'Projetado para quebrar recordes, o Adios Pro 4 vem equipado com hastes de carbono ENERGYRODS para transições rápidas e explosivas.' },
         { id: 3, codProduto: 3, nome: 'Hyperboost Edge',    marca: 'Adidas', preco: '799.90',  preco_promocional: '699.90',  categoria: { nome: 'Treino', icone: '💪' }, imagem_url: '../../imagens/hyperboostEdge1.avif', estoque: { quantidade: 2  }, descricao: 'O tênis ideal para treinos diários e academias. O cabedal adaptável e o solado com grande aderência garantem estabilidade.' },
-        { id: 4, codProduto: 4, nome: 'Adizero EVO SL',     marca: 'Adidas', preco: '649.90',  preco_promocional: null,     categoria: { nome: 'Corrida', icone: '🏃' }, imagem_url: '../../imagens/evosl1.avif', estoque: { quantidade: 8  }, descricao: 'Leveza e resposta rápida. O Adizero EVO SL combina materiais sustentáveis com o máximo de performance para a sua corrida.' }
+        { id: 4, codProduto: 4, nome: 'Adizero EVO SL',     marca: 'Adidas', preco: '1099.00',  preco_promocional: null,     categoria: { nome: 'Corrida', icone: '🏃' }, imagem_url: '../../imagens/evosl1.avif', estoque: { quantidade: 8  }, descricao: 'Leveza e resposta rápida. O Adizero EVO SL combina materiais sustentáveis com o máximo de performance para a sua corrida.' }
     ];
 
     const produtoMock = produtosDemo.find(p => p.id == id);
@@ -84,13 +84,40 @@ function renderizarProduto(p) {
 
   // Galeria de imagens específicas por produto
   const nomeLower = (p.nome || '').toLowerCase();
-  const isBoston = nomeLower.includes('boston') || p.codProduto == 1 || p.id == 1;
-  const isAdiosPro = nomeLower.includes('adios') || p.codProduto == 2 || p.id == 2;
-  const isHyperboost = nomeLower.includes('hyperboost') || p.codProduto == 3 || p.id == 3;
-  const isEvoSl = nomeLower.includes('evo') || p.codProduto == 4 || p.id == 4;
+  const isBoston = nomeLower.includes('boston');
+  const isAdiosPro = nomeLower.includes('adios');
+  const isHyperboost = nomeLower.includes('hyperboost');
+  const isEvoSl = nomeLower.includes('evo');
   let galeriaImagens = [];
 
-  if (isBoston) {
+  const modeloAsics = ['superblast', 'novablast', 'metaspeed', 'megablast']
+    .find(modelo => nomeLower.includes(modelo));
+  const modeloNewBalance = nomeLower.includes('rebel') ? 'rebelv5'
+    : nomeLower.includes('1080') ? '1080v15'
+    : nomeLower.includes('supercomp') ? 'supercomp' : null;
+  const modeloNike = ['vaporfly', 'alphafly', 'vomero'].find(modelo => nomeLower.includes(modelo));
+  const modeloOlympikus = nomeLower.includes('corre 5') ? 'corre5'
+    : nomeLower.includes('turbo') ? 'turbo'
+    : nomeLower.includes('supra') ? 'supra' : null;
+  if (modeloOlympikus) {
+    galeriaImagens = [1, 2, 3, 4].map(numero =>
+      `../../imagens/${modeloOlympikus}${modeloOlympikus === 'corre5' ? '-' : ''}${numero}.webp`
+    );
+  } else if (modeloNike) {
+    galeriaImagens = [1, 2, 3, 4].map(numero =>
+      `../../imagens/${modeloNike === 'vaporfly' && numero === 2 ? 'vaporfl' : modeloNike}${numero}.avif`
+    );
+  } else if (modeloNewBalance) {
+    galeriaImagens = [1, 2, 3, 4].map(numero =>
+      `../../imagens/${modeloNewBalance}${modeloNewBalance === 'supercomp' ? (numero === 1 ? '' : numero) : '-' + numero}.webp`
+    );
+  } else if (modeloAsics) {
+    galeriaImagens = [1, 2, 3, 4].map(numero =>
+      `../../imagens/${modeloAsics}${modeloAsics === 'megablast' && numero === 1 ? '' : numero}.webp`
+    );
+  } else if (/adios\s*pro\s*5/.test(nomeLower)) {
+    galeriaImagens = [1, 2, 3, 4].map(numero => `../../imagens/adiospro5-${numero}.avif`);
+  } else if (isBoston) {
     galeriaImagens = [
       '../../imagens/boston13-1.webp',
       '../../imagens/boston13-2.webp',

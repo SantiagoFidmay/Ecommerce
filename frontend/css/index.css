@@ -4,22 +4,13 @@
 
 /* ── HERO ── */
 
-/*
- * hero-container: define a "zona de scroll" do vídeo.
- * height: 400vh = o usuário precisa scrollar 4x a altura da tela
- * para o vídeo terminar. Quanto maior, mais lento parece o vídeo.
- */
+/* A abertura acompanha a rolagem normal da página. */
 .hero-container {
   position: relative;
-  height: 110vh;
 }
 
-/*
- * .hero fica grudada no topo enquanto o scroll
- * ainda está dentro da .hero-container
- */
 .hero {
-  position: sticky;
+  position: relative;
   top: 0;
   height: 100vh;
   min-height: 700px;
@@ -433,12 +424,20 @@
 }
 
 .showcase-item {
+  display: block;
+  color: var(--text-primary);
+  text-decoration: none;
   position: relative;
   border-radius: var(--radius-xl);
   overflow: hidden;
   cursor: pointer;
   aspect-ratio: 9/16;
   background: var(--bg-card);
+}
+
+.showcase-item:focus-visible {
+  outline: 3px solid var(--accent-primary);
+  outline-offset: 4px;
 }
 
 .showcase-video {

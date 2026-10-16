@@ -41,8 +41,15 @@
   <!-- PAGE HEADER -->
   <header class="catalog-header">
     <div class="container">
-      <h1 class="section-title font-display">Catálogo <span class="gradient-text">Completo</span></h1>
-      <p style="color:var(--text-secondary)">Encontre o par perfeito entre +500 modelos disponíveis</p>
+      <div class="catalog-breadcrumb"><a href="../index.html">Início</a><span>/</span>Catálogo</div>
+      <div class="catalog-intro">
+        <div>
+          <span class="catalog-eyebrow">SPORT KICKS / RUNNING COLLECTION</span>
+          <h1>Seu próximo<br><span>melhor ritmo.</span></h1>
+          <p>Encontre o tênis que acompanha a sua corrida.<br>Dos treinos diários à próxima linha de chegada.</p>
+          <div class="catalog-brands" aria-label="Marcas do catálogo"><span>ADIDAS</span><span>ASICS</span><span>NEW BALANCE</span><span>NIKE</span><span>OLYMPIKUS</span></div>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -57,7 +64,7 @@
 
           <!-- Busca -->
           <div class="form-group" style="margin-bottom:1.5rem">
-            <label class="form-label">Buscar produto</label>
+            <label class="form-label" for="inputBusca">Buscar produto</label>
             <div style="position:relative">
               <input type="text" id="inputBusca" class="form-control" placeholder="Ex: Adizero, Running..."
                 oninput="debounce(filtrar, 400)()">
@@ -70,7 +77,7 @@
 
           <!-- Categorias -->
           <div class="form-group" style="margin-bottom:1.5rem">
-            <label class="form-label">Categoria</label>
+            <label class="form-label" for="selectCategoria">Categoria</label>
             <select id="selectCategoria" class="form-control form-select" onchange="filtrar()">
               <option value="">Todas as categorias</option>
             </select>
@@ -78,16 +85,17 @@
 
           <!-- Preço -->
           <div class="form-group" style="margin-bottom:1.5rem">
-            <label class="form-label">Preço máximo: <span id="precoLabel">R$ 2.000</span></label>
-            <input type="range" id="rangePreco" min="0" max="2000" value="2000" step="50"
+            <label class="form-label" for="rangePreco">Preço máximo: <span id="precoLabel">Sem limite</span></label>
+            <input type="range" id="rangePreco" min="0" max="3000" value="3000" step="50"
               style="width:100%;accent-color:var(--accent-primary)"
-              oninput="document.getElementById('precoLabel').textContent='R$ '+this.value; filtrar()">
+              oninput="document.getElementById('precoLabel').textContent=this.value === this.max ? 'Sem limite' : Number(this.value).toLocaleString('pt-BR', {style:'currency',currency:'BRL'}); filtrar()">
           </div>
 
           <!-- Ordenação -->
           <div class="form-group">
-            <label class="form-label">Ordenar por</label>
+            <label class="form-label" for="selectOrdem">Ordenar por</label>
             <select id="selectOrdem" class="form-control form-select" onchange="filtrar()">
+              <option value="recomendados">Recomendados</option>
               <option value="recent">Mais recentes</option>
               <option value="preco_asc">Menor preço</option>
               <option value="preco_desc">Maior preço</option>
@@ -103,8 +111,8 @@
       <section class="catalog-main">
         <!-- Toolbar -->
         <div class="catalog-toolbar">
-          <span class="catalog-count" id="catalogCount">Carregando...</span>
-          <button class="btn btn-ghost btn-sm" onclick="toggleSidebar()" id="btnFiltros">
+          <div><span class="catalog-eyebrow">ENCONTRE SEU PAR</span><h2 class="catalog-results-title">Todos os modelos</h2><span class="catalog-count" id="catalogCount" role="status">Carregando...</span></div>
+          <button class="btn btn-ghost btn-sm" onclick="toggleSidebar()" id="btnFiltros" aria-controls="sidebar" aria-expanded="false">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/>
               <line x1="10" y1="18" x2="14" y2="18"/>
@@ -114,7 +122,7 @@
         </div>
 
         <!-- Grid de produtos -->
-        <div class="produtos-grid" id="produtosGrid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="produtos-grid" id="produtosGrid">
           <!-- Preenchido via JS -->
         </div>
 
@@ -127,7 +135,7 @@
         </div>
 
         <!-- Paginação -->
-        <div class="pagination" id="pagination"></div>
+        <nav class="pagination" id="pagination" aria-label="Páginas do catálogo"></nav>
       </section>
     </div>
   </main>

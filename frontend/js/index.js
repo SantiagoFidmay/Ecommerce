@@ -1,201 +1,34 @@
-/**
- * index.js — Landing Page Script
- * 
- * Comportamento do Hero Video:
- * - A página fica TRAVADA no topo enquanto o vídeo toca
- * - O vídeo avança COM O SCROLL do usuário (efeito scrubbing)
- * - A velocidade é controlada pelo scroll — mais lento pois o range é longo
- * - Só quando o vídeo termina, a página desce normalmente
- */
-
+/** Landing page: vídeo de abertura e produtos em destaque. */
 document.addEventListener('DOMContentLoaded', () => {
-    initScrollVideoHero()
+    initVideoHero()
     initShowcaseHover()
     carregarCategorias()
     carregarProdutosDestaque()
     initIntersectionAnimations()
 })
 
-
-/* ═══════════════════════════════════════════════════════════════
-   HERO VIDEO — SCROLL TRAVADO + VIDEO-DRIVEN
-   
-   Lógica:
-   1. A hero-container tem height: 300vh (zona de scroll do vídeo)
-   2. A .hero fica position:sticky — gruda no topo
-   3. Enquanto o usuário está dentro da hero-container,
-      o scroll é interceptado para avançar o currentTime do vídeo
-   4. O vídeo usa playbackRate baixo + mapeamento lento (mais "cinemático")
-   5. Quando o vídeo termina (ou o scroll ultrapassa a container),
-      o scroll é liberado e a página continua normalmente
-═══════════════════════════════════════════════════════════════ */
-function initScrollVideoHero() {
-    const video       = document.getElementById('heroVideo')
-    const container   = document.getElementById('heroContainer')
-    const progressFill = document.getElementById('videoProgressFill')
-    const scrollHint  = document.getElementById('scrollIndicator')
-    const heroContent = document.getElementById('heroContent')
-
-    if (!video || !container) return
-
-    // ── Configurações ──
-    const SCROLL_MULTIPLIER = 0.35   // Distância de scroll menor: desce o site bem mais rápido
-    const VIDEO_OPACITY_START = 0.7  // Opacidade inicial do vídeo
-
-    let videoReady    = false
-    let videoFinished = false
-    let duration      = 0
-    let targetTime    = 0
-    let currentTimeSmoothed = 0
-    let animationFrameId = null
-
-    // Loop de interpolação suave (LERP) para transições contínuas e ultra fluidas
-    function smoothVideoPlayback() {
-        if (!videoReady) return
-
-        // Interpolação suave e ágil (fator 0.14 para resposta rápida sem perder fluidez)
-        currentTimeSmoothed += (targetTime - currentTimeSmoothed) * 0.14
-
-        if (Math.abs(currentTimeSmoothed - video.currentTime) > 0.003) {
-            video.currentTime = currentTimeSmoothed
-        }
-
-        // Atualiza barra de progresso suavemente
-        const progress = duration > 0 ? (currentTimeSmoothed / duration) : 0
-        if (progressFill) progressFill.style.width = `${progress * 100}%`
-
-        // Vídeo terminou suavemente → libera scroll
-        if (videoFinished && Math.abs(currentTimeSmoothed - duration) < 0.1) {
-            cancelAnimationFrame(animationFrameId)
-            return
-        }
-
-        animationFrameId = requestAnimationFrame(smoothVideoPlayback)
-    }
-
-    // Aguarda metadados do vídeo
-    video.addEventListener('loadedmetadata', () => {
-        duration   = video.duration
-        videoReady = true
-        video.currentTime = 0
-        targetTime = 0
-        currentTimeSmoothed = 0
-        console.log(`🎬 Vídeo carregado. Duração: ${duration.toFixed(1)}s`)
-        animationFrameId = requestAnimationFrame(smoothVideoPlayback)
-    })
-
-    // Fallback se vídeo não carregar
-    video.addEventListener('error', () => {
-        console.warn('⚠️ Vídeo não carregado. Liberando scroll.')
-        videoFinished = true
-        releaseScroll()
-    })
-
-    // ── Wheel / Touch handler ──
-    let accumulated = 0
-
-    function onWheel(e) {
-        if (!videoReady || videoFinished) return
-
-        const containerRect = container.getBoundingClientRect()
-
-        // Só age se a hero ainda está visível no topo
-        if (containerRect.top > 10) return
-        if (window.scrollY > container.offsetHeight) return
-
-        e.preventDefault()
-
-        // Acumula o delta do scroll de forma ágil
-        accumulated += e.deltaY * 0.95
-        if (accumulated < 0) accumulated = 0
-
-        // Define o tempo alvo (target)
-        const pixelsPorSegundo = window.innerHeight * SCROLL_MULTIPLIER
-        targetTime = Math.min(accumulated / pixelsPorSegundo, duration)
-
-        // Fade do indicador de scroll
-        if (scrollHint) {
-            scrollHint.style.opacity = accumulated > 30 ? '0' : '1'
-        }
-
-        // Efeito parallax suave no conteúdo
-        if (heroContent) {
-            const fadeOut = Math.max(0, 1 - (accumulated / (window.innerHeight * 0.8)))
-            heroContent.style.opacity   = fadeOut
-            heroContent.style.transform = `translateY(${accumulated * 0.15}px)`
-        }
-
-        // Quando chega ao fim do vídeo → libera imediatamente a descida do site
-        if (targetTime >= duration - 0.1) {
-            videoFinished = true
-            targetTime = duration
-            releaseScroll()
-
-            setTimeout(() => {
-                const nextSection = document.getElementById('videoProgressBar')
-                if (nextSection) {
-                    nextSection.scrollIntoView({ behavior: 'smooth' })
-                }
-            }, 180)
-        }
-    }
-
-    // Touch support
-    let touchStartY = 0
-    function onTouchStart(e) { touchStartY = e.touches[0].clientY }
-    function onTouchMove(e) {
-        if (!videoReady || videoFinished) return
-        const delta = touchStartY - e.touches[0].clientY
-        touchStartY = e.touches[0].clientY
-        onWheel({ deltaY: delta * 1.8, preventDefault: () => e.preventDefault() })
-    }
-
-    function lockScroll() {
-        window.addEventListener('wheel',     onWheel,     { passive: false })
-        window.addEventListener('touchstart', onTouchStart, { passive: true })
-        window.addEventListener('touchmove',  onTouchMove,  { passive: false })
-    }
-
-    function releaseScroll() {
-        window.removeEventListener('wheel',     onWheel)
-        window.removeEventListener('touchstart', onTouchStart)
-        window.removeEventListener('touchmove',  onTouchMove)
-
-        // Mostra a barra de progresso como completa
-        if (progressFill) {
-            progressFill.style.width = '100%'
-            progressFill.style.boxShadow = '0 0 16px var(--accent-primary)'
-        }
-    }
-
-    // Começa travando o scroll quando o usuário chega ao hero
-    // Usa IntersectionObserver para só travar quando a hero está visível
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && !videoFinished && videoReady) {
-                lockScroll()
-            } else if (!entry.isIntersecting) {
-                // Saiu da área — garante que o scroll está livre
-                if (videoFinished) releaseScroll()
-            }
-        })
-    }, { threshold: 0.5 })
-
-    observer.observe(document.getElementById('hero'))
-
-    // Também bloqueia imediatamente ao carregar (se já estiver no topo)
-    video.addEventListener('loadedmetadata', () => {
-        if (window.scrollY < 100) lockScroll()
-    })
+function initVideoHero() {
+    const video = document.getElementById('heroVideo')
+    if (!video) return
+    video.muted = true
+    const play = () => video.play().catch(() => {})
+    video.addEventListener('canplay', play, { once: true })
+    document.addEventListener('pointerdown', () => {
+        if (video.paused) play()
+    }, { once: true })
+    play()
 }
 
-
-/* ═══════════════════════════════════════════════
-   SHOWCASE VIDEOS — Play on hover
-═══════════════════════════════════════════════ */
 function initShowcaseHover() {
     const showcaseItems = document.querySelectorAll('.showcase-item')
     showcaseItems.forEach(item => {
+        const nome = item.querySelector('.showcase-name')?.textContent.trim()
+        if (nome) {
+            Api.buscarProdutos({ nome }).then(res => {
+                const produto = res.produtos?.find(p => p.nome === nome)
+                if (produto) item.href = `pages/produto.html?id=${produto.codProduto}`
+            }).catch(() => {})
+        }
         const video = item.querySelector('.showcase-video')
         if (!video) return
         item.addEventListener('mouseenter', () => video.play().catch(() => {}))
@@ -274,14 +107,18 @@ async function carregarProdutosDestaque() {
 }
 
 function getImagemProduto(p) {
-    const nomeLower = (p.nome || '').toLowerCase();
-    if (nomeLower.includes('boston') || p.codProduto == 1 || p.id == 1) return 'imagens/boston13-1.webp';
-    if (nomeLower.includes('adios') || p.codProduto == 2 || p.id == 2) return 'imagens/adiospro1.avif';
-    if (nomeLower.includes('hyperboost') || p.codProduto == 3 || p.id == 3) return 'imagens/hyperboostEdge1.avif';
-    if (nomeLower.includes('evo') || p.codProduto == 4 || p.id == 4) return 'imagens/evosl1.avif';
     if (p.imagem_url) {
-        // Se vier com caminho relativo '../imagens/', remove o '../' para a index.html na raiz
-        return p.imagem_url.replace(/^\.\.\//, '');
+        return p.imagem_url.replace(/^(?:\.\.\/)*imagens\//, '../imagens/');
+    }
+    const nomeLower = (p.nome || '').toLowerCase();
+    if (/adios\s*pro\s*5/.test(nomeLower)) return '../imagens/adiospro5-1.avif';
+    if (nomeLower.includes('boston')) return '../imagens/boston13-1.webp';
+    if (nomeLower.includes('adios')) return '../imagens/adiospro1.avif';
+    if (nomeLower.includes('hyperboost')) return '../imagens/hyperboostEdge1.avif';
+    if (nomeLower.includes('evo')) return '../imagens/evosl1.avif';
+    if (p.imagem_url) {
+        // Os arquivos compartilhados ficam ao lado da pasta frontend.
+        return p.imagem_url.replace(/^(?:\.\.\/)*imagens\//, '../imagens/');
     }
     return 'assets/images/placeholder.svg';
 }
@@ -299,7 +136,7 @@ function renderizarProdutos(grid, produtos) {
                 <div class="produto-card-img">
                     ${temPromo ? '<span class="produto-card-badge">🔥 Promoção</span>' : ''}
                     <img src="${imgSrc}" alt="${p.nome}"
-                         onerror="this.src='assets/images/placeholder.svg'">
+                         onerror="this.onerror=null;this.src='assets/images/placeholder.svg'">
                     ${semEstoque ? '<div class="produto-card-estoque-zero"><span>Esgotado</span></div>' : ''}
                 </div>
                 <div class="produto-card-body">
@@ -332,16 +169,20 @@ function renderizarProdutos(grid, produtos) {
 
 function renderizarProdutosDemo(grid) {
     const produtosDemo = [
-        { codProduto: 1, nome: 'Adizero Boston 13',  marca: 'Adidas', preco: '1099.90', preco_promocional: '899.90',  categoriaProduto: { nome: 'Corrida', icone: '🏃' }, imagem_url: 'imagens/boston13-1.webp', estoqueProduto: { quantidade: 5  } },
-        { codProduto: 2, nome: 'Adizero Adios Pro 4', marca: 'Adidas', preco: '1599.90', preco_promocional: null,     categoriaProduto: { nome: 'Corrida', icone: '🏃' }, imagem_url: 'imagens/adiospro1.avif', estoqueProduto: { quantidade: 10 } },
-        { codProduto: 3, nome: 'Hyperboost Edge',    marca: 'Adidas', preco: '799.90',  preco_promocional: '699.90',  categoriaProduto: { nome: 'Treino', icone: '💪' }, imagem_url: 'imagens/hyperboostEdge1.avif', estoqueProduto: { quantidade: 2  } },
-        { codProduto: 4, nome: 'Adizero EVO SL',     marca: 'Adidas', preco: '649.90',  preco_promocional: null,     categoriaProduto: { nome: 'Corrida', icone: '🏃' }, imagem_url: 'imagens/evosl1.avif', estoqueProduto: { quantidade: 8  } }
+        { codProduto: 1, nome: 'Adizero Boston 13',  marca: 'Adidas', preco: '1099.90', preco_promocional: '899.90',  categoriaProduto: { nome: 'Corrida', icone: '🏃' }, imagem_url: '../imagens/boston13-1.webp', estoqueProduto: { quantidade: 5  } },
+        { codProduto: 2, nome: 'Adizero Adios Pro 4', marca: 'Adidas', preco: '1599.90', preco_promocional: null,     categoriaProduto: { nome: 'Corrida', icone: '🏃' }, imagem_url: '../imagens/adiospro1.avif', estoqueProduto: { quantidade: 10 } },
+        { codProduto: 3, nome: 'Hyperboost Edge',    marca: 'Adidas', preco: '799.90',  preco_promocional: '699.90',  categoriaProduto: { nome: 'Treino', icone: '💪' }, imagem_url: '../imagens/hyperboostEdge1.avif', estoqueProduto: { quantidade: 2  } },
+        { codProduto: 4, nome: 'Adizero EVO SL',     marca: 'Adidas', preco: '1099.00',  preco_promocional: null,     categoriaProduto: { nome: 'Corrida', icone: '🏃' }, imagem_url: '../imagens/evosl1.avif', estoqueProduto: { quantidade: 8  } }
     ]
     renderizarProdutos(grid, produtosDemo)
 }
 
 function adicionarAoCarrinho(produto) {
-    if (typeof Carrinho !== 'undefined') Carrinho.adicionar(produto)
+    if (typeof Carrinho !== 'undefined') Carrinho.adicionar({
+        ...produto, id: produto.codProduto || produto.id,
+        estoque: produto.estoqueProduto || produto.estoque,
+        imagem_url: getImagemProduto(produto)
+    })
 }
 
 
