@@ -13,14 +13,15 @@ const {
 
 async function syncDataBase() {
     try {
-        // Sincroniza o banco de dados recriando as tabelas com base nas models
-        await conn.sync({ force: true }) 
+        // Cria as tabelas que faltam sem apagar os dados existentes.
+        await conn.sync()
         
         console.log('--------------------------------------------------')
         console.log('Banco de Dados sincronizado com sucesso (7 Tabelas)!')
         console.log('--------------------------------------------------')
 
     } catch (err) {
+        process.exitCode = 1
         console.error('ERRO: Não foi possível sincronizar o banco de dados!', err)
     } finally {
         await conn.close()

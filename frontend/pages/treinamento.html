@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plano de treinamento da Sport Kicks, versão em desenvolvimento.">
+  <title>Plano de treinamento | Sport Kicks</title>
+  <link rel="stylesheet" href="../css/ajuda.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="help-header">
+    <a class="help-brand" href="../index.html">SPORT<span>KICKS</span></a>
+    <nav aria-label="Navegação da loja">
+      <a href="../index.html">Início</a>
+      <a href="catalogo.html">Catálogo</a>
+      <a href="login.html">Entrar</a>
+    </nav>
+  </header>
+  <div class="help-intro">
+    <p class="eyebrow">CENTRAL DE AJUDA · 21/10/2026</p>
+    <p>Orientações para usar a loja e preparar o treinamento.</p>
+    <p class="help-notice"><strong>Versão em desenvolvimento.</strong> O checkout é uma simulação e algumas telas ainda estão pendentes. Confira os limites descritos no manual.</p>
+    <nav class="help-tabs" aria-label="Documentos de apoio"><a href="ajuda.html" >Manual do usuário</a><a href="treinamento.html" aria-current=page>Plano de treinamento</a><a href="roteiro.html" >Roteiro integrado</a></nav>
+    <div class="help-actions"><a class="help-button" href="../ajuda/01-plano-treinamento.pdf" download>Baixar PDF</a><button type="button" onclick="window.print()">Imprimir / salvar em PDF</button></div>
+  </div>
+  <div class="help-layout">
+    <aside aria-label="Sumário"><p class="eyebrow">NESTE DOCUMENTO</p><div class="toc">
+<ul>
+<li><a href="#plano-de-treinamento-e-matriz-de-necessidades">Plano de treinamento e matriz de necessidades</a><ul>
+<li><a href="#1-objetivo-e-referencias">1. Objetivo e referências</a></li>
+<li><a href="#2-matriz-de-necessidades-por-perfil">2. Matriz de necessidades por perfil</a></li>
+<li><a href="#3-estrutura-do-ambiente-e-preparacao">3. Estrutura do ambiente e preparação</a></li>
+<li><a href="#4-modulos-e-programacao-proposta">4. Módulos e programação proposta</a></li>
+<li><a href="#5-avaliacao-e-evidencias">5. Avaliação e evidências</a></li>
+<li><a href="#6-responsabilidades-e-liberacao">6. Responsabilidades e liberação</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</aside>
+    <main id="conteudo" tabindex="-1"><h1 id="plano-de-treinamento-e-matriz-de-necessidades">Plano de treinamento e matriz de necessidades</h1>
+<p><strong>Sport Kicks — ecommerce de artigos esportivos</strong><br />
+Avaliação prática de Implantação de Sistemas — SENAI/SC<br />
+Data: 21/10/2026 · Versão: 1.0 · Situação: projeto em desenvolvimento<br />
+Estudante: ____________________ · Docente: José Ricardo Maçaneiro</p>
+<h2 id="1-objetivo-e-referencias">1. Objetivo e referências</h2>
+<p>Capacitar os usuários para consultar produtos, criar uma conta, entrar na loja e selecionar itens, reconhecendo as limitações da versão atual. Preparar a equipe para a futura operação de vendas, estoque e entregas, sem tratar recursos pendentes como disponíveis.</p>
+<p>Referências: avaliação prática de 21/10/2026, documento <strong>Sistema_ecommerce_7_tabelas (1).md</strong> e arquivos atuais do projeto. O Markdown descreve uma loja de sucos; neste projeto, o domínio foi adaptado para tênis e artigos esportivos, mantendo as sete entidades: usuário, produto, categoria, estoque, pedido, item do pedido e entrega. A adequação dessa mudança de domínio deve ser validada com o docente.</p>
+<p>O PDF informa “Lista de anexos: N/A”, mas sua lista de verificação menciona anexos A e B. Esses anexos não foram fornecidos. Por isso, os perfis, módulos e horários abaixo são propostas baseadas na contextualização e no Markdown, e as mensagens foram conferidas no código. Não se atribuem aos anexos regras que não puderam ser consultadas.</p>
+<h2 id="2-matriz-de-necessidades-por-perfil">2. Matriz de necessidades por perfil</h2>
+<p>Os três perfis abaixo são perfis de trabalho para o treinamento. O sistema prevê apenas os tipos de conta CLIENTE e ADMIN; não existe conta específica de logística.</p>
+<table>
+<thead>
+<tr>
+<th>Perfil</th>
+<th>Necessidades de aprendizagem</th>
+<th>Acesso e limitações</th>
+<th>Módulos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1 — Cliente / usuário iniciante</td>
+<td>• Encontrar produtos e comparar preços.<br>• Preencher cadastro, CPF e endereço.<br>• Entrar com a própria conta.<br>• Reconhecer estoque e simulação de pagamento.</td>
+<td>Consulta pública; conta pessoal para identificação. Precisa de apoio com navegador e formulários. Não recebe acesso administrativo.</td>
+<td>M1, M2, M3</td>
+</tr>
+<tr>
+<td>P2 — Administrador / responsável pelo catálogo</td>
+<td>• Orientar clientes nas rotinas existentes.<br>• Distinguir cadastro de produto de movimentação de estoque.<br>• Entender as futuras consultas de vendas e gráficos.<br>• Reconhecer permissões e pendências antes de liberar a operação.</td>
+<td>Conta ADMIN quando provisionada pela equipe responsável. Existem serviços no backend, mas não há painel administrativo pronto para treinamento operacional.</td>
+<td>M1, M2, M3, M4, M5</td>
+</tr>
+<tr>
+<td>P3 — Operador de estoque e logística</td>
+<td>• Identificar produto, quantidade e indisponibilidade.<br>• Entender o vínculo entre pedido, estoque e entrega.<br>• Registrar e comunicar divergências.<br>• Reconhecer quais rotinas ainda dependem de conclusão.</td>
+<td>Perfil de trabalho proposto; não existe permissão própria de logística. Não compartilhar conta de administrador. Treino atual limitado à consulta e à explicação do fluxo previsto.</td>
+<td>M1, M3, M4, M5</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-estrutura-do-ambiente-e-preparacao">3. Estrutura do ambiente e preparação</h2>
+<p>O cenário fornecido considera estações de trabalho, rede local, regras da TI, usuários em turnos e diferentes níveis de familiaridade com tecnologia. Não define número de computadores, turnos, duração disponível ou política detalhada de acesso. Esses pontos devem ser confirmados com o responsável antes da turma.</p>
+<ul>
+<li>Reservar estação com navegador atualizado e teclado, ou dispositivo móvel para consulta. Usar conexão e equipamentos autorizados pela TI.</li>
+<li>Disponibilizar o endereço da loja pelo responsável. Na configuração atual, o frontend aponta para o servidor local; acesso a partir de outro computador ainda precisa de configuração e teste pela equipe técnica.</li>
+<li>Confirmar disponibilidade do serviço da loja e do banco antes da aula. Acesso à rede local não garante acesso à internet para a consulta de CEP.</li>
+<li>Verificar se a política de rede permite o serviço de CEP. Se estiver indisponível, adiar a parte do cadastro que depende do endereço.</li>
+<li>Usar contas e dados de teste autorizados, sem documentos, cartões ou senhas reais nas projeções. Não criar contas coletivas de administrador.</li>
+<li>Guardar os PDFs no local permitido pela TI para consulta durante indisponibilidade da rede. O PDF auxilia a consulta, mas não faz o sistema funcionar sem conexão.</li>
+<li>Oferecer demonstração guiada antes da prática individual. Ajustar zoom e ritmo conforme a necessidade de leitura e uso do mouse.</li>
+</ul>
+<h2 id="4-modulos-e-programacao-proposta">4. Módulos e programação proposta</h2>
+<p><strong>Carga proposta: 120 minutos por turma</strong>, em três blocos de 40 minutos. Os 120 minutos indicados no PDF para produzir a avaliação não são uma duração obrigatória do treinamento; a carga abaixo é uma proposta didática. Repetir os blocos para cada turno, em horários validados com o setor, mantendo o mesmo roteiro e uma passagem de informações entre instrutores.</p>
+<table>
+<thead>
+<tr>
+<th>Módulo</th>
+<th>Tempo</th>
+<th>Público</th>
+<th>Rotinas do manual</th>
+<th>Método e resultado verificável</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M1 — Acesso e consulta</td>
+<td>20 min</td>
+<td>P1, P2, P3</td>
+<td>R01, R02, R03</td>
+<td>Demonstrar a abertura da loja; praticar busca e filtro. Cada participante localiza um produto e informa seu preço.</td>
+</tr>
+<tr>
+<td>M2 — Conta e identificação</td>
+<td>20 min</td>
+<td>P1, P2</td>
+<td>R04, R05</td>
+<td>Demonstrar CPF, CEP e login; prática individual com dados autorizados. Participante reconhece erro de cadastro e entra na própria conta de teste. P3 pode acompanhar sem criar conta.</td>
+</tr>
+<tr>
+<td>M3 — Seleção e limites da compra</td>
+<td>25 min</td>
+<td>P1, P2, P3</td>
+<td>R06, R07</td>
+<td>Adicionar item disponível, observar o aviso e discutir os limites do carrinho e do checkout. Participante explica por que a simulação não comprova venda nem pagamento.</td>
+</tr>
+<tr>
+<td>M4 — Catálogo, estoque e logística previstos</td>
+<td>25 min</td>
+<td>P2, P3</td>
+<td>R08, R09, R10</td>
+<td>Explicação do fluxo solicitado e das pendências. Não demonstrar painel inexistente. Participante identifica o responsável por uma divergência e o que falta para operação real.</td>
+</tr>
+<tr>
+<td>M5 — Segurança, problemas e revisão</td>
+<td>30 min</td>
+<td>P2, P3; P1 na revisão orientada</td>
+<td>R01–R10, seção de problemas</td>
+<td>Exercícios de diagnóstico, checklist e revisão. Participante distingue falha de rede, erro de credencial e recurso pendente. Registrar dúvidas para o próximo turno.</td>
+</tr>
+</tbody>
+</table>
+<p>Distribuição: bloco 1 = M1 + M2; bloco 2 = M3 + primeiros 15 minutos de M4; bloco 3 = últimos 10 minutos de M4 + M5. Para clientes, a revisão do M5 pode ser antecipada como orientação individual; o tempo efetivamente cursado deve constar no registro.</p>
+<h2 id="5-avaliacao-e-evidencias">5. Avaliação e evidências</h2>
+<p>Para as rotinas disponíveis, o participante deverá localizar produto e preço, reconhecer um filtro, interpretar uma mensagem, usar a própria conta de teste quando aplicável e explicar que não há compra real no checkout atual. O instrutor registra <strong>realizou sem ajuda</strong>, <strong>realizou com ajuda</strong>, <strong>precisa repetir</strong> ou <strong>não aplicável / bloqueado</strong> em cada rotina.</p>
+<p>As rotinas pendentes recebem somente avaliação de compreensão do fluxo. Não registrar domínio operacional de estoque, entrega ou relatórios sem prática em telas concluídas. Reforço: repetir o módulo em que houve dificuldade, com orientação individual e nova tentativa na próxima turma ou horário combinado.</p>
+<p>Evidências propostas: lista de presença por turno, ficha de execução por participante, dúvidas recorrentes e registro de impedimentos. Não coletar senhas, CPF completo ou imagens com dados pessoais. O responsável pela implantação guarda os registros conforme as regras internas da instituição.</p>
+<h2 id="6-responsabilidades-e-liberacao">6. Responsabilidades e liberação</h2>
+<p>O instrutor demonstra, acompanha a prática e registra dificuldades; o responsável pelo setor confirma disponibilidade e participantes; a TI verifica acesso e disponibilidade técnica; a equipe de desenvolvimento corrige pendências. Esses papéis são uma organização proposta, não cargos comprovados nos anexos ausentes.</p>
+<p>A liberação para operação real depende da conclusão do pedido integrado ao estoque, das telas administrativas e de testes completos de acesso e permissões. Até lá, o treinamento é de consulta, cadastro, login e demonstração. Para o checklist e a ficha de execução, consultar o documento <strong>Roteiro integrado e rastreabilidade</strong>.</p></main>
+  </div>
+  <footer class="help-footer">Sport Kicks · Material de apoio à implantação · Versão 1.0</footer>
+</body>
+</html>

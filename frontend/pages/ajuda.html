@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Manual do usuário da Sport Kicks, versão em desenvolvimento.">
+  <title>Manual do usuário | Sport Kicks</title>
+  <link rel="stylesheet" href="../css/ajuda.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="help-header">
+    <a class="help-brand" href="../index.html">SPORT<span>KICKS</span></a>
+    <nav aria-label="Navegação da loja">
+      <a href="../index.html">Início</a>
+      <a href="catalogo.html">Catálogo</a>
+      <a href="login.html">Entrar</a>
+    </nav>
+  </header>
+  <div class="help-intro">
+    <p class="eyebrow">CENTRAL DE AJUDA · 21/10/2026</p>
+    <p>Orientações para usar a loja e preparar o treinamento.</p>
+    <p class="help-notice"><strong>Versão em desenvolvimento.</strong> O checkout é uma simulação e algumas telas ainda estão pendentes. Confira os limites descritos no manual.</p>
+    <nav class="help-tabs" aria-label="Documentos de apoio"><a href="ajuda.html" aria-current=page>Manual do usuário</a><a href="treinamento.html" >Plano de treinamento</a><a href="roteiro.html" >Roteiro integrado</a></nav>
+    <div class="help-actions"><a class="help-button" href="../ajuda/02-manual-usuario.pdf" download>Baixar PDF</a><button type="button" onclick="window.print()">Imprimir / salvar em PDF</button></div>
+  </div>
+  <div class="help-layout">
+    <aside aria-label="Sumário"><p class="eyebrow">NESTE DOCUMENTO</p><div class="toc">
+<ul>
+<li><a href="#manual-do-usuario">Manual do usuário</a><ul>
+<li><a href="#1-como-usar-este-manual">1. Como usar este manual</a></li>
+<li><a href="#2-acesso-perfis-e-situacao-da-versao">2. Acesso, perfis e situação da versão</a></li>
+<li><a href="#3-rotinas-operacionais">3. Rotinas operacionais</a><ul>
+<li><a href="#r01-abrir-a-loja-e-consultar-o-catalogo">R01 — Abrir a loja e consultar o catálogo</a></li>
+<li><a href="#r02-buscar-filtrar-e-ordenar-produtos">R02 — Buscar, filtrar e ordenar produtos</a></li>
+<li><a href="#r03-consultar-os-detalhes-de-um-produto">R03 — Consultar os detalhes de um produto</a></li>
+<li><a href="#r04-criar-uma-conta">R04 — Criar uma conta</a></li>
+<li><a href="#r05-entrar-na-conta">R05 — Entrar na conta</a></li>
+<li><a href="#r06-selecionar-um-produto-para-o-carrinho">R06 — Selecionar um produto para o carrinho</a></li>
+<li><a href="#r07-conhecer-a-simulacao-de-checkout">R07 — Conhecer a simulação de checkout</a></li>
+<li><a href="#r08-cadastro-de-produtos-e-controle-de-estoque-previsto">R08 — Cadastro de produtos e controle de estoque — previsto</a></li>
+<li><a href="#r09-pedido-historico-e-entrega-previsto">R09 — Pedido, histórico e entrega — previsto</a></li>
+<li><a href="#r10-consultar-relatorios-previsto">R10 — Consultar relatórios — previsto</a></li>
+</ul>
+</li>
+<li><a href="#4-mensagens-e-orientacoes">4. Mensagens e orientações</a></li>
+<li><a href="#5-solucao-de-problemas">5. Solução de problemas</a></li>
+<li><a href="#6-seguranca-e-ajuda">6. Segurança e ajuda</a></li>
+<li><a href="#7-atualizacao-do-manual">7. Atualização do manual</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</aside>
+    <main id="conteudo" tabindex="-1"><h1 id="manual-do-usuario">Manual do usuário</h1>
+<p><strong>Sport Kicks — ecommerce de artigos esportivos</strong><br />
+Versão operacional de demonstração · 1.0 · 21/10/2026<br />
+Sistema em desenvolvimento — leia as limitações antes de praticar.</p>
+<h2 id="1-como-usar-este-manual">1. Como usar este manual</h2>
+<p>Este manual explica as telas existentes da loja. Use R01 a R06 para consulta, cadastro, login e seleção de produtos. R07 explica a simulação de checkout. R08 a R10 apresentam rotinas solicitadas que ainda não estão disponíveis em telas completas.</p>
+<p>O projeto segue a estrutura do documento <strong>Sistema_ecommerce_7_tabelas (1).md</strong>, adaptada de sucos para artigos esportivos. A atividade de 21/10/2026 pede orientações compatíveis com o estágio do sistema. Os anexos A e B citados na avaliação não foram fornecidos; as mensagens abaixo foram conferidas no código desta versão.</p>
+<p><strong>Não use o checkout como confirmação de compra, pagamento ou entrega.</strong> Não informe dados reais de cartão na demonstração. A mensagem de sucesso da simulação não significa que um pedido foi salvo.</p>
+<h2 id="2-acesso-perfis-e-situacao-da-versao">2. Acesso, perfis e situação da versão</h2>
+<p>Abra a loja pelo endereço fornecido pelo responsável. Visitantes podem consultar o catálogo e selecionar produtos. Clientes podem criar conta e entrar. Administradores terão gestão de catálogo, estoque e relatórios quando o painel estiver concluído. A logística é um perfil de trabalho do treinamento, sem conta específica no sistema.</p>
+<table>
+<thead>
+<tr>
+<th>Recurso</th>
+<th>Situação nesta versão</th>
+<th>Orientação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vitrine, catálogo, busca, filtros e detalhes</td>
+<td>Telas implementadas, conectadas à consulta de produtos</td>
+<td>Pode praticar R01–R03; confirme que o servidor está disponível.</td>
+</tr>
+<tr>
+<td>Cadastro, CPF, consulta de CEP e login</td>
+<td>Telas e serviços implementados; integração de CEP depende de internet</td>
+<td>Pode praticar R04–R05 com dados autorizados.</td>
+</tr>
+<tr>
+<td>Selecionar produto para o carrinho</td>
+<td>Gravação local implementada, com aviso de adição</td>
+<td>Pode praticar R06; o aviso não comprova venda ou reserva de estoque.</td>
+</tr>
+<tr>
+<td>Página do carrinho</td>
+<td>Incompleta: a função que monta a lista na tela ainda não existe</td>
+<td>Não usar a página para validar remoção, quantidades ou total.</td>
+</tr>
+<tr>
+<td>Checkout</td>
+<td>Simulação; não envia a compra ao registro de pedidos</td>
+<td>Usar R07 somente para demonstração.</td>
+</tr>
+<tr>
+<td>Perfil, histórico e painel administrativo</td>
+<td>Telas ausentes, embora existam serviços no backend</td>
+<td>Links podem não abrir; aguardar conclusão.</td>
+</tr>
+<tr>
+<td>Estoque, entregas e relatórios com gráficos</td>
+<td>Serviços existentes; experiência visual ainda pendente</td>
+<td>Não há procedimento operacional de tela liberado.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-rotinas-operacionais">3. Rotinas operacionais</h2>
+<h3 id="r01-abrir-a-loja-e-consultar-o-catalogo">R01 — Abrir a loja e consultar o catálogo</h3>
+<p><strong>Público:</strong> todos. <strong>Pré-condições:</strong> navegador, acesso ao endereço da loja e serviço disponível. Não exige conta.</p>
+<ol>
+<li>Abra a página inicial da Sport Kicks.</li>
+<li>Selecione <strong>Catálogo</strong>. Em celular, utilize o menu disponível no cabeçalho quando necessário.</li>
+<li>Aguarde os cartões de produtos carregarem.</li>
+<li>Leia nome, preço e categoria do item desejado.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> produtos exibidos em cartões. Se não houver resultados, revise os filtros em R02. Se aparecer falha de conexão, consulte P01 na seção de problemas.</p>
+<h3 id="r02-buscar-filtrar-e-ordenar-produtos">R02 — Buscar, filtrar e ordenar produtos</h3>
+<p><strong>Público:</strong> todos. <strong>Pré-condições:</strong> catálogo aberto e consulta disponível.</p>
+<ol>
+<li>Digite parte do nome, da marca ou do código no campo de busca.</li>
+<li>Para reduzir a lista, escolha uma categoria. No celular, abra <strong>Filtros</strong>, se o painel estiver recolhido.</li>
+<li>Ajuste o preço máximo ou escolha uma opção de ordenação, como <strong>Menor preço</strong>, <strong>Maior preço</strong> ou <strong>Nome A-Z</strong>.</li>
+<li>Confira os produtos e a quantidade de resultados. Use a paginação se houver mais de uma página.</li>
+<li>Para recomeçar, selecione <strong>Limpar filtros</strong> ou <strong>Ver todos</strong>, conforme exibido na tela.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> lista correspondente aos critérios. Nenhum resultado não significa necessariamente que o servidor está com problema.</p>
+<h3 id="r03-consultar-os-detalhes-de-um-produto">R03 — Consultar os detalhes de um produto</h3>
+<p><strong>Público:</strong> todos. <strong>Pré-condições:</strong> produto localizado no catálogo.</p>
+<ol>
+<li>Selecione o cartão ou o nome do produto.</li>
+<li>Confira nome, marca, preço e descrição.</li>
+<li>Selecione as miniaturas para ampliar outras fotos disponíveis.</li>
+<li>Verifique o botão de compra. Se estiver <strong>Esgotado</strong>, não será possível selecionar aquele produto por esse botão.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> detalhes do produto escolhido. Se o serviço falhar, esta versão pode mostrar dados de demonstração para alguns produtos; não use esses dados como prova de disponibilidade real.</p>
+<h3 id="r04-criar-uma-conta">R04 — Criar uma conta</h3>
+<p><strong>Público:</strong> cliente. <strong>Pré-condições:</strong> acesso à loja, serviço disponível, internet para consulta de CEP e dados autorizados para o treinamento. Não use identidade de terceiros.</p>
+<ol>
+<li>Abra <strong>Entrar</strong> e depois <strong>Criar conta grátis</strong>, ou o link <strong>Cadastro</strong> da página inicial.</li>
+<li>Informe nome completo, e-mail, CPF e senha. O formulário exige senha com pelo menos seis caracteres. Telefone é opcional.</li>
+<li>Confira a indicação do CPF. Se aparecer inválido, revise os números; o sistema verifica os dígitos do documento.</li>
+<li>Informe o CEP e aguarde a busca do endereço.</li>
+<li>Confira rua, bairro, cidade e estado preenchidos. Informe o número; complemento é opcional.</li>
+<li>Se o endereço não for encontrado, revise o CEP. Se a consulta falhar, procure o responsável; os campos de endereço estão bloqueados para edição manual nesta versão.</li>
+<li>Selecione <strong>Criar minha conta gratuita</strong> uma única vez e aguarde.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> conta criada e retorno à loja com identificação do cliente. Se o e-mail ou CPF já estiver cadastrado, utilize a conta existente ou solicite orientação; não faça cadastros duplicados.</p>
+<h3 id="r05-entrar-na-conta">R05 — Entrar na conta</h3>
+<p><strong>Público:</strong> cliente ou administrador com conta já criada. <strong>Pré-condições:</strong> serviço disponível, e-mail e senha da própria conta.</p>
+<ol>
+<li>Abra <strong>Entrar</strong> ou <strong>Login</strong>.</li>
+<li>Preencha e-mail e senha. Não use o usuário do banco de dados: a conta da loja é diferente da conexão técnica do servidor.</li>
+<li>Se necessário, use o botão de visualização de senha sem expor a tela a outras pessoas.</li>
+<li>Selecione <strong>Entrar na minha conta</strong> e aguarde a resposta.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> identificação do usuário e retorno à loja. Links para perfil, pedidos ou administração ainda podem apontar para páginas não concluídas. Se o login falhar, revise o e-mail e a senha; não há recuperação de senha implementada nesta versão.</p>
+<p>Em estação compartilhada, não salve a senha no navegador. Ao terminar, solicite ao responsável a limpeza dos dados da sessão conforme a política local, pois ainda não há botão de saída disponível nas telas analisadas. Fechar a aba sozinho não apaga os dados salvos no navegador.</p>
+<h3 id="r06-selecionar-um-produto-para-o-carrinho">R06 — Selecionar um produto para o carrinho</h3>
+<p><strong>Público:</strong> visitante ou cliente. <strong>Pré-condições:</strong> produto disponível e navegador permitindo armazenamento local.</p>
+<ol>
+<li>No catálogo, selecione o botão com ícone de carrinho do produto, ou <strong>Adicionar ao carrinho</strong> nos detalhes.</li>
+<li>Aguarde o aviso de adição. Evite cliques repetidos sem conferir a quantidade desejada.</li>
+<li>Se aparecer aviso de estoque insuficiente, não continue tentando aumentar a quantidade. Se estiver esgotado, escolha outro produto.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> seleção salva no navegador utilizado. Não é pedido, pagamento ou reserva de estoque. Outro navegador ou computador não terá necessariamente os mesmos itens.</p>
+<p><strong>Limite conhecido:</strong> a página visual do carrinho ainda não monta a lista. A seleção também não substitui a verificação final de estoque. Não tratar os controles atuais como garantia de disponibilidade para uma compra real.</p>
+<h3 id="r07-conhecer-a-simulacao-de-checkout">R07 — Conhecer a simulação de checkout</h3>
+<p><strong>Público:</strong> participante acompanhado pelo instrutor. <strong>Pré-condições:</strong> item selecionado em R06 e ciência de que não haverá compra real. Se o acesso pelo carrinho falhar, o instrutor pode abrir a página de checkout já existente pelo endereço disponibilizado para a demonstração.</p>
+<ol>
+<li>Confira o resumo mostrado no checkout. Alguns campos já contêm dados de demonstração; não os considere seus dados de entrega.</li>
+<li>Observe as opções de cartão e PIX apenas para conhecer a apresentação da tela. Não informe cartão real nem tente pagar o QR Code de demonstração.</li>
+<li>Somente no exercício orientado, selecione <strong>Confirmar Pagamento</strong>.</li>
+<li>Observe a mensagem de pagamento simulado e o esvaziamento da seleção local.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> demonstração visual concluída. O procedimento não salva pedido, não comprova cobrança e não deduz estoque no banco. O checkout atual também não exige login, diferente da regra solicitada para a versão final.</p>
+<p>Os descontos e o frete ainda não estão consistentes entre todas as telas. O texto “PIX (5% off)” no carrinho não garante aplicação do desconto. Não use os valores da demonstração para cobrança ou orçamento definitivo.</p>
+<h3 id="r08-cadastro-de-produtos-e-controle-de-estoque-previsto">R08 — Cadastro de produtos e controle de estoque — previsto</h3>
+<p><strong>Público:</strong> administrador e operador orientado. <strong>Pré-condições futuras:</strong> painel administrativo concluído e acesso autorizado.</p>
+<p>O documento de requisitos prevê cadastrar e consultar produtos, atualizar preço e categoria e registrar entradas e saídas de estoque. Existem serviços para isso, mas não há tela administrativa pronta. Não há sequência de botões disponível para orientar o usuário final. Até a conclusão, informe divergências ao responsável pela implantação; não altere o banco diretamente.</p>
+<p><strong>Resultado esperado futuro:</strong> catálogo e estoque atualizados por usuário autorizado. <strong>Resultado atual do treinamento:</strong> reconhecer a pendência e a responsabilidade pelo ajuste, sem declarar execução prática.</p>
+<h3 id="r09-pedido-historico-e-entrega-previsto">R09 — Pedido, histórico e entrega — previsto</h3>
+<p><strong>Público:</strong> cliente e equipe responsável pela operação. <strong>Pré-condições futuras:</strong> compra integrada, login obrigatório e telas de histórico e entrega concluídas.</p>
+<p>A especificação prevê gravar o pedido, seus itens e a entrega, deduzir estoque e permitir consulta das compras anteriores. Embora existam serviços no backend, o checkout atual não realiza esse fluxo. Não há acompanhamento de entrega disponível em uma tela pronta.</p>
+<p><strong>Resultado esperado futuro:</strong> pedido identificável e consulta de situação da entrega. <strong>Resultado atual do treinamento:</strong> distinguir seleção local, simulação e venda registrada. Não prometer rastreio nem prazo com base na simulação.</p>
+<h3 id="r10-consultar-relatorios-previsto">R10 — Consultar relatórios — previsto</h3>
+<p><strong>Público:</strong> administrador. <strong>Pré-condições futuras:</strong> painel, autorização e gráficos concluídos, com dados de vendas e estoque validados.</p>
+<p>A especificação pede dois relatórios com gráficos. O backend contém consultas de vendas por categoria, faturamento e estoque, mas as telas de gráficos não foram implementadas. O treinamento atual explica a finalidade dos relatórios, sem apresentar filtros, botões ou mensagens inexistentes.</p>
+<p><strong>Resultado esperado futuro:</strong> apoiar decisões com relatórios visuais. <strong>Resultado atual do treinamento:</strong> reconhecer o recurso pendente e evitar interpretar ausência de vendas de demonstração como falha de relatório.</p>
+<h2 id="4-mensagens-e-orientacoes">4. Mensagens e orientações</h2>
+<p>Mensagens abaixo transcritas do código, sem os ícones decorativos. Algumas dependem de uma situação específica para aparecer. Conferir a procedência na seção de referências do roteiro.</p>
+<table>
+<thead>
+<tr>
+<th>Mensagem</th>
+<th>Significado para o usuário</th>
+<th>O que fazer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CPF inválido. Verifique os dígitos informados.</td>
+<td>O CPF não passou pela verificação.</td>
+<td>Revise todos os números antes de reenviar.</td>
+</tr>
+<tr>
+<td>CEP não encontrado</td>
+<td>A consulta não localizou o CEP.</td>
+<td>Confira os oito números e tente novamente.</td>
+</tr>
+<tr>
+<td>Erro ao buscar CEP</td>
+<td>Não foi possível concluir a consulta do endereço.</td>
+<td>Verifique a conexão e avise o responsável se persistir.</td>
+</tr>
+<tr>
+<td>Endereço encontrado!</td>
+<td>O endereço foi retornado pela consulta de CEP.</td>
+<td>Confira os campos e informe o número.</td>
+</tr>
+<tr>
+<td>Preencha todos os campos obrigatórios (*).</td>
+<td>Há dados obrigatórios faltando no cadastro.</td>
+<td>Revise os campos marcados e complete o formulário.</td>
+</tr>
+<tr>
+<td>E-mail já cadastrado.</td>
+<td>Já existe conta com esse e-mail.</td>
+<td>Use o login da conta existente ou solicite orientação.</td>
+</tr>
+<tr>
+<td>CPF já cadastrado.</td>
+<td>O documento já pertence a uma conta cadastrada.</td>
+<td>Não criar duplicata; procure o responsável.</td>
+</tr>
+<tr>
+<td>Credenciais inválidas.</td>
+<td>E-mail ou senha não foram aceitos.</td>
+<td>Confira os dados da conta da loja, sem compartilhar a senha.</td>
+</tr>
+<tr>
+<td>Preencha e-mail e senha.</td>
+<td>O login está incompleto.</td>
+<td>Preencha os dois campos.</td>
+</tr>
+<tr>
+<td>Produto sem estoque disponível!</td>
+<td>Não há quantidade disponível para seleção.</td>
+<td>Escolha outro item ou aguarde reposição.</td>
+</tr>
+<tr>
+<td>Estoque insuficiente. Disponível: [quantidade]</td>
+<td>A quantidade solicitada supera a informada para o produto.</td>
+<td>Reduza a quantidade desejada; a seleção não reserva estoque.</td>
+</tr>
+<tr>
+<td>Sem conexão com o servidor. Verifique se o backend está rodando.</td>
+<td>A loja não conseguiu se comunicar com o serviço.</td>
+<td>Verifique o acesso à rede e comunique o responsável; usuário final não precisa alterar configurações técnicas.</td>
+</tr>
+<tr>
+<td>Parabéns! O seu pagamento simulado foi aprovado com sucesso.</td>
+<td>A demonstração visual terminou.</td>
+<td>Não interpretar como pagamento real ou pedido registrado.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-solucao-de-problemas">5. Solução de problemas</h2>
+<table>
+<thead>
+<tr>
+<th>Situação</th>
+<th>Verificações e orientação</th>
+<th>Quando encaminhar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P01 — Catálogo não carrega</td>
+<td>Confirme o endereço informado, a conexão da estação e se outros participantes têm o mesmo problema. Recarregue uma vez.</td>
+<td>Se afetar várias estações, informar a TI ou o responsável pela implantação para verificar o serviço.</td>
+</tr>
+<tr>
+<td>P02 — Nenhum produto encontrado</td>
+<td>Remova busca, categoria e limite de preço com Limpar filtros.</td>
+<td>Se continuar sem produtos sem nenhum filtro, solicitar conferência do catálogo cadastrado.</td>
+</tr>
+<tr>
+<td>P03 — CEP não preenche endereço</td>
+<td>Confira os oito números e se a estação tem internet além da rede local. Aguarde a consulta. Não tente desbloquear campos.</td>
+<td>Se o CEP correto continuar falhando, avisar o instrutor para verificar disponibilidade ou bloqueio de rede.</td>
+</tr>
+<tr>
+<td>P04 — Login recusado</td>
+<td>Confira o e-mail da loja, a senha e a tecla de maiúsculas. Não usar a conta de conexão do MySQL.</td>
+<td>Persistindo, solicitar verificação da conta; não há tela pronta de recuperação de senha.</td>
+</tr>
+<tr>
+<td>P05 — Itens não aparecem em outra estação</td>
+<td>A seleção fica no navegador em que foi feita. Verifique se está no mesmo dispositivo e navegador.</td>
+<td>Se a página do carrinho não mostrar itens, considerar também a limitação conhecida dessa tela.</td>
+</tr>
+<tr>
+<td>P06 — Link de perfil, pedidos ou administração não abre</td>
+<td>Essas telas não foram concluídas. Retorne à página inicial ou ao catálogo.</td>
+<td>Registrar como pendência de desenvolvimento; não refazer o cadastro.</td>
+</tr>
+<tr>
+<td>P07 — Simulação terminou, mas não há pedido ou baixa de estoque</td>
+<td>Esse é o comportamento da versão atual; a simulação não registra venda.</td>
+<td>Não repetir como tentativa de cobrança. Informar a limitação ao participante e aguardar integração.</td>
+</tr>
+<tr>
+<td>P08 — Imagem ou aparência não carrega</td>
+<td>Verifique conexão e recarregue a página. Uma imagem ausente não confirma que o produto foi removido.</td>
+<td>Informar o nome do item, página e estação ao responsável, sem dados pessoais.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-seguranca-e-ajuda">6. Segurança e ajuda</h2>
+<p>Use somente acessos autorizados; não compartilhe senha, documento ou conta administrativa. Na demonstração, não forneça dados financeiros reais. Em estações compartilhadas, peça orientação para encerrar e limpar a sessão. Para pedir ajuda, informe a rotina deste manual, página, horário e mensagem exibida, sem expor dados pessoais.</p>
+<h2 id="7-atualizacao-do-manual">7. Atualização do manual</h2>
+<p>Este manual deve ser revisado quando forem concluídos carrinho, compra real, perfil, histórico, administração e gráficos. A revisão precisa conferir telas e mensagens antes de substituir orientações previstas por procedimentos operacionais. Consulte o roteiro integrado para o vínculo entre rotinas, módulos e critérios de validação.</p></main>
+  </div>
+  <footer class="help-footer">Sport Kicks · Material de apoio à implantação · Versão 1.0</footer>
+</body>
+</html>

@@ -1,0 +1,66 @@
+:root { color-scheme: dark; --bg: #080c15; --panel: #111a2c; --line: #2a3954; --text: #e7edf9; --muted: #b1bfd4; --accent: #88b8ff; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 1rem; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.7 system-ui, sans-serif; }
+a { color: var(--accent); text-underline-offset: 4px; }
+a:focus-visible, button:focus-visible { outline: 3px solid #f7cb73; outline-offset: 4px; }
+.skip-link { position: absolute; top: -100px; padding: 1rem; background: var(--panel); z-index: 2; }
+.skip-link:focus { top: 0; }
+.help-header { display: flex; gap: 1.5rem; justify-content: space-between; align-items: center; padding: 1.2rem max(1.25rem, calc((100vw - 1240px) / 2)); border-bottom: 1px solid var(--line); }
+.help-brand { color: white; font-weight: 850; font-size: 1.3rem; text-decoration: none; letter-spacing: -.04em; }
+.help-brand span { color: var(--accent); }
+.help-header nav { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+.help-header nav a { color: var(--text); text-decoration: none; }
+.help-intro, .help-layout, .help-footer { width: min(1240px, calc(100% - 2.5rem)); margin: auto; }
+.help-intro { padding-top: 2rem; }
+.eyebrow { color: var(--accent); font-size: .75rem; letter-spacing: .12em; font-weight: 700; }
+.help-notice { background: #302615; color: #ffe1a2; border-left: 4px solid #eab65b; padding: 1rem 1.25rem; border-radius: 6px; }
+.help-tabs, .help-actions { display: flex; gap: .75rem; flex-wrap: wrap; margin: 1rem 0; }
+.help-tabs a { padding: .6rem 1rem; border: 1px solid var(--line); border-radius: 8px; text-decoration: none; }
+.help-tabs a[aria-current] { background: #224e8b; border-color: var(--accent); color: white; }
+button, .help-button { display: inline-block; cursor: pointer; font: inherit; font-size: .9rem; padding: .5rem .9rem; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; text-decoration: none; }
+.help-layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 2rem; align-items: start; padding-top: 1rem; }
+aside { position: sticky; top: 1rem; max-height: calc(100vh - 2rem); overflow-y: auto; border: 1px solid var(--line); border-radius: 12px; padding: 1rem; font-size: .82rem; }
+aside ul { padding-left: 1.1rem; }
+aside > .toc > ul { list-style: none; padding: 0; }
+aside a { text-decoration: none; }
+aside li { margin: .5rem 0; }
+main { min-width: 0; overflow-wrap: anywhere; }
+main h1 { font-size: clamp(1.7rem, 3vw, 2.5rem); line-height: 1.2; margin: .6rem 0 1.5rem; letter-spacing: -.03em; }
+main h2 { font-size: 1.45rem; margin: 2.5rem 0 1rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+main h3 { font-size: 1.15rem; color: #a8caff; margin-top: 2rem; }
+main p, main li { color: var(--muted); }
+main strong { color: var(--text); }
+main li { padding-left: .25rem; margin-bottom: .5rem; }
+table { width: 100%; border-collapse: collapse; font-size: .86rem; line-height: 1.55; margin: 1.5rem 0; table-layout: fixed; }
+th, td { text-align: left; vertical-align: top; padding: .8rem; border: 1px solid var(--line); overflow-wrap: anywhere; }
+th { background: #192740; color: white; }
+td { color: var(--muted); }
+tr:nth-child(even) td { background: #0e1523; }
+.help-footer { padding: 2rem 0; color: var(--muted); font-size: .85rem; }
+@media (max-width: 760px) {
+  .help-header { align-items: start; flex-direction: column; gap: .6rem; }
+  .help-layout { grid-template-columns: 1fr; gap: 1rem; }
+  aside { position: static; max-height: 230px; }
+  th, td { padding: .45rem; font-size: .75rem; }
+  .help-tabs a { flex-grow: 1; }
+}
+@media print {
+  @page { size: A4; margin: 17mm 14mm; }
+  :root { color-scheme: light; }
+  body { background: white; color: #14243a; font-size: 10pt; line-height: 1.5; }
+  .help-header, .help-intro, aside, .skip-link, .help-footer { display: none; }
+  .help-layout { display: block; width: 100%; padding: 0; }
+  main h1 { font-size: 24pt; }
+  main h2 { font-size: 15pt; border-color: #becbdd; margin-top: 18pt; }
+  main h3 { font-size: 12pt; color: #183e76; }
+  main p, main li, td, main strong { color: #14243a; }
+  h1, h2, h3 { break-after: avoid; }
+  tr { break-inside: avoid; }
+  p { orphans: 3; widows: 3; }
+  table { font-size: 8pt; line-height: 1.4; }
+  th, td { font-size: 8pt; padding: 5pt; border-color: #becbdd; }
+  th { background: #e5ecf7; color: #14243a; }
+  tr:nth-child(even) td { background: #f5f7fb; }
+  a { color: #183e76; }
+}

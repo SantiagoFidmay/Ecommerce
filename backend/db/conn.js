@@ -1,4 +1,4 @@
-require('dotenv').config() // Carrega as variáveis de ambiente
+require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') })
 const { Sequelize } = require('sequelize')
 
 const db = new Sequelize(
