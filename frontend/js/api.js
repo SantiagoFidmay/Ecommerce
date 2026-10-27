@@ -45,6 +45,7 @@ const Api = {
   getCategorias: () => Api.get('/categorias'),
   buscarProdutos: (params) => Api.get(`/produtos/buscar?${new URLSearchParams(params)}`),
   criarPedido: (dados) => Api.post('/pedidos', dados),
+  resumirPedido: (itens) => Api.post('/pedidos/resumo', { itens }),
   getMeusPedidos: () => Api.get('/pedidos/meus-pedidos'),
   getPedido: (id) => Api.get(`/pedidos/${id}`),
   getPerfil: () => Api.get('/usuarios/perfil'),

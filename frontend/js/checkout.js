@@ -1,84 +1,134 @@
-/**
- * checkout.js — Lógica para a tela de checkout simulada
- */
+/** Checkout integrado ao pedido e ao estoque. Cobrança será integrada em outra etapa. */
+let resumoCheckout = null;
+let carrinhoConferido = '';
+let enviandoPedido = false;
+let pedidoConcluido = false;
+const moedaCheckout = valor => Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+const camposEndereco = ['cep', 'rua', 'numero', 'complemento', 'bairro', 'cidade', 'estado'];
 
-document.addEventListener('DOMContentLoaded', () => {
-  renderizarResumo();
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!Auth.requireAuth('login.html')) return;
+  if (!Carrinho.getItens().length) { window.location.href = 'catalogo.html'; return; }
+  const pagamentos = { CARTAO_CREDITO: 'credit', CARTAO_DEBITO: 'debit', PIX: 'pix', BOLETO: 'boleto' };
+  document.querySelector(`input[name="payment"][value="${pagamentos[sessionStorage.getItem('sk_pagamento')] || 'credit'}"]`).checked = true;
+  togglePaymentView();
+  try {
+    const perfil = await Api.getPerfil();
+    camposEndereco.forEach(campo => { document.getElementById(campo).value = perfil[campo] || ''; });
+  } catch (err) {
+    if (err.status === 401) { redirecionarLoginCheckout(); return; }
+    mostrarErroCheckout('Não foi possível carregar seu endereço. Preencha os campos para continuar.');
+  }
+  await carregarResumoCheckout();
 });
 
-function renderizarResumo() {
-  const itens = Carrinho.getItens();
+function mostrarErroCheckout(mensagem) {
+  const erro = document.getElementById('checkoutError');
+  erro.textContent = mensagem;
+  erro.hidden = !mensagem;
+}
+
+async function carregarResumoCheckout() {
+  const btn = document.getElementById('btnConfirmPayment');
+  btn.disabled = true;
+  resumoCheckout = null;
+  const itens = Carrinho.toApiPayload();
+  if (!itens.length) { window.location.href = 'carrinho.html'; return; }
+  try {
+    const resumo = await Api.resumirPedido(itens);
+    carrinhoConferido = JSON.stringify(itens);
+    resumoCheckout = resumo;
+    renderizarResumo(resumo);
+    document.getElementById('btnText').textContent = 'Confirmar pedido';
+  } catch (err) {
+    mostrarErroCheckout(err.message || 'Não foi possível conferir os produtos. Tente novamente.');
+    document.getElementById('btnText').textContent = 'Conferir carrinho novamente';
+    if (err.status === 401) redirecionarLoginCheckout();
+  } finally { btn.disabled = false; }
+}
+
+function renderizarResumo(resumo) {
   const container = document.getElementById('checkoutItems');
-  
-  if (itens.length === 0) {
-    window.location.href = 'catalogo.html'; // Se vazio, não tem o que comprar
-    return;
-  }
+  container.replaceChildren();
+  resumo.itens.forEach(item => {
+    const linha = document.createElement('div');
+    linha.className = 'checkout-item';
+    const imagem = document.createElement('img');
+    imagem.className = 'checkout-item-img';
+    imagem.src = item.imagem_url || '../assets/images/placeholder.svg';
+    imagem.alt = item.nome;
+    const info = document.createElement('div');
+    info.className = 'checkout-item-info';
+    const nome = document.createElement('div');
+    nome.className = 'checkout-item-name';
+    nome.textContent = item.nome;
+    const meta = document.createElement('div');
+    meta.className = 'checkout-item-meta';
+    meta.textContent = [`Qtd: ${item.quantidade}`, item.tamanho && `Tamanho: ${item.tamanho}`, item.cor].filter(Boolean).join(' · ');
+    const preco = document.createElement('div');
+    preco.className = 'checkout-item-price';
+    preco.textContent = moedaCheckout(item.subtotal);
+    info.append(nome, meta);
+    linha.append(imagem, info, preco);
+    container.appendChild(linha);
+  });
+  document.getElementById('chkSubtotal').textContent = moedaCheckout(resumo.valorSubtotal);
+  document.getElementById('chkDiscount').textContent = `− ${moedaCheckout(resumo.valorDesconto)}`;
+  document.getElementById('chkDiscountLabel').textContent = resumo.motivo_desconto || 'Desconto';
+  document.getElementById('chkFrete').textContent = resumo.valorFrete === 0 ? 'Grátis' : moedaCheckout(resumo.valorFrete);
+  document.getElementById('chkTotal').textContent = moedaCheckout(resumo.valorTotal);
+}
 
-  // Renderiza itens
-  container.innerHTML = itens.map(i => `
-    <div class="checkout-item">
-      <img src="${i.imagem_url || '../assets/images/placeholder.svg'}" class="checkout-item-img" alt="${i.nome}">
-      <div class="checkout-item-info">
-        <div class="checkout-item-name">${i.nome}</div>
-        <div class="checkout-item-meta">Qtd: ${i.quantidade}</div>
-      </div>
-      <div class="checkout-item-price">R$ ${(i.preco * i.quantidade).toFixed(2).replace('.', ',')}</div>
-    </div>
-  `).join('');
-
-  // Calcula Totais
-  const subtotal = Carrinho.calcularSubtotal();
-  const frete = Carrinho.calcularFrete(subtotal);
-  const total = subtotal + frete;
-
-  document.getElementById('chkSubtotal').textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
-  document.getElementById('chkFrete').textContent = frete === 0 ? 'Grátis' : `R$ ${frete.toFixed(2).replace('.', ',')}`;
-  document.getElementById('chkTotal').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+function redirecionarLoginCheckout() {
+  sessionStorage.setItem('sk_redirect', window.location.pathname);
+  window.location.href = 'login.html';
 }
 
 function togglePaymentView() {
-  const radios = document.getElementsByName('payment');
-  let selected = 'credit';
-  
-  for (const radio of radios) {
-    if (radio.checked) selected = radio.value;
-  }
-
-  const cardForm = document.getElementById('cardForm');
-  const pixForm = document.getElementById('pixForm');
-
-  if (selected === 'credit' || selected === 'debit') {
-    cardForm.classList.remove('hidden');
-    pixForm.classList.add('hidden');
-  } else if (selected === 'pix') {
-    cardForm.classList.add('hidden');
-    pixForm.classList.remove('hidden');
-  }
+  const pix = document.querySelector('input[name="payment"]:checked')?.value === 'pix';
+  document.getElementById('paymentNotice').textContent = pix
+    ? 'PIX selecionado. Seu pedido ficará pendente; ainda não há código PIX ou cobrança nesta versão.'
+    : 'A forma de pagamento será registrada no pedido. Nenhum valor será cobrado nesta versão.';
 }
 
-function processarPagamento() {
+async function processarPagamento() {
+  if (enviandoPedido || pedidoConcluido) return;
+  if (!Auth.isLoggedIn()) { redirecionarLoginCheckout(); return; }
+  if (!resumoCheckout) { await carregarResumoCheckout(); return; }
+  mostrarErroCheckout('');
+  const itens = Carrinho.toApiPayload();
+  if (JSON.stringify(itens) !== carrinhoConferido) {
+    await carregarResumoCheckout();
+    mostrarErroCheckout('O carrinho mudou. Confira os valores antes de confirmar novamente.');
+    return;
+  }
+  if (!document.getElementById('enderecoForm').reportValidity()) return;
+  const pagamentos = { credit: 'CARTAO_CREDITO', debit: 'CARTAO_DEBITO', pix: 'PIX', boleto: 'BOLETO' };
+  const endereco_entrega = Object.fromEntries(camposEndereco.map(campo => [campo, document.getElementById(campo).value.trim()]));
   const btn = document.getElementById('btnConfirmPayment');
-  const btnText = document.getElementById('btnText');
-  const loader = document.getElementById('btnLoader');
-
-  // Muda para estado de loading
+  enviandoPedido = true;
   btn.disabled = true;
-  btnText.classList.add('hidden');
-  loader.classList.remove('hidden');
-
-  // Simula um delay de API de 2 segundos
-  setTimeout(() => {
-    // Retorna o botão ao normal
-    btn.disabled = false;
-    btnText.classList.remove('hidden');
-    loader.classList.add('hidden');
-
-    // Abre modal de sucesso
+  document.getElementById('btnText').textContent = 'Registrando pedido…';
+  document.getElementById('btnLoader').classList.remove('hidden');
+  try {
+    const res = await Api.criarPedido({ itens, endereco_entrega,
+      forma_pagamento: pagamentos[document.querySelector('input[name="payment"]:checked').value],
+      valorTotalEsperado: resumoCheckout.valorTotal });
+    if (!res.pedido?.id) throw new Error('A resposta do pedido não pôde ser confirmada.');
+    pedidoConcluido = true;
+    // Preserva alterações feitas em outra aba durante o envio.
+    if (JSON.stringify(Carrinho.toApiPayload()) === carrinhoConferido) Carrinho.limpar();
+    document.getElementById('successMessage').textContent = `Pedido #${res.pedido.id} registrado. Total: ${moedaCheckout(res.pedido.valorTotal)}. Pagamento pendente; nenhum valor foi cobrado.`;
     document.getElementById('successModal').classList.remove('hidden');
-
-    // Limpa o carrinho
-    Carrinho.limpar();
-
-  }, 2000);
+    document.getElementById('successHome').focus();
+  } catch (err) {
+    if (err.status === 401) redirecionarLoginCheckout();
+    if (err.status === 409) await carregarResumoCheckout();
+    mostrarErroCheckout(err.message || 'Não foi possível confirmar o pedido. Seu carrinho foi mantido.');
+  } finally {
+    enviandoPedido = false;
+    btn.disabled = pedidoConcluido;
+    document.getElementById('btnText').textContent = pedidoConcluido ? 'Pedido registrado' : resumoCheckout ? 'Confirmar pedido' : 'Conferir carrinho novamente';
+    document.getElementById('btnLoader').classList.add('hidden');
+  }
 }

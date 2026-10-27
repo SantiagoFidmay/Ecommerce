@@ -12,11 +12,11 @@
   <link rel="stylesheet" href="../css/global.css">
   <link rel="stylesheet" href="../css/checkout.css">
 </head>
-<body class="page-wrapper">
+<body class="page-wrapper checkout-body">
 
   <!-- NAVBAR SIMPLES -->
   <nav class="navbar" style="position: static;">
-    <div class="nav-container">
+    <div class="navbar-inner">
       <a href="../index.html" class="logo" style="text-decoration:none">
         <span style="font-family: var(--font-display); font-weight:900; font-size:1.5rem">SPORT<span class="text-accent" style="color:var(--accent-primary)">KICKS</span></span>
       </a>
@@ -43,37 +43,41 @@
             <h2>Endereço de Entrega</h2>
           </div>
           
-          <div class="form-grid">
+          <form class="form-grid" id="enderecoForm" onsubmit="event.preventDefault()">
             <div class="form-group" style="grid-column: 1 / -1">
-              <label class="form-label">CEP</label>
-              <input type="text" class="form-control" placeholder="00000-000" id="cep" value="01001-000">
+              <label class="form-label" for="cep">CEP</label>
+              <input type="text" class="form-control" placeholder="00000-000" id="cep" required maxlength="9" pattern="[0-9]{5}-?[0-9]{3}" autocomplete="postal-code">
             </div>
             
             <div class="form-group" style="grid-column: 1 / -1">
-              <label class="form-label">Rua / Avenida</label>
-              <input type="text" class="form-control" placeholder="Ex: Av. Paulista" id="rua" value="Praça da Sé">
+              <label class="form-label" for="rua">Rua / Avenida</label>
+              <input type="text" class="form-control" placeholder="Ex: Av. Paulista" id="rua" required maxlength="200" autocomplete="address-line1">
             </div>
 
             <div class="form-group">
-              <label class="form-label">Número</label>
-              <input type="text" class="form-control" placeholder="123" id="numero" value="s/n">
+              <label class="form-label" for="numero">Número</label>
+              <input type="text" class="form-control" placeholder="123" id="numero" required maxlength="20">
             </div>
 
             <div class="form-group">
-              <label class="form-label">Complemento</label>
-              <input type="text" class="form-control" placeholder="Apt, Sala, etc." id="complemento" value="Lado ímpar">
+              <label class="form-label" for="complemento">Complemento</label>
+              <input type="text" class="form-control" placeholder="Apt, Sala, etc." id="complemento" maxlength="100" autocomplete="address-line2">
             </div>
 
             <div class="form-group">
-              <label class="form-label">Bairro</label>
-              <input type="text" class="form-control" id="bairro" value="Sé">
+              <label class="form-label" for="bairro">Bairro</label>
+              <input type="text" class="form-control" id="bairro" required maxlength="100">
             </div>
 
             <div class="form-group">
-              <label class="form-label">Cidade</label>
-              <input type="text" class="form-control" id="cidade" value="São Paulo">
+              <label class="form-label" for="cidade">Cidade</label>
+              <input type="text" class="form-control" id="cidade" required maxlength="100" autocomplete="address-level2">
             </div>
-          </div>
+            <div class="form-group">
+              <label class="form-label" for="estado">Estado (UF)</label>
+              <input type="text" class="form-control" id="estado" required maxlength="2" pattern="[A-Za-z]{2}" autocomplete="address-level1" placeholder="SP">
+            </div>
+          </form>
         </section>
 
         <!-- PAGAMENTO -->
@@ -109,40 +113,11 @@
             </label>
           </div>
 
-          <!-- Formulário Cartão -->
-          <div id="cardForm" class="payment-details-view mt-md">
-            <div class="form-group">
-              <label class="form-label">Número do Cartão</label>
-              <input type="text" class="form-control" placeholder="0000 0000 0000 0000" value="4111 1111 1111 1111">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Nome Impresso no Cartão</label>
-              <input type="text" class="form-control" placeholder="NOME DO TITULAR" value="SANTIAGO FIDMAY">
-            </div>
-            <div class="form-grid">
-              <div class="form-group">
-                <label class="form-label">Validade (MM/AA)</label>
-                <input type="text" class="form-control" placeholder="12/30" value="12/30">
-              </div>
-              <div class="form-group">
-                <label class="form-label">CVV</label>
-                <input type="password" class="form-control" placeholder="123" value="123">
-              </div>
-            </div>
-          </div>
-
-          <!-- Visão PIX -->
-          <div id="pixForm" class="payment-details-view mt-md hidden" style="text-align:center">
-            <div style="background:var(--bg-secondary); padding: 2rem; border-radius: var(--radius-lg); border:1px solid var(--border-accent)">
-              <h3 style="margin-bottom:1rem; color:var(--text-primary)">Pague via PIX</h3>
-              <div style="width: 200px; height: 200px; background: white; margin: 0 auto; display:flex; align-items:center; justify-content:center; border-radius: 8px;">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=simulacao-pix-sportkicks" alt="QR Code PIX">
-              </div>
-              <p style="margin-top:1rem; font-size:0.9rem; color:var(--text-secondary)">
-                Abra o app do seu banco e escaneie o código acima para simular o pagamento.
-              </p>
-            </div>
-          </div>
+          <label class="payment-method payment-boleto">
+            <input type="radio" name="payment" value="boleto" onchange="togglePaymentView()">
+            <div class="method-card">Boleto bancário</div>
+          </label>
+          <p id="paymentNotice" class="checkout-notice" role="status"></p>
 
         </section>
 
@@ -166,6 +141,10 @@
               <span>Frete</span>
               <span id="chkFrete">Grátis</span>
             </div>
+            <div class="summary-row">
+              <span id="chkDiscountLabel">Desconto</span>
+              <span id="chkDiscount">R$ 0,00</span>
+            </div>
             <hr class="summary-divider">
             <div class="summary-row total">
               <span>Total a Pagar</span>
@@ -173,14 +152,16 @@
             </div>
           </div>
 
-          <button class="btn btn-primary btn-xl" id="btnConfirmPayment" style="width: 100%; margin-top:1.5rem" onclick="processarPagamento()">
-            <span id="btnText">Confirmar Pagamento</span>
+          <p id="checkoutError" class="checkout-error" role="alert" hidden></p>
+          <a href="carrinho.html" class="checkout-back">Editar carrinho</a>
+          <button disabled class="btn btn-primary btn-xl" id="btnConfirmPayment" style="width: 100%; margin-top:1.5rem" onclick="processarPagamento()">
+            <span id="btnText">Conferindo produtos…</span>
             <span id="btnLoader" class="loader hidden"></span>
           </button>
           
           <div style="display:flex; align-items:center; justify-content:center; gap:0.5rem; margin-top:1rem; font-size:0.8rem; color:var(--text-muted)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Criptografia de ponta a ponta
+            Pedido com pagamento pendente
           </div>
         </div>
       </aside>
@@ -189,23 +170,24 @@
   </main>
 
   <!-- Modal Sucesso -->
-  <div id="successModal" class="modal hidden">
+  <div id="successModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="successTitle" aria-describedby="successMessage">
     <div class="modal-content text-center">
       <div class="success-icon">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
           <path d="M20 6L9 17l-5-5"/>
         </svg>
       </div>
-      <h2>Compra Realizada!</h2>
-      <p style="color:var(--text-secondary); margin: 1rem 0 2rem;">
-        Parabéns! O seu pagamento simulado foi aprovado com sucesso.
+      <h2 id="successTitle">Pedido registrado!</h2>
+      <p id="successMessage" style="color:var(--text-secondary); margin: 1rem 0 2rem;">
+        Seu pedido foi registrado com pagamento pendente.
       </p>
-      <a href="../index.html" class="btn btn-primary">Voltar para a Home</a>
+      <a id="successHome" href="../index.html" class="btn btn-primary">Voltar para a Home</a>
     </div>
   </div>
 
   <script src="../js/auth.js"></script>
   <script src="../js/carrinho.js"></script>
+  <script src="../js/api.js"></script>
   <script src="../js/checkout.js"></script>
 </body>
 </html>

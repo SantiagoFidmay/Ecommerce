@@ -97,7 +97,11 @@ function showToast(message, type = 'info', duration = 3500) {
 
   const toast = document.createElement('div');
   toast.className = `toast toast-${type === 'error' ? 'error' : type === 'success' ? 'success' : 'info'}`;
-  toast.innerHTML = `<span>${icons[type] || '•'}</span><span>${message}</span>`;
+  const icon = document.createElement('span');
+  icon.textContent = icons[type] || '•';
+  const text = document.createElement('span');
+  text.textContent = message;
+  toast.append(icon, text);
   container.appendChild(toast);
 
   requestAnimationFrame(() => {

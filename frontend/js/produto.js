@@ -4,6 +4,48 @@
 
 let produtoAtual = null;
 
+// Reviews na ordem do catálogo enviada pelo usuário; vínculo pelo modelo, não pelo ID do banco.
+const reviewsProdutos = [
+  { modelo: /\bboston\s+13\b/i, video: 'lqaQtL1nIKk' },
+  { modelo: /\badios\s+pro\s+4\b/i, video: 'OCM0M5g5EhM' },
+  { modelo: /\badios\s+pro\s+5\b/i, video: 'Ln1I5DnLjYQ' },
+  { modelo: /\bevo\s+sl\b/i, video: 'N5v4dPdu4eg' },
+  { modelo: /\bhyperboost\s+edge\b/i, video: 'Qy77m-jREac' },
+  { modelo: /\bsuperblast\b/i, video: 'wQwx0trSlSo' },
+  { modelo: /\bnovablast\b/i, video: '2HMzsrF0Fd0' },
+  { modelo: /\bmetaspeed\b/i, video: 'z2aOh3Pg9tY' },
+  { modelo: /\bmegablast\b/i, video: 'RFJmUJNpnUI' },
+  { modelo: /\brebel\s+v5\b/i, video: '0xI2a9wnJ6Y' },
+  { modelo: /\b1080\s+v15\b/i, video: '0HzV3AaR9tQ' },
+  { modelo: /\bsupercomp\b/i, video: 'hBCscswo7MQ' },
+  { modelo: /\bvaporfly\b/i, video: '1bj2D7ydDNI' },
+  { modelo: /\balphafly\b/i, video: 'ELCjA_7mg5o' },
+  { modelo: /\bvomero\b/i, video: 'FPmrV1HRTKg' },
+  { modelo: /\bcorre\s+5\b/i, video: 'lfTjOBqDP4Q' },
+  { modelo: /\bturbo\b/i, video: 'PBXjne7Lxpw' },
+  { modelo: /\bsupra\b/i, video: 'b2TTwMEoEQ8' }
+];
+
+function renderizarReview(p) {
+  const section = document.getElementById('pdpReview');
+  const player = document.getElementById('pdpReviewPlayer');
+  const review = reviewsProdutos.find(item => item.modelo.test(p.nome || ''));
+  player.replaceChildren();
+  section.hidden = !review;
+  if (!review) return;
+
+  document.getElementById('pdpReviewSubtitle').textContent = `Conheça o ${p.nome} em detalhes.`;
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://www.youtube.com/embed/${review.video}`;
+  iframe.title = `Review do ${p.nome}`;
+  iframe.loading = 'lazy';
+  iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+  iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+  iframe.allowFullscreen = true;
+  player.appendChild(iframe);
+  document.getElementById('pdpReviewLink').href = `https://www.youtube.com/watch?v=${review.video}`;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
@@ -51,6 +93,7 @@ async function carregarProduto(id) {
 }
 
 function renderizarProduto(p) {
+  renderizarReview(p);
   // Preencher Breadcrumb e Títulos
   document.getElementById('breadcrumbProduto').textContent = p.nome;
   document.getElementById('pdpTitle').textContent = p.nome;

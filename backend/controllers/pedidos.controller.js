@@ -1,108 +1,66 @@
 const db = require('../db/conn')
 const { Pedido, ItemPedido, Produto, Estoque, Entrega, Usuario } = require('../models/rel')
-const { calcularDesconto, calcularFrete } = require('../utils/desconto.util')
-const { QueryTypes } = require('sequelize')
 
 // POST /api/pedidos — Finalizar pedido (privado)
-const criar = async (req, res) => {
-    const t = await db.transaction()
+const { validarItens, validarEndereco, calcularResumo, falhar } = require('../services/checkout.service')
+
+const responderErro = (res, err) => res.status(err.status || 500).json({
+    erro: err.status ? err.message : 'Não foi possível registrar o pedido. Tente novamente.'
+})
+
+const resumo = async (req, res) => {
     try {
-        const { itens, forma_pagamento, observacoes } = req.body
-        const idUsuario = req.usuario.codUsuario
+        const itens = validarItens(req.body?.itens)
+        const dados = await db.transaction(transaction => calcularResumo(itens, transaction))
+        return res.json(dados)
+    } catch (err) {
+        return responderErro(res, err)
+    }
+}
 
-        if (!itens || itens.length === 0) {
-            await t.rollback()
-            return res.status(400).json({ erro: 'O pedido deve conter ao menos um item.' })
+const criar = async (req, res) => {
+    try {
+        const itens = validarItens(req.body?.itens)
+        const { forma_pagamento, observacoes, valorTotalEsperado } = req.body
+        if (!['CARTAO_CREDITO', 'CARTAO_DEBITO', 'PIX', 'BOLETO'].includes(forma_pagamento)) {
+            falhar(400, 'Escolha uma forma de pagamento válida.')
         }
-
-        // Verificar estoque de todos os itens antes de processar
-        for (const item of itens) {
-            const estoque = await Estoque.findOne({ where: { idProduto: item.idProduto }, transaction: t })
-            if (!estoque || estoque.quantidade < item.quantidade) {
-                await t.rollback()
-                const produto = await Produto.findByPk(item.idProduto)
-                return res.status(400).json({
-                    erro: `Estoque insuficiente para: ${produto?.nome || 'produto desconhecido'}. Disponível: ${estoque?.quantidade || 0}`
+        if (observacoes != null && (typeof observacoes !== 'string' || observacoes.length > 2000)) {
+            falhar(400, 'As observações devem ter até 2000 caracteres.')
+        }
+        if (valorTotalEsperado !== undefined && (typeof valorTotalEsperado !== 'number' || !Number.isFinite(valorTotalEsperado))) {
+            falhar(400, 'Total esperado inválido.')
+        }
+        const dados = await db.transaction(async transaction => {
+            const usuario = await Usuario.findByPk(req.usuario.codUsuario, { transaction })
+            if (!usuario || !usuario.ativo) falhar(401, 'Faça login novamente.')
+            const endereco = validarEndereco(req.body.endereco_entrega ?? usuario.get({ plain: true }))
+            const calculo = await calcularResumo(itens, transaction, true)
+            if (valorTotalEsperado !== undefined && Math.round(valorTotalEsperado * 100) !== Math.round(calculo.valorTotal * 100)) {
+                falhar(409, 'Os preços mudaram. Confira o resumo atualizado antes de confirmar novamente.')
+            }
+            const { valorSubtotal, valorDesconto, valorFrete, valorTotal, motivo_desconto } = calculo
+            const pedido = await Pedido.create({
+                idUsuario: usuario.codUsuario, valorSubtotal, valorDesconto, valorFrete, valorTotal,
+                forma_pagamento, observacoes, status: 'PENDENTE'
+            }, { transaction })
+            for (const item of calculo.itens) {
+                await ItemPedido.create({
+                    idPedido: pedido.codPedido, idProduto: item.idProduto, quantidade: item.quantidade,
+                    preco_unitario: item.preco, subtotal: item.subtotal, tamanho: item.tamanho, cor: item.cor
+                }, { transaction })
+                await Estoque.decrement('quantidade', {
+                    by: item.quantidade, where: { idProduto: item.idProduto }, transaction
                 })
             }
-        }
-
-        // Calcular subtotal
-        let valorSubtotal = 0
-        const itensProcessados = []
-
-        for (const item of itens) {
-            const produto = await Produto.findByPk(item.idProduto, { transaction: t })
-            const preco   = parseFloat(produto.preco_promocional || produto.preco)
-            const subtotalItem = preco * item.quantidade
-            valorSubtotal += subtotalItem
-            itensProcessados.push({ produto, preco, subtotalItem, ...item })
-        }
-
-        // Calcular desconto e frete
-        const descontoInfo = calcularDesconto(valorSubtotal, itens.length)
-        const valorFrete   = calcularFrete(valorSubtotal)
-        const valorTotal   = descontoInfo.totalComDesconto + valorFrete
-
-        // Buscar endereço do usuário para a entrega
-        const usuario = await Usuario.findByPk(idUsuario)
-        const enderecoEntrega = `${usuario.rua || ''}, ${usuario.numero || ''} - ${usuario.bairro || ''}, ${usuario.cidade || ''}/${usuario.estado || ''}`
-
-        // Criar pedido
-        const pedido = await Pedido.create({
-            idUsuario,
-            valorSubtotal,
-            valorDesconto: descontoInfo.valor,
-            valorFrete,
-            valorTotal,
-            forma_pagamento,
-            observacoes
-        }, { transaction: t })
-
-        // Criar itens e deduzir estoque
-        for (const item of itensProcessados) {
-            await ItemPedido.create({
-                idPedido:      pedido.codPedido,
-                idProduto:     item.idProduto,
-                quantidade:    item.quantidade,
-                preco_unitario: item.preco,
-                subtotal:      item.subtotalItem,
-                tamanho:       item.tamanho,
-                cor:           item.cor
-            }, { transaction: t })
-
-            // Deduz estoque
-            await Estoque.decrement('quantidade', {
-                by: item.quantidade,
-                where: { idProduto: item.idProduto },
-                transaction: t
-            })
-        }
-
-        // Criar entrega automaticamente
-        await Entrega.create({
-            idPedido: pedido.codPedido,
-            status: 'PENDENTE',
-            endereco_entrega: enderecoEntrega,
-            cep_entrega: usuario.cep
-        }, { transaction: t })
-
-        await t.commit()
-
-        return res.status(201).json({
-            mensagem: 'Pedido realizado com sucesso!',
-            pedido: {
-                id:             pedido.codPedido,
-                valorSubtotal,
-                valorDesconto:  descontoInfo.valor,
-                motivo_desconto: descontoInfo.motivo,
-                valorFrete,
-                valorTotal
-            }
+            await Entrega.create({
+                idPedido: pedido.codPedido, status: 'PENDENTE', endereco_entrega: endereco.texto, cep_entrega: endereco.cep
+            }, { transaction })
+            return { id: pedido.codPedido, status: pedido.status, valorSubtotal, valorDesconto, motivo_desconto, valorFrete, valorTotal }
         })
+        return res.status(201).json({ mensagem: 'Pedido registrado. Pagamento pendente.', pedido: dados })
     } catch (err) {
-        await t.rollback()
-        return res.status(500).json({ erro: 'Erro ao criar pedido.', detalhe: err.message })
+        return responderErro(res, err)
     }
 }
 
@@ -174,4 +132,4 @@ const atualizarStatus = async (req, res) => {
     }
 }
 
-module.exports = { criar, meusPedidos, getById, listarTodos, atualizarStatus }
+module.exports = { criar, resumo, meusPedidos, getById, listarTodos, atualizarStatus }

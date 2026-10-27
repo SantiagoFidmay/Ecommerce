@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "sync": "node sync.js"
+    "sync": "node sync.js",
+    "test:integration": "node --test tests/checkout.integration.test.js",
+    "test:browser": "node --test tests/checkout.browser.test.js"
   },
   "keywords": [],
   "author": "",
@@ -20,5 +22,8 @@
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.24.2",
     "sequelize": "^6.37.8"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.1"
   }
 }
