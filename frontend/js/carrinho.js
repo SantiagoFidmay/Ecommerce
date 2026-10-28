@@ -18,13 +18,13 @@ const Carrinho = {
     this.atualizarBadge();
   },
 
-  adicionar(produto, quantidade = 1, tamanho = null, cor = null) {
+  adicionar(produto, quantidade = 1, tamanho = null, cor = null, idVariante = null) {
     const itens = this.getItens();
     const id = Number(produto.id ?? produto.codProduto);
     const estoque = produto.estoque ?? produto.estoqueProduto;
     const disponivel = Number(estoque?.quantidade ?? 0);
     if (!Number.isSafeInteger(id) || id < 1 || !Number.isSafeInteger(quantidade) || quantidade < 1) return false;
-    const noCarrinho = itens.filter(i => i.produto_id === id).reduce((soma, i) => soma + i.quantidade, 0);
+    const noCarrinho = itens.filter(i => i.produto_id === id && (i.idVariante || null) === idVariante).reduce((soma, i) => soma + i.quantidade, 0);
     if (noCarrinho + quantidade > disponivel) {
       showToast(`Estoque insuficiente. Disponível: ${disponivel}`, 'warning');
       return false;
@@ -38,6 +38,7 @@ const Carrinho = {
 
     const idx = itens.findIndex(i =>
       i.produto_id === id &&
+      (i.idVariante || null) === idVariante &&
       i.tamanho === tamanho &&
       i.cor === cor
     );
@@ -53,6 +54,7 @@ const Carrinho = {
     } else {
       itens.push({
         produto_id: id,
+        idVariante,
         nome: produto.nome,
         marca: produto.marca || '',
         preco: parseFloat(produto.preco_promocional || produto.preco),
@@ -112,9 +114,9 @@ const Carrinho = {
   calcularDesconto(subtotal, qtdItens) {
     let percentual = 0;
     let motivo = '';
-    if (subtotal >= 1500)     { percentual = 15; motivo = '15% de desconto (acima de R$ 1.500)'; }
-    else if (subtotal >= 800) { percentual = 10; motivo = '10% de desconto (acima de R$ 800)'; }
-    else if (subtotal >= 400) { percentual = 5;  motivo = '5% de desconto (acima de R$ 400)'; }
+    if (subtotal >= 1500)     { percentual = 15; motivo = '15% de desconto (a partir de R$ 1.500)'; }
+    else if (subtotal >= 800) { percentual = 10; motivo = '10% de desconto (a partir de R$ 800)'; }
+    else if (subtotal >= 400) { percentual = 5;  motivo = '5% de desconto (a partir de R$ 400)'; }
     else if (qtdItens >= 3)   { percentual = 5;  motivo = '5% de desconto (3+ itens)'; }
     const valor = parseFloat(((subtotal * percentual) / 100).toFixed(2));
     return { percentual, valor, motivo, totalComDesconto: subtotal - valor };
@@ -140,6 +142,7 @@ const Carrinho = {
   toApiPayload() {
     return this.getItens().map(i => ({
       idProduto: Number(i.produto_id),
+      idVariante: i.idVariante || null,
       quantidade: i.quantidade,
       tamanho: i.tamanho,
       cor: i.cor

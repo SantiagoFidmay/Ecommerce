@@ -1,0 +1,81 @@
+.conta-page { padding-top: 3rem; padding-bottom: 5rem; }
+.conta-body .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+#pedidoDetalhe { display: grid; gap: 1.5rem; }
+.conta-header { margin-bottom: 2rem; }
+.conta-eyebrow { color: var(--accent-primary); font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; }
+.conta-header h1 { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; margin: 0.75rem 0; }
+.conta-header p, .conta-muted { color: var(--text-secondary); }
+.conta-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 2rem; align-items: start; }
+.conta-sidebar { position: sticky; top: calc(var(--navbar-h) + 1.5rem); display: grid; gap: 0.5rem; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); }
+.conta-sidebar a, .conta-sidebar button { display: block; padding: 0.8rem 1rem; border-radius: var(--radius-sm); color: var(--text-secondary); text-align: left; font-size: 0.9rem; }
+.conta-sidebar a[aria-current="page"] { background: rgba(59,130,246,0.12); color: var(--text-primary); }
+.conta-sidebar a:hover, .conta-sidebar button:hover { background: var(--bg-glass-hover); color: var(--text-primary); }
+.conta-content { min-width: 0; display: grid; gap: 1.5rem; }
+.conta-card { padding: 1.75rem; border: 1px solid var(--border-subtle); background: var(--bg-card); border-radius: var(--radius-xl); min-width: 0; }
+.conta-card h2 { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 0.5rem; }
+.conta-card > p { margin-bottom: 1.5rem; }
+.conta-fieldset { border: 0; min-width: 0; }
+.conta-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.conta-wide { grid-column: 1 / -1; }
+.conta-section-title { margin-top: 2rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem; font-size: 1.1rem; }
+.conta-cep { display: flex; align-items: end; gap: 0.75rem; }
+.conta-cep .form-group { flex: 1; min-width: 0; }
+.conta-cep .form-group, .conta-grid .form-group { margin-bottom: 0; }
+.conta-cep .btn { min-height: 46px; }
+.conta-message { padding: 1rem; margin: 1rem 0; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow-wrap: anywhere; }
+.conta-message-info { color: var(--text-secondary); }
+.conta-message-error { color: #fca5a5; border-color: rgba(239,68,68,0.35); }
+.conta-message-success { color: #6ee7b7; border-color: rgba(16,185,129,0.35); }
+.conta-message[hidden], .conta-content [hidden] { display: none; }
+.conta-toolbar { display: flex; gap: 1rem; align-items: end; justify-content: space-between; }
+.conta-toolbar .form-group { margin: 0; min-width: 190px; }
+.conta-orders { display: grid; gap: 1rem; }
+.conta-order-heading { display: flex; gap: 1rem; justify-content: space-between; align-items: start; margin-bottom: 1.5rem; }
+.conta-order-heading h2 { font-size: 1.2rem; }
+.conta-status { display: inline-flex; align-items: center; padding: 0.35rem 0.75rem; border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 600; }
+.conta-status-info { background: rgba(59,130,246,0.12); color: #93c5fd; }
+.conta-status-success { background: rgba(16,185,129,0.12); color: #6ee7b7; }
+.conta-status-warning { background: rgba(245,158,11,0.12); color: #fcd34d; }
+.conta-order-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; }
+.conta-order-total { font-size: 1.3rem; font-weight: 700; }
+.conta-order-items { padding: 0; list-style: none; color: var(--text-secondary); display: grid; gap: 0.5rem; }
+.conta-pagination { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+.conta-empty { text-align: center; padding: 3rem 1.5rem; }
+.conta-empty p { margin: 1rem 0 1.5rem; color: var(--text-secondary); }
+.conta-back { display: inline-block; color: #93c5fd; margin-bottom: 1rem; }
+.conta-detail-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 0.8fr); gap: 1.5rem; align-items: start; }
+.conta-product-list { display: grid; gap: 1.25rem; list-style: none; margin-top: 1.5rem; }
+.conta-product { display: flex; gap: 1rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-subtle); }
+.conta-product:last-child { border: 0; padding-bottom: 0; }
+.conta-product-image { width: 72px; height: 72px; flex-shrink: 0; object-fit: contain; background: var(--bg-secondary); border-radius: var(--radius-md); }
+.conta-product-info { min-width: 0; overflow-wrap: anywhere; }
+.conta-product-name { font-size: 1rem; font-weight: 600; }
+.conta-product-meta { font-size: 0.85rem; color: var(--text-secondary); margin: 0.25rem 0; }
+.conta-totals { display: grid; gap: 0.75rem; margin: 1.5rem 0; }
+.conta-totals > div { display: flex; gap: 1rem; justify-content: space-between; }
+.conta-totals dd { white-space: nowrap; }
+.conta-totals .conta-total { border-top: 1px solid var(--border-subtle); padding-top: 1rem; font-size: 1.2rem; font-weight: 700; }
+.conta-delivery { display: grid; gap: 0.75rem; margin-top: 1rem; }
+.conta-delivery dd { color: var(--text-secondary); overflow-wrap: anywhere; white-space: pre-wrap; }
+.conta-delivery dt { font-weight: 600; }
+.conta-footer { color: var(--text-secondary); font-size: 0.85rem; padding-top: 1rem; }
+.conta-content input[readonly] { color: var(--text-secondary); background: var(--bg-secondary); }
+.conta-content :focus-visible, .conta-sidebar :focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 3px; }
+@media (max-width: 1000px) { .conta-detail-grid { grid-template-columns: 1fr; } }
+@media (max-width: 768px) {
+  .conta-layout { grid-template-columns: 1fr; gap: 1rem; }
+  .conta-sidebar { position: static; display: flex; justify-content: space-between; padding: 0.5rem; }
+  .conta-sidebar a, .conta-sidebar button { padding: 0.75rem; }
+  .conta-page { padding-top: 2rem; }
+}
+@media (max-width: 480px) {
+  .conta-body .navbar-inner { padding: 0 1rem; }
+  .conta-body .navbar-logo { font-size: 1.25rem; }
+  .conta-body .navbar-actions { gap: 0.5rem; }
+  .conta-grid { grid-template-columns: 1fr; }
+  .conta-card { padding: 1.25rem; }
+  .conta-order-heading, .conta-order-footer { flex-wrap: wrap; }
+  .conta-toolbar { align-items: stretch; flex-direction: column; }
+  .conta-order-footer .btn { width: 100%; }
+  .conta-header h1 { overflow-wrap: anywhere; }
+}

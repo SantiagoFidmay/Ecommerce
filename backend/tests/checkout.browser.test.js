@@ -92,6 +92,7 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 390, height: 844 
             assert.equal(payload.endereco_entrega.estado, 'SP')
             assert.equal(await page.evaluate(() => localStorage.getItem('sk_cart')), null)
             assert.match(await page.locator('#successMessage').innerText(), /#42/)
+            assert.equal(await page.locator('#successOrder').getAttribute('href'), 'pedido.html?id=42')
             assert.equal(await page.locator('#btnConfirmPayment').isDisabled(), true)
             assert.deepEqual(erros, [])
         } finally { await context.close() }

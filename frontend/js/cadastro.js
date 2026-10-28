@@ -68,41 +68,55 @@ function validarCPFInput(input) {
 
 /* ── Busca CEP (ViaCEP) ── */
 let cepTimeout = null;
+let cepController = null;
+let cepConsulta = 0;
 
 async function buscarCEP(cepRaw) {
   const cep = cepRaw.replace(/\D/g, '');
   const indicator = document.getElementById('cepIndicator');
+  clearTimeout(cepTimeout);
+  cepController?.abort();
+  const consulta = ++cepConsulta;
 
-  if (cep.length < 8) {
+  if (cep.length !== 8) {
     indicator.innerHTML = '';
     return;
   }
 
-  clearTimeout(cepTimeout);
   cepTimeout = setTimeout(async () => {
     indicator.innerHTML = '<span class="vi-loading">🔍 Buscando endereço...</span>';
+    const controller = new AbortController();
+    cepController = controller;
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    const campos = [['rua', 'logradouro'], ['bairro', 'bairro'], ['cidade', 'localidade'], ['estado', 'uf']];
+    const anteriores = Object.fromEntries(campos.map(([campo]) => [campo, document.getElementById(campo).value]));
 
     try {
-      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`, { signal: controller.signal });
+      if (!res.ok) throw new Error('Consulta indisponível');
       const data = await res.json();
+      if (consulta !== cepConsulta) return;
 
       if (data.erro) {
-        indicator.innerHTML = '<span class="vi-invalid">❌ CEP não encontrado</span>';
+        indicator.innerHTML = '<span class="vi-invalid">CEP não encontrado. Confira o CEP ou preencha o endereço manualmente.</span>';
         return;
       }
 
-      // Preenche os campos automaticamente
-      document.getElementById('rua').value = data.logradouro || '';
-      document.getElementById('bairro').value = data.bairro || '';
-      document.getElementById('cidade').value = data.localidade || '';
-      document.getElementById('estado').value = data.uf || '';
+      // Preserva o que o cliente digitou enquanto a consulta estava em andamento.
+      for (const [campo, origem] of campos) {
+        const input = document.getElementById(campo);
+        if (input.value === anteriores[campo]) input.value = data[origem] || '';
+      }
 
-      indicator.innerHTML = '<span class="vi-valid">✅ Endereço encontrado!</span>';
-
-      // Foca no campo número
-      document.getElementById('numero').focus();
+      const incompleto = campos.some(([, origem]) => !data[origem]?.trim());
+      indicator.innerHTML = incompleto
+        ? '<span>CEP consultado. Complete os campos que faltam e confira o endereço.</span>'
+        : '<span class="vi-valid">✅ Endereço encontrado! Confira os dados e informe o número.</span>';
     } catch {
-      indicator.innerHTML = '<span class="vi-invalid">❌ Erro ao buscar CEP</span>';
+      if (consulta === cepConsulta) indicator.innerHTML = '<span class="vi-invalid">Não foi possível consultar o CEP. Preencha o endereço manualmente.</span>';
+    } finally {
+      clearTimeout(timeout);
+      if (cepController === controller) cepController = null;
     }
   }, 600);
 }
@@ -142,6 +156,17 @@ async function handleCadastro(e) {
     return;
   }
 
+  for (const [campo, nome] of [['rua', 'a rua'], ['numero', 'o número'], ['bairro', 'o bairro'], ['cidade', 'a cidade'], ['estado', 'o estado']]) {
+    dados[campo] = dados[campo].trim();
+    if (!dados[campo]) {
+      errEl.textContent = `Informe ${nome} do endereço. Se o CEP não preencher, digite manualmente.`;
+      errEl.classList.remove('hidden');
+      document.getElementById(campo).focus();
+      return;
+    }
+  }
+  dados.estado = dados.estado.toUpperCase();
+
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px"></div> Criando conta...';
 
@@ -149,7 +174,7 @@ async function handleCadastro(e) {
     const res = await Api.cadastrar(dados);
     Auth.setToken(res.token, res.usuario);
     showToast('Conta criada com sucesso! Bem-vindo à Sport Kicks! 🎉', 'success');
-    setTimeout(() => window.location.href = '../index.html', 1500);
+    setTimeout(() => window.location.href = Auth.consumeRedirect(), 1500);
   } catch (err) {
     errEl.textContent = err.message || 'Erro ao criar conta.';
     errEl.classList.remove('hidden');

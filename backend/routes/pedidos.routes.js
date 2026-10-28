@@ -8,5 +8,6 @@ router.get('/meus-pedidos', autenticar, ctrl.meusPedidos);
 router.get('/', autenticar, apenasAdmin, ctrl.listarTodos);
 router.get('/:id', autenticar, ctrl.getById);
 router.patch('/:id/status', autenticar, apenasAdmin, ctrl.atualizarStatus);
+router.post('/:id/cancelar', autenticar, ctrl.cancelar);
 
 module.exports = router;

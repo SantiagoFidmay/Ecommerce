@@ -1,6 +1,6 @@
-const bcrypt = require('bcryptjs')
+const db = require('../db/conn')
+const { revogarSessoes } = require('../services/sessao.service')
 const { Usuario } = require('../models/rel')
-const { validarCPF } = require('../utils/cpf.util')
 
 // GET /api/usuarios/perfil (privado)
 const getPerfil = async (req, res) => {
@@ -27,97 +27,49 @@ const listarTodos = async (req, res) => {
     }
 }
 
-// GET /api/usuarios/:id
+const { identificarUsuario, prepararAtualizacao, usuarioPublico } = require('../services/perfil.service')
+
+const responderErroPerfil = (res, erro) => {
+    const status = erro.name === 'SequelizeUniqueConstraintError' ? 409 : erro.status || 500
+    return res.status(status).json({ erro: status === 409 ? 'E-mail ou CPF já cadastrado em outra conta.'
+        : erro.status ? erro.message : 'Não foi possível atualizar ou consultar a conta.' })
+}
+
 const getById = async (req, res) => {
     try {
-        const usuario = await Usuario.findByPk(req.params.id, {
-            attributes: { exclude: ['senha'] }
-        })
+        const id = identificarUsuario(req)
+        const usuario = await Usuario.findByPk(id, { attributes: { exclude: ['senha'] } })
         if (!usuario) return res.status(404).json({ erro: 'Usuário não encontrado.' })
-
-        if (req.usuario.tipo !== 'ADMIN' && req.usuario.codUsuario !== usuario.codUsuario) {
-            return res.status(403).json({ erro: 'Acesso negado.' })
-        }
-
         return res.json(usuario)
-    } catch (err) {
-        return res.status(500).json({ erro: 'Erro ao buscar usuário.', detalhe: err.message })
-    }
+    } catch (erro) { return responderErroPerfil(res, erro) }
 }
 
-// PUT /api/usuarios/:id (atualização completa)
-const atualizar = async (req, res) => {
+const salvar = completa => async (req, res) => {
     try {
-        const usuario = await Usuario.findByPk(req.params.id)
-        if (!usuario) return res.status(404).json({ erro: 'Usuário não encontrado.' })
-
-        if (req.usuario.tipo !== 'ADMIN' && req.usuario.codUsuario !== usuario.codUsuario) {
-            return res.status(403).json({ erro: 'Acesso negado.' })
-        }
-
-        const { nome, email, cpf, senha, telefone, cep, rua, numero, complemento, bairro, cidade, estado } = req.body
-
-        if (cpf && !validarCPF(cpf)) {
-            return res.status(400).json({ erro: 'CPF inválido.' })
-        }
-
-        if (email && email !== usuario.email) {
-            const emailExiste = await Usuario.findOne({ where: { email } })
-            if (emailExiste) return res.status(409).json({ erro: 'E-mail já em uso.' })
-        }
-
-        const dados = { nome, email, cpf: cpf ? cpf.replace(/\D/g, '') : usuario.cpf, telefone, cep, rua, numero, complemento, bairro, cidade, estado }
-
-        if (senha) {
-            const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10
-            dados.senha = await bcrypt.hash(senha, saltRounds)
-        }
-
-        await usuario.update(dados)
-        return res.json({ mensagem: 'Usuário atualizado com sucesso.' })
-    } catch (err) {
-        return res.status(500).json({ erro: 'Erro ao atualizar usuário.', detalhe: err.message })
-    }
-}
-
-// PATCH /api/usuarios/:id (atualização parcial)
-const atualizarParcial = async (req, res) => {
-    try {
-        const usuario = await Usuario.findByPk(req.params.id)
-        if (!usuario) return res.status(404).json({ erro: 'Usuário não encontrado.' })
-
-        if (req.usuario.tipo !== 'ADMIN' && req.usuario.codUsuario !== usuario.codUsuario) {
-            return res.status(403).json({ erro: 'Acesso negado.' })
-        }
-
-        const camposPermitidos = ['nome', 'telefone', 'cep', 'rua', 'numero', 'complemento', 'bairro', 'cidade', 'estado']
-        const atualizacoes = {}
-        camposPermitidos.forEach(campo => {
-            if (req.body[campo] !== undefined) atualizacoes[campo] = req.body[campo]
+        const id = identificarUsuario(req)
+        const usuario = await db.transaction(async transaction => {
+            const registro = await Usuario.findByPk(id, { transaction, lock: transaction.LOCK.UPDATE })
+            if (!registro) throw Object.assign(new Error('Usuário não encontrado.'), { status: 404 })
+            const dados = await prepararAtualizacao(req.body, registro, req.usuario, completa)
+            await registro.update(dados, { transaction })
+            if (dados.senha) await revogarSessoes(registro.codUsuario, transaction)
+            return registro
         })
-
-        if (req.body.senha) {
-            const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10
-            atualizacoes.senha = await bcrypt.hash(req.body.senha, saltRounds)
-        }
-
-        await usuario.update(atualizacoes)
-        return res.json({ mensagem: 'Dados atualizados com sucesso.' })
-    } catch (err) {
-        return res.status(500).json({ erro: 'Erro ao atualizar usuário.', detalhe: err.message })
-    }
+        return res.json({ mensagem: 'Dados atualizados com sucesso.', usuario: usuarioPublico(usuario), reautenticar: Boolean(req.body.senha && id === req.usuario.codUsuario) })
+    } catch (erro) { return responderErroPerfil(res, erro) }
 }
+
+const atualizar = salvar(true)
+const atualizarParcial = salvar(false)
 
 // DELETE /api/usuarios/:id (admin — soft delete)
 const desativar = async (req, res) => {
     try {
         const usuario = await Usuario.findByPk(req.params.id)
         if (!usuario) return res.status(404).json({ erro: 'Usuário não encontrado.' })
-        await usuario.update({ ativo: false })
-        return res.json({ mensagem: 'Usuário desativado com sucesso.' })
-    } catch (err) {
-        return res.status(500).json({ erro: 'Erro ao desativar usuário.', detalhe: err.message })
-    }
+        const publico = await require('../services/acesso.service').alterarAcesso(usuario.codUsuario, req.usuario, { ativo: false, tipo_usuario: usuario.tipo_usuario })
+        return res.json({ mensagem: 'Usuário desativado.', usuario: publico })
+    } catch (erro) { return responderErroPerfil(res, erro) }
 }
 
 module.exports = { getPerfil, listarTodos, getById, atualizar, atualizarParcial, desativar }

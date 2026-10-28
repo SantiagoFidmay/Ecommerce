@@ -18,9 +18,9 @@
     </nav>
   </header>
   <div class="help-intro">
-    <p class="eyebrow">CENTRAL DE AJUDA · 21/10/2026</p>
+    <p class="eyebrow">CENTRAL DE AJUDA · REVISÃO 27/10/2026</p>
     <p>Orientações para usar a loja e preparar o treinamento.</p>
-    <p class="help-notice"><strong>Versão em desenvolvimento.</strong> O checkout é uma simulação e algumas telas ainda estão pendentes. Confira os limites descritos no manual.</p>
+    <p class="help-notice"><strong>Versão em desenvolvimento.</strong> Pedidos, conta, administração e ferramentas de escolha estão disponíveis. Pagamentos e estornos são somente demonstrações, sem cobrança real. Consulte o manual atualizado.</p>
     <nav class="help-tabs" aria-label="Documentos de apoio"><a href="ajuda.html" aria-current=page>Manual do usuário</a><a href="treinamento.html" >Plano de treinamento</a><a href="roteiro.html" >Roteiro integrado</a></nav>
     <div class="help-actions"><a class="help-button" href="../ajuda/02-manual-usuario.pdf" download>Baixar PDF</a><button type="button" onclick="window.print()">Imprimir / salvar em PDF</button></div>
   </div>
@@ -37,10 +37,18 @@
 <li><a href="#r04-criar-uma-conta">R04 — Criar uma conta</a></li>
 <li><a href="#r05-entrar-na-conta">R05 — Entrar na conta</a></li>
 <li><a href="#r06-selecionar-um-produto-para-o-carrinho">R06 — Selecionar um produto para o carrinho</a></li>
-<li><a href="#r07-conhecer-a-simulacao-de-checkout">R07 — Conhecer a simulação de checkout</a></li>
-<li><a href="#r08-cadastro-de-produtos-e-controle-de-estoque-previsto">R08 — Cadastro de produtos e controle de estoque — previsto</a></li>
-<li><a href="#r09-pedido-historico-e-entrega-previsto">R09 — Pedido, histórico e entrega — previsto</a></li>
-<li><a href="#r10-consultar-relatorios-previsto">R10 — Consultar relatórios — previsto</a></li>
+<li><a href="#r07-registrar-um-pedido">R07 — Registrar um pedido</a></li>
+<li><a href="#r08-administracao-de-catalogo-e-estoque">R08 — Administração de catálogo e estoque</a></li>
+<li><a href="#r09-consultar-historico-e-entrega">R09 — Consultar histórico e entrega</a></li>
+<li><a href="#r10-consultar-relatorios-e-operar-pedidos">R10 — Consultar relatórios e operar pedidos</a></li>
+<li><a href="#r11-atualizar-perfil-e-trocar-senha">R11 — Atualizar perfil e trocar senha</a></li>
+<li><a href="#r12-comparar-modelos">R12 — Comparar modelos</a></li>
+<li><a href="#r13-encontrar-opcoes-pelo-quiz">R13 — Encontrar opções pelo quiz</a></li>
+<li><a href="#r14-favoritos-e-rotacao">R14 — Favoritos e rotação</a></li>
+<li><a href="#r15-acompanhar-reposicoes-e-avisos">R15 — Acompanhar reposições e avisos</a></li>
+<li><a href="#r16-avaliar-uma-compra-entregue">R16 — Avaliar uma compra entregue</a></li>
+<li><a href="#r17-consultar-marcas-e-contatos">R17 — Consultar marcas e contatos</a></li>
+<li><a href="#r18-recuperar-acesso-por-e-mail">R18 — Recuperar acesso por e-mail</a></li>
 </ul>
 </li>
 <li><a href="#4-mensagens-e-orientacoes">4. Mensagens e orientações</a></li>
@@ -54,14 +62,14 @@
 </aside>
     <main id="conteudo" tabindex="-1"><h1 id="manual-do-usuario">Manual do usuário</h1>
 <p><strong>Sport Kicks — ecommerce de artigos esportivos</strong><br />
-Versão operacional de demonstração · 1.0 · 21/10/2026<br />
+Versão demonstrativa completa · 2.0 · 27/10/2026<br>
 Sistema em desenvolvimento — leia as limitações antes de praticar.</p>
 <h2 id="1-como-usar-este-manual">1. Como usar este manual</h2>
-<p>Este manual explica as telas existentes da loja. Use R01 a R06 para consulta, cadastro, login e seleção de produtos. R07 explica a simulação de checkout. R08 a R10 apresentam rotinas solicitadas que ainda não estão disponíveis em telas completas.</p>
+<p>Este manual explica as telas existentes da loja. Use R01 a R07 para consultar produtos e registrar pedidos de teste; R09 para acompanhar compras; R11 para editar o perfil e trocar a senha. R08 e R10 explicam administração e gráficos; R12 a R18 cobrem as ferramentas de escolha e organização.</p>
 <p>O projeto segue a estrutura do documento <strong>Sistema_ecommerce_7_tabelas (1).md</strong>, adaptada de sucos para artigos esportivos. A atividade de 21/10/2026 pede orientações compatíveis com o estágio do sistema. Os anexos A e B citados na avaliação não foram fornecidos; as mensagens abaixo foram conferidas no código desta versão.</p>
-<p><strong>Não use o checkout como confirmação de compra, pagamento ou entrega.</strong> Não informe dados reais de cartão na demonstração. A mensagem de sucesso da simulação não significa que um pedido foi salvo.</p>
+<p><strong>O checkout agora registra pedidos e reduz o estoque do banco.</strong> A cobrança ainda não está integrada: registrar um pedido não aprova pagamento nem confirma entrega. Use o ambiente de testes orientado pelo responsável.</p>
 <h2 id="2-acesso-perfis-e-situacao-da-versao">2. Acesso, perfis e situação da versão</h2>
-<p>Abra a loja pelo endereço fornecido pelo responsável. Visitantes podem consultar o catálogo e selecionar produtos. Clientes podem criar conta e entrar. Administradores terão gestão de catálogo, estoque e relatórios quando o painel estiver concluído. A logística é um perfil de trabalho do treinamento, sem conta específica no sistema.</p>
+<p>Abra a loja pelo endereço fornecido pelo responsável. Visitantes podem consultar o catálogo e selecionar produtos. Clientes podem criar conta e entrar. Administradores têm gestão de catálogo, estoque, pedidos, marcas, contas e relatórios pelo painel. A logística é um perfil de trabalho do treinamento, sem conta específica no sistema.</p>
 <table>
 <thead>
 <tr>
@@ -88,23 +96,28 @@ Sistema em desenvolvimento — leia as limitações antes de praticar.</p>
 </tr>
 <tr>
 <td>Página do carrinho</td>
-<td>Incompleta: a função que monta a lista na tela ainda não existe</td>
-<td>Não usar a página para validar remoção, quantidades ou total.</td>
+<td>Lista, remoção, quantidades e totais implementados</td>
+<td>Pode praticar R06; valores e disponibilidade são conferidos novamente no checkout.</td>
 </tr>
 <tr>
 <td>Checkout</td>
-<td>Simulação; não envia a compra ao registro de pedidos</td>
-<td>Usar R07 somente para demonstração.</td>
+<td>Autenticado; grava pedido, itens e entrega e deduz estoque em transação</td>
+<td>Pode praticar R07 em ambiente de testes; não há cobrança real.</td>
 </tr>
 <tr>
-<td>Perfil, histórico e painel administrativo</td>
-<td>Telas ausentes, embora existam serviços no backend</td>
-<td>Links podem não abrir; aguardar conclusão.</td>
+<td>Perfil e histórico</td>
+<td>Telas integradas e protegidas por login</td>
+<td>Pode praticar R09 e R11 com a própria conta.</td>
 </tr>
 <tr>
-<td>Estoque, entregas e relatórios com gráficos</td>
-<td>Serviços existentes; experiência visual ainda pendente</td>
-<td>Não há procedimento operacional de tela liberado.</td>
+<td>Painel administrativo e gráficos</td>
+<td>Telas integradas para contas ADMIN</td>
+<td>Use R08 e R10 em ambiente de demonstração.</td>
+</tr>
+<tr>
+<td>Entrega</td>
+<td>Dados cadastrados aparecem nos detalhes do pedido</td>
+<td>A consulta não integra rastreio automático de transportadoras.</td>
 </tr>
 </tbody>
 </table>
@@ -136,12 +149,12 @@ Sistema em desenvolvimento — leia as limitações antes de praticar.</p>
 <li>Selecione as miniaturas para ampliar outras fotos disponíveis.</li>
 <li>Verifique o botão de compra. Se estiver <strong>Esgotado</strong>, não será possível selecionar aquele produto por esse botão.</li>
 </ol>
-<p><strong>Resultado esperado:</strong> detalhes do produto escolhido. Se o serviço falhar, esta versão pode mostrar dados de demonstração para alguns produtos; não use esses dados como prova de disponibilidade real.</p>
+<p><strong>Resultado esperado:</strong> detalhes do produto escolhido. Se a consulta falhar, a página informa o erro e não inventa disponibilidade. Os dados técnicos ausentes aparecem como Não informado. Os reviews são independentes e têm link para o YouTube.</p>
 <h3 id="r04-criar-uma-conta">R04 — Criar uma conta</h3>
 <p><strong>Público:</strong> cliente. <strong>Pré-condições:</strong> acesso à loja, serviço disponível, internet para consulta de CEP e dados autorizados para o treinamento. Não use identidade de terceiros.</p>
 <ol>
 <li>Abra <strong>Entrar</strong> e depois <strong>Criar conta grátis</strong>, ou o link <strong>Cadastro</strong> da página inicial.</li>
-<li>Informe nome completo, e-mail, CPF e senha. O formulário exige senha com pelo menos seis caracteres. Telefone é opcional.</li>
+<li>Informe nome completo, e-mail, CPF e senha. O formulário exige senha com pelo menos oito caracteres. Telefone é opcional.</li>
 <li>Confira a indicação do CPF. Se aparecer inválido, revise os números; o sistema verifica os dígitos do documento.</li>
 <li>Informe o CEP e aguarde a busca do endereço.</li>
 <li>Confira rua, bairro, cidade e estado preenchidos. Informe o número; complemento é opcional.</li>
@@ -157,8 +170,8 @@ Sistema em desenvolvimento — leia as limitações antes de praticar.</p>
 <li>Se necessário, use o botão de visualização de senha sem expor a tela a outras pessoas.</li>
 <li>Selecione <strong>Entrar na minha conta</strong> e aguarde a resposta.</li>
 </ol>
-<p><strong>Resultado esperado:</strong> identificação do usuário e retorno à loja. Links para perfil, pedidos ou administração ainda podem apontar para páginas não concluídas. Se o login falhar, revise o e-mail e a senha; não há recuperação de senha implementada nesta versão.</p>
-<p>Em estação compartilhada, não salve a senha no navegador. Ao terminar, solicite ao responsável a limpeza dos dados da sessão conforme a política local, pois ainda não há botão de saída disponível nas telas analisadas. Fechar a aba sozinho não apaga os dados salvos no navegador.</p>
+<p><strong>Resultado esperado:</strong> identificação do usuário e retorno à página que exigiu login, inclusive aos detalhes do pedido. O nome no cabeçalho abre Meu perfil. Contas ADMIN também encontram Administração no menu. Se o login falhar, revise e-mail e senha; Esqueci minha senha permite solicitar um link quando o serviço de e-mail estiver configurado.</p>
+<p>Em estação compartilhada, não salve a senha no navegador. Ao terminar, abra Meu perfil ou Meus pedidos e selecione <strong>Sair da conta</strong>. A saída remove a sessão deste navegador e preserva o carrinho local. Fechar a aba sozinho não encerra a sessão.</p>
 <h3 id="r06-selecionar-um-produto-para-o-carrinho">R06 — Selecionar um produto para o carrinho</h3>
 <p><strong>Público:</strong> visitante ou cliente. <strong>Pré-condições:</strong> produto disponível e navegador permitindo armazenamento local.</p>
 <ol>
@@ -167,29 +180,128 @@ Sistema em desenvolvimento — leia as limitações antes de praticar.</p>
 <li>Se aparecer aviso de estoque insuficiente, não continue tentando aumentar a quantidade. Se estiver esgotado, escolha outro produto.</li>
 </ol>
 <p><strong>Resultado esperado:</strong> seleção salva no navegador utilizado. Não é pedido, pagamento ou reserva de estoque. Outro navegador ou computador não terá necessariamente os mesmos itens.</p>
-<p><strong>Limite conhecido:</strong> a página visual do carrinho ainda não monta a lista. A seleção também não substitui a verificação final de estoque. Não tratar os controles atuais como garantia de disponibilidade para uma compra real.</p>
-<h3 id="r07-conhecer-a-simulacao-de-checkout">R07 — Conhecer a simulação de checkout</h3>
-<p><strong>Público:</strong> participante acompanhado pelo instrutor. <strong>Pré-condições:</strong> item selecionado em R06 e ciência de que não haverá compra real. Se o acesso pelo carrinho falhar, o instrutor pode abrir a página de checkout já existente pelo endereço disponibilizado para a demonstração.</p>
+<p>Abra <strong>Carrinho</strong> para conferir os itens, alterar quantidades e usar <strong>Remover</strong>. O resumo mostra descontos e frete; a API confere os valores e a disponibilidade novamente no checkout. Adicionar ao carrinho não reserva estoque.</p>
+<h3 id="r07-registrar-um-pedido">R07 — Registrar um pedido</h3>
+<p><strong>Público:</strong> cliente autenticado. <strong>Pré-condições:</strong> carrinho com produtos disponíveis e serviço da loja acessível. Use uma conta e estoque de teste autorizados.</p>
 <ol>
-<li>Confira o resumo mostrado no checkout. Alguns campos já contêm dados de demonstração; não os considere seus dados de entrega.</li>
-<li>Observe as opções de cartão e PIX apenas para conhecer a apresentação da tela. Não informe cartão real nem tente pagar o QR Code de demonstração.</li>
-<li>Somente no exercício orientado, selecione <strong>Confirmar Pagamento</strong>.</li>
-<li>Observe a mensagem de pagamento simulado e o esvaziamento da seleção local.</li>
+<li>No carrinho, confira itens e quantidades e selecione <strong>Finalizar Compra</strong>.</li>
+<li>Se for encaminhado ao login, entre na conta para retornar ao checkout com os itens preservados.</li>
+<li>Confira o endereço carregado da conta. Edite os campos para aquela entrega, se necessário; isso não modifica o endereço do perfil.</li>
+<li>Confira subtotal, desconto, frete e total calculados pelo servidor. Escolha a forma de pagamento; não há campos de cartão nem código PIX nesta versão.</li>
+<li>Selecione <strong>Confirmar pedido</strong> uma vez e aguarde.</li>
+<li>Após o registro, anote o número e selecione <strong>Ver meu pedido</strong>.</li>
+<li>Se quiser concluir o exercício, use <strong>Simular confirmação de pagamento</strong> e confirme a mensagem de demonstração. Nenhum valor é cobrado. Sem confirmação, a reserva vence no prazo mostrado na tela.</li>
 </ol>
-<p><strong>Resultado esperado:</strong> demonstração visual concluída. O procedimento não salva pedido, não comprova cobrança e não deduz estoque no banco. O checkout atual também não exige login, diferente da regra solicitada para a versão final.</p>
-<p>Os descontos e o frete ainda não estão consistentes entre todas as telas. O texto “PIX (5% off)” no carrinho não garante aplicação do desconto. Não use os valores da demonstração para cobrança ou orçamento definitivo.</p>
-<h3 id="r08-cadastro-de-produtos-e-controle-de-estoque-previsto">R08 — Cadastro de produtos e controle de estoque — previsto</h3>
-<p><strong>Público:</strong> administrador e operador orientado. <strong>Pré-condições futuras:</strong> painel administrativo concluído e acesso autorizado.</p>
-<p>O documento de requisitos prevê cadastrar e consultar produtos, atualizar preço e categoria e registrar entradas e saídas de estoque. Existem serviços para isso, mas não há tela administrativa pronta. Não há sequência de botões disponível para orientar o usuário final. Até a conclusão, informe divergências ao responsável pela implantação; não altere o banco diretamente.</p>
-<p><strong>Resultado esperado futuro:</strong> catálogo e estoque atualizados por usuário autorizado. <strong>Resultado atual do treinamento:</strong> reconhecer a pendência e a responsabilidade pelo ajuste, sem declarar execução prática.</p>
-<h3 id="r09-pedido-historico-e-entrega-previsto">R09 — Pedido, histórico e entrega — previsto</h3>
-<p><strong>Público:</strong> cliente e equipe responsável pela operação. <strong>Pré-condições futuras:</strong> compra integrada, login obrigatório e telas de histórico e entrega concluídas.</p>
-<p>A especificação prevê gravar o pedido, seus itens e a entrega, deduzir estoque e permitir consulta das compras anteriores. Embora existam serviços no backend, o checkout atual não realiza esse fluxo. Não há acompanhamento de entrega disponível em uma tela pronta.</p>
-<p><strong>Resultado esperado futuro:</strong> pedido identificável e consulta de situação da entrega. <strong>Resultado atual do treinamento:</strong> distinguir seleção local, simulação e venda registrada. Não prometer rastreio nem prazo com base na simulação.</p>
-<h3 id="r10-consultar-relatorios-previsto">R10 — Consultar relatórios — previsto</h3>
-<p><strong>Público:</strong> administrador. <strong>Pré-condições futuras:</strong> painel, autorização e gráficos concluídos, com dados de vendas e estoque validados.</p>
-<p>A especificação pede dois relatórios com gráficos. O backend contém consultas de vendas por categoria, faturamento e estoque, mas as telas de gráficos não foram implementadas. O treinamento atual explica a finalidade dos relatórios, sem apresentar filtros, botões ou mensagens inexistentes.</p>
-<p><strong>Resultado esperado futuro:</strong> apoiar decisões com relatórios visuais. <strong>Resultado atual do treinamento:</strong> reconhecer o recurso pendente e evitar interpretar ausência de vendas de demonstração como falha de relatório.</p>
+<p><strong>Resultado esperado:</strong> pedido pendente registrado, com itens, endereço de entrega e baixa do estoque. O carrinho é limpo após a resposta de sucesso da API. Nenhum valor é cobrado.</p>
+<p>Se o preço ou a disponibilidade tiver mudado, revise o resumo e confirme novamente somente depois de conferir os valores. Em caso de erro, os itens são mantidos. Se a resposta se perder, consulte <strong>Meus pedidos</strong> antes de tentar registrar novamente, e use a mesma tentativa caso precise reenviar: a confirmação do checkout possui chave persistida para evitar duplicação.</p>
+<h3 id="r08-administracao-de-catalogo-e-estoque">R08 — Administração de catálogo e estoque</h3>
+<p><strong>Público:</strong> conta ADMIN autorizada. <strong>Pré-condições:</strong> serviço disponível e acesso provisionado pelo responsável.</p>
+<ol>
+<li>Abra <strong>Administração</strong> no menu. Em celular, abra o menu do cabeçalho primeiro.</li>
+<li>Em <strong>Catálogo</strong>, use a busca ou <strong>Novo produto</strong>. Informe nome, marca, categoria, preço e mídia. Use <strong>Editar</strong> para mudar um registro existente.</li>
+<li>Cadastre fotos por endereço, um por linha, e o review por link do YouTube. Informe crédito do vídeo quando conhecido. A ficha técnica deve usar dados confirmados e uma fonte HTTPS oficial da marca; campos desconhecidos ficam vazios.</li>
+<li>Use <strong>Salvar produto</strong>. Para retirar da vitrine, escolha <strong>Desativar</strong>; o histórico de compras é preservado.</li>
+<li>Em <strong>Estoque</strong>, escolha o produto e use <strong>Cadastrar opção</strong> para informar SKU, tamanho e cor. Uma nova opção começa com saldo zero.</li>
+<li>Use <strong>Registrar movimentação</strong> com entrada, saída, saldo contado ou transferência. Informe quantidade e motivo. Para distribuir saldo antigo, transfira da opção Não informado para o tamanho/cor cadastrado; a transferência não cria unidades extras.</li>
+<li>Confira o histórico de movimentações. Opções com saldo devem ser zeradas ou transferidas antes de serem desativadas.</li>
+<li>Em <strong>Cadastros</strong>, gerencie categorias, contatos das marcas, moderação de avaliações e acesso de contas. Não é permitido retirar o próprio acesso administrativo.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> alterações persistidas e disponibilidade refletida na loja. Não compartilhe credenciais administrativas e não use dados reais de clientes para exercícios de treinamento.</p>
+<h3 id="r09-consultar-historico-e-entrega">R09 — Consultar histórico e entrega</h3>
+<p><strong>Público:</strong> cliente autenticado. <strong>Pré-condições:</strong> conta da loja e serviço disponível.</p>
+<ol>
+<li>Abra <strong>Meus pedidos</strong> pelo cabeçalho ou pelo menu da conta.</li>
+<li>Confira número, data, status e total das compras da própria conta.</li>
+<li>Use <strong>Filtrar por status</strong>, <strong>Anterior</strong> e <strong>Próxima</strong> quando necessário.</li>
+<li>Selecione <strong>Ver detalhes</strong> para conferir itens, quantidades, preços registrados, totais e forma de pagamento escolhida.</li>
+<li>Consulte o endereço específico daquela compra e os dados de entrega, transportadora, previsão e código de rastreio, quando cadastrados.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> consulta das próprias compras. Ausência de previsão ou rastreio é indicada na tela; não representa uma integração automática com transportadoras. O status Pendente não significa pagamento aprovado. Alterar o perfil não altera o endereço de compras já registradas.</p>
+<h3 id="r10-consultar-relatorios-e-operar-pedidos">R10 — Consultar relatórios e operar pedidos</h3>
+<p><strong>Público:</strong> conta ADMIN autorizada. <strong>Pré-condições:</strong> registros de demonstração disponíveis.</p>
+<ol>
+<li>Abra <strong>Administração → Visão geral</strong>.</li>
+<li>Informe o período desejado e selecione <strong>Aplicar período</strong>.</li>
+<li>Consulte os indicadores e os dois gráficos: valor de pedidos confirmados por mês e subtotal por categoria.</li>
+<li>Use as tabelas abaixo dos gráficos para conferir os números. O subtotal por categoria não inclui desconto/frete; os valores mensais usam o total do pedido.</li>
+<li>Se necessário, use <strong>Exportar CSV</strong>. Os valores são demonstrativos, sem cobrança real.</li>
+<li>Na aba <strong>Pedidos</strong>, abra os detalhes, avance a situação na sequência de preparação, envio e entrega e salve transportadora, previsão e rastreio quando conhecidos.</li>
+<li><strong>Revisar reservas vencidas</strong> libera pedidos pendentes fora do prazo. A API também executa essa revisão periodicamente.</li>
+<li><strong>Simular estorno</strong> registra um estorno sem dinheiro real. Antes do envio, cancela e devolve estoque. Após envio/entrega, não presume devolução física do produto.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> leitura dos dados reais registrados na demonstração e operação dos estados permitidos. Tela vazia não deve ser preenchida com vendas ou números fictícios.</p>
+<h3 id="r11-atualizar-perfil-e-trocar-senha">R11 — Atualizar perfil e trocar senha</h3>
+<p><strong>Público:</strong> titular da conta autenticada. <strong>Pré-condições:</strong> serviço disponível e senha atual para troca de senha.</p>
+<ol>
+<li>Selecione seu nome no cabeçalho ou <strong>Meu perfil</strong> no menu da conta.</li>
+<li>Edite nome, telefone e endereço principal. E-mail e CPF ficam disponíveis apenas para consulta nesta tela.</li>
+<li>Para consultar outro endereço, informe o CEP e clique em <strong>Buscar CEP</strong>. Confira os dados retornados, número e complemento. Em caso de falha na consulta, os campos permitem preenchimento manual.</li>
+<li>Clique em <strong>Salvar alterações</strong> e aguarde a confirmação.</li>
+<li>Para trocar a senha, preencha <strong>Senha atual</strong>, <strong>Nova senha</strong> e <strong>Confirmar nova senha</strong>. Use pelo menos oito caracteres na nova senha e selecione <strong>Alterar senha</strong>.</li>
+<li>Ao terminar em um dispositivo compartilhado, selecione <strong>Sair da conta</strong>.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> dados atualizados para próximas compras. A senha anterior deixa de autenticar novos logins após a troca. A troca de senha encerra sessões anteriores, inclusive a atual; entre novamente usando a nova senha.</p>
+<h3 id="r12-comparar-modelos">R12 — Comparar modelos</h3>
+<p><strong>Público:</strong> todos. <strong>Pré-condições:</strong> catálogo disponível.</p>
+<ol>
+<li>Selecione <strong>Comparar</strong> no produto ou nos resultados do quiz.</li>
+<li>No comparador, adicione até três modelos e role a tabela lateralmente no celular.</li>
+<li>Compare preço, disponibilidade, tamanhos, dados técnicos e avaliações. <strong>Não informado</strong> indica ausência de dado confirmado.</li>
+<li>Remova um modelo antes de adicionar um quarto. Abra o nome do produto para voltar aos detalhes.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> comparação da seleção salva neste navegador.</p>
+<h3 id="r13-encontrar-opcoes-pelo-quiz">R13 — Encontrar opções pelo quiz</h3>
+<p><strong>Público:</strong> todos. <strong>Pré-condições:</strong> catálogo disponível.</p>
+<ol>
+<li>Abra <strong>Descubra</strong> no menu.</li>
+<li>Informe orçamento máximo e finalidade e selecione <strong>Encontrar modelos</strong>.</li>
+<li>Leia os motivos mostrados em cada resultado. Sem ficha técnica, a finalidade não é inferida pelo nome.</li>
+<li>Compare ou abra o produto antes de escolher.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> seleção transparente por orçamento, disponibilidade e finalidade cadastrada, sem promessa de adequação individual.</p>
+<h3 id="r14-favoritos-e-rotacao">R14 — Favoritos e rotação</h3>
+<p><strong>Público:</strong> cliente autenticado. <strong>Pré-condições:</strong> conta e catálogo disponíveis.</p>
+<ol>
+<li>Use <strong>Salvar na coleção</strong> na página do produto ou <strong>Salvar</strong> em um cartão.</li>
+<li>Abra <strong>Minha coleção</strong> pelo menu da conta.</li>
+<li>Em um favorito, escolha dia a dia, velocidade ou prova e selecione <strong>Organizar par</strong>.</li>
+<li>Confira sua rotação e use os controles de remoção quando necessário.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> favoritos e organização vinculados à conta, disponíveis após novo login.</p>
+<h3 id="r15-acompanhar-reposicoes-e-avisos">R15 — Acompanhar reposições e avisos</h3>
+<p><strong>Público:</strong> cliente autenticado. <strong>Pré-condições:</strong> opção de produto esgotada.</p>
+<ol>
+<li>Na página do produto, selecione cor e tamanho sem estoque.</li>
+<li>Use <strong>Avise quando chegar</strong>.</li>
+<li>Consulte <strong>Minha coleção → Reposições que você acompanha</strong>. É possível parar de acompanhar.</li>
+<li>Após reposição, o aviso aparece em <strong>Seus avisos</strong>. Use <strong>Marcar como lida</strong> quando terminar.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> notificação dentro da conta. O alerta não envia publicidade por e-mail e não reserva unidades para o cliente.</p>
+<h3 id="r16-avaliar-uma-compra-entregue">R16 — Avaliar uma compra entregue</h3>
+<p><strong>Público:</strong> titular de um pedido entregue. <strong>Pré-condições:</strong> entrega registrada.</p>
+<ol>
+<li>Abra os detalhes em <strong>Meus pedidos</strong>.</li>
+<li>No item comprado, abra <strong>Avaliar este produto</strong>.</li>
+<li>Escolha nota, ajuste do tênis e comentário e selecione <strong>Publicar avaliação</strong>.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> avaliação de compra verificada na página do produto. É permitida uma avaliação por produto naquele pedido; conteúdo pode ser ocultado pela moderação.</p>
+<h3 id="r17-consultar-marcas-e-contatos">R17 — Consultar marcas e contatos</h3>
+<p><strong>Público:</strong> todos. <strong>Pré-condições:</strong> serviço disponível.</p>
+<ol>
+<li>Abra <strong>Marcas</strong> no menu.</li>
+<li>Cada fabricante oferece os mesmos controles: <strong>Ver modelos</strong>, <strong>Site oficial</strong> e <strong>Atendimento oficial</strong>.</li>
+<li>Para pedidos desta demonstração, use a própria conta Sport Kicks. Os canais dos fabricantes não operam esses pedidos.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> acesso equilibrado a Adidas, ASICS, New Balance, Nike e Olympikus, sem alegação de parceria oficial.</p>
+<h3 id="r18-recuperar-acesso-por-e-mail">R18 — Recuperar acesso por e-mail</h3>
+<p><strong>Público:</strong> titular da conta. <strong>Pré-condições:</strong> serviço de e-mail configurado pelo responsável.</p>
+<ol>
+<li>No login, use <strong>Esqueci minha senha</strong>.</li>
+<li>Informe o e-mail da conta e solicite as instruções.</li>
+<li>Abra o link recebido em até 20 minutos e informe a nova senha duas vezes.</li>
+<li>Volte ao login. O link é de uso único e as sessões anteriores são encerradas.</li>
+</ol>
+<p><strong>Resultado esperado:</strong> nova senha definida sem expor a antiga. Se o envio não estiver configurado, a tela informa essa indisponibilidade; procure o responsável pela demonstração.</p>
 <h2 id="4-mensagens-e-orientacoes">4. Mensagens e orientações</h2>
 <p>Mensagens abaixo transcritas do código, sem os ícones decorativos. Algumas dependem de uma situação específica para aparecer. Conferir a procedência na seção de referências do roteiro.</p>
 <table>
@@ -262,9 +374,19 @@ Sistema em desenvolvimento — leia as limitações antes de praticar.</p>
 <td>Verifique o acesso à rede e comunique o responsável; usuário final não precisa alterar configurações técnicas.</td>
 </tr>
 <tr>
-<td>Parabéns! O seu pagamento simulado foi aprovado com sucesso.</td>
-<td>A demonstração visual terminou.</td>
-<td>Não interpretar como pagamento real ou pedido registrado.</td>
+<td>Pedido registrado!</td>
+<td>A API confirmou o registro do pedido.</td>
+<td>Confira o número em Ver meu pedido; pagamento permanece pendente.</td>
+</tr>
+<tr>
+<td>A senha atual não confere.</td>
+<td>A senha informada para autorizar a alteração não foi aceita.</td>
+<td>Confira a senha atual sem compartilhá-la.</td>
+</tr>
+<tr>
+<td>Senha alterada com sucesso.</td>
+<td>A nova senha foi salva e sessões anteriores foram encerradas.</td>
+<td>Entre novamente usando a nova senha.</td>
 </tr>
 </tbody>
 </table>
@@ -296,22 +418,22 @@ Sistema em desenvolvimento — leia as limitações antes de praticar.</p>
 <tr>
 <td>P04 — Login recusado</td>
 <td>Confira o e-mail da loja, a senha e a tecla de maiúsculas. Não usar a conta de conexão do MySQL.</td>
-<td>Persistindo, solicitar verificação da conta; não há tela pronta de recuperação de senha.</td>
+<td>Persistindo, solicitar verificação da conta; use Esqueci minha senha quando o envio por e-mail estiver configurado.</td>
 </tr>
 <tr>
 <td>P05 — Itens não aparecem em outra estação</td>
 <td>A seleção fica no navegador em que foi feita. Verifique se está no mesmo dispositivo e navegador.</td>
-<td>Se a página do carrinho não mostrar itens, considerar também a limitação conhecida dessa tela.</td>
+<td>Se continuar sem itens no mesmo navegador, informe o problema ao responsável.</td>
 </tr>
 <tr>
-<td>P06 — Link de perfil, pedidos ou administração não abre</td>
-<td>Essas telas não foram concluídas. Retorne à página inicial ou ao catálogo.</td>
-<td>Registrar como pendência de desenvolvimento; não refazer o cadastro.</td>
+<td>P06 — Perfil ou pedidos não abrem</td>
+<td>Faça login; se a sessão foi recusada, autentique-se novamente. Administração exige conta ADMIN.</td>
+<td>Persistindo o erro nas páginas de conta, informe a mensagem ao responsável.</td>
 </tr>
 <tr>
-<td>P07 — Simulação terminou, mas não há pedido ou baixa de estoque</td>
-<td>Esse é o comportamento da versão atual; a simulação não registra venda.</td>
-<td>Não repetir como tentativa de cobrança. Informar a limitação ao participante e aguardar integração.</td>
+<td>P07 — Não sei se o pedido foi registrado</td>
+<td>Consulte Meus pedidos antes de confirmar novamente. Uma falha de conexão pode impedir a exibição da resposta.</td>
+<td>Se não conseguir consultar, informe ao responsável antes de repetir a operação.</td>
 </tr>
 <tr>
 <td>P08 — Imagem ou aparência não carrega</td>
@@ -323,8 +445,8 @@ Sistema em desenvolvimento — leia as limitações antes de praticar.</p>
 <h2 id="6-seguranca-e-ajuda">6. Segurança e ajuda</h2>
 <p>Use somente acessos autorizados; não compartilhe senha, documento ou conta administrativa. Na demonstração, não forneça dados financeiros reais. Em estações compartilhadas, peça orientação para encerrar e limpar a sessão. Para pedir ajuda, informe a rotina deste manual, página, horário e mensagem exibida, sem expor dados pessoais.</p>
 <h2 id="7-atualizacao-do-manual">7. Atualização do manual</h2>
-<p>Este manual deve ser revisado quando forem concluídos carrinho, compra real, perfil, histórico, administração e gráficos. A revisão precisa conferir telas e mensagens antes de substituir orientações previstas por procedimentos operacionais. Consulte o roteiro integrado para o vínculo entre rotinas, módulos e critérios de validação.</p></main>
+<p>Revisão de 27/10/2026: versão 2.0 com catálogo, compras demonstrativas, conta, administração, gráficos e ferramentas de escolha integrados. O manual deverá ser revisto novamente quando forem concluídos integrações comerciais externas ou novas regras de operação. A revisão precisa conferir telas e mensagens antes de substituir orientações previstas por procedimentos operacionais. Consulte o roteiro integrado para o vínculo entre rotinas, módulos e critérios de validação.</p></main>
   </div>
-  <footer class="help-footer">Sport Kicks · Material de apoio à implantação · Versão 1.0</footer>
+  <footer class="help-footer">Sport Kicks · Material de apoio à implantação · Manual revisado em 27/10/2026</footer>
 </body>
 </html>

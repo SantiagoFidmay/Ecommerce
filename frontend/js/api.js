@@ -2,7 +2,7 @@
  * api.js — Abstração de chamadas para a API backend
  */
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = window.SPORTKICKS_CONFIG?.apiBase || 'http://localhost:3001/api';
 
 const Api = {
   /**
@@ -46,9 +46,10 @@ const Api = {
   buscarProdutos: (params) => Api.get(`/produtos/buscar?${new URLSearchParams(params)}`),
   criarPedido: (dados) => Api.post('/pedidos', dados),
   resumirPedido: (itens) => Api.post('/pedidos/resumo', { itens }),
-  getMeusPedidos: () => Api.get('/pedidos/meus-pedidos'),
+  getMeusPedidos: (params = {}) => Api.get(`/pedidos/meus-pedidos?${new URLSearchParams(params)}`),
   getPedido: (id) => Api.get(`/pedidos/${id}`),
   getPerfil: () => Api.get('/usuarios/perfil'),
+  salvarMeuPerfil: (dados) => Api.patch('/usuarios/perfil', dados),
   atualizarPerfil: (id, dados) => Api.put(`/usuarios/${id}`, dados),
   atualizarPerfilParcial: (id, dados) => Api.patch(`/usuarios/${id}`, dados),
   getRelatorioVendas: () => Api.get('/relatorios/vendas'),

@@ -1,54 +1,28 @@
-require('dotenv').config({ path: require('path').join(__dirname, '.env') });
-const express = require('express');
-const cors = require('cors');
-const conn = require('./db/conn');
-
-const authRoutes = require('./routes/auth.routes');
-const usuariosRoutes = require('./routes/usuarios.routes');
-const produtosRoutes = require('./routes/produtos.routes');
-const categoriasRoutes = require('./routes/categorias.routes');
-const estoqueRoutes = require('./routes/estoque.routes');
-const pedidosRoutes = require('./routes/pedidos.routes');
-const entregasRoutes = require('./routes/entregas.routes');
-const relatoriosRoutes = require('./routes/relatorios.routes');
-
-const app = express();
-const PORT = process.env.PORT || 3001;
-
-// Middlewares globais
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Rotas
-app.use('/api', authRoutes);
-app.use('/api/usuarios', usuariosRoutes);
-app.use('/api/produtos', produtosRoutes);
-app.use('/api/categorias', categoriasRoutes);
-app.use('/api/estoque', estoqueRoutes);
-app.use('/api/pedidos', pedidosRoutes);
-app.use('/api/entregas', entregasRoutes);
-app.use('/api/relatorios', relatoriosRoutes);
-
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// Handler de erros global
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.status || 500).json({
-    erro: err.message || 'Erro interno do servidor',
-    detalhe: process.env.NODE_ENV === 'development' ? err.stack : undefined
-  });
-});
-
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando na porta ${PORT}`);
-  console.log(`📡 API disponível em http://localhost:${PORT}/api`);
-});
+require('dotenv').config({ path: require('path').join(__dirname, '.env'), quiet: true })
+const db = require('./db/conn')
+const { migrar } = require('./migrations')
+const { expirarReservas } = require('./services/pedido.service')
+async function iniciar() {
+    if (!process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' && (process.env.JWT_SECRET.length < 32 || process.env.JWT_SECRET.startsWith('substitua')))) throw new Error('Configure um JWT_SECRET próprio de pelo menos 32 caracteres.')
+    await db.authenticate()
+    await migrar()
+    const app = require('./app')
+    const port = Number(process.env.PORT) || 3001
+    const server = app.listen(port, '0.0.0.0', () => console.log(`Sport Kicks API na porta ${port}. Pagamento somente em demonstração.`))
+    let expirando = false
+    const expirar = async () => {
+        if (expirando) return
+        expirando = true
+        try { await expirarReservas() } catch (err) { console.error('Falha ao revisar reservas:', err.name) }
+        finally { expirando = false }
+    }
+    const timer = setInterval(expirar, 60000)
+    timer.unref()
+    expirar()
+    const encerrar = () => { clearInterval(timer); server.close(() => db.close().then(() => process.exit(0))) }
+    process.once('SIGTERM', encerrar)
+    process.once('SIGINT', encerrar)
+    return server
+}
+if (require.main === module) iniciar().catch(err => { console.error('Não foi possível iniciar a API:', err.message); process.exitCode = 1; db.close() })
+module.exports = { iniciar }

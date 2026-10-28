@@ -1,0 +1,125 @@
+@base = http://localhost:3001/api
+@token = cole-o-token-do-cliente
+@admin = cole-o-token-do-administrador
+@produto = 1
+@variante = 1
+@pedido = 1
+
+### Saúde e modo demonstrativo
+GET {{base}}/health
+
+### Catálogo público
+GET {{base}}/produtos?pagina=1&limite=12&ordem=recomendados
+
+### Consulta por nome
+GET {{base}}/produtos/buscar?nome=Boston
+
+### Detalhes, opções, mídia e histórico
+GET {{base}}/produtos/{{produto}}
+
+### Login — use sua conta de teste, não o usuário do MySQL
+POST {{base}}/login
+Content-Type: application/json
+
+{"email":"sua-conta-de-teste@example.test","senha":"sua-senha-de-teste"}
+
+### Perfil privado (sem token deve retornar 401)
+GET {{base}}/usuarios/perfil
+Authorization: Bearer {{token}}
+
+### Atualização parcial do próprio nome
+PATCH {{base}}/usuarios/perfil
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"nome":"Cliente de Teste"}
+
+### Resumo com preço do banco, sem consumir estoque
+POST {{base}}/pedidos/resumo
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"itens":[{"idProduto":{{produto}},"idVariante":{{variante}},"quantidade":1}]}
+
+### Registrar pedido de demonstração; repetir a mesma chave/dados não duplica
+POST {{base}}/pedidos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"chaveCheckout":"tentativa-manual-demo-0001","forma_pagamento":"PIX","itens":[{"idProduto":{{produto}},"idVariante":{{variante}},"quantidade":1}]}
+
+### Quantidade inválida — deve retornar 400
+POST {{base}}/pedidos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"forma_pagamento":"PIX","itens":[{"idProduto":{{produto}},"quantidade":-1}]}
+
+### Histórico privado
+GET {{base}}/pedidos/meus-pedidos?pagina=1&limite=6
+Authorization: Bearer {{token}}
+
+### Pedido próprio; pedido alheio deve retornar 403
+GET {{base}}/pedidos/{{pedido}}
+Authorization: Bearer {{token}}
+
+### Simulação explícita de pagamento — NÃO movimenta dinheiro
+POST {{base}}/pagamentos/{{pedido}}/demonstrar
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"confirmarDemonstracao":true}
+
+### Cancelar pedido pendente — devolve o estoque uma única vez
+POST {{base}}/pedidos/{{pedido}}/cancelar
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{}
+
+### Produtos administrativos; cliente deve receber 403
+GET {{base}}/admin/produtos
+Authorization: Bearer {{admin}}
+
+### Entrada de estoque de teste com motivo
+POST {{base}}/admin/variantes/{{variante}}/movimentos
+Authorization: Bearer {{admin}}
+Content-Type: application/json
+
+{"tipo":"ENTRADA","quantidade":1,"motivo":"Exercício manual em banco de teste"}
+
+### Histórico auditável
+GET {{base}}/admin/movimentos?produto={{produto}}
+Authorization: Bearer {{admin}}
+
+### Dados dos gráficos
+GET {{base}}/relatorios/faturamento?inicio=2026-01-01&fim=2026-12-31
+Authorization: Bearer {{admin}}
+
+### Marcas e contatos públicos
+GET {{base}}/comunidade/marcas
+
+### Quiz com critérios explícitos
+GET {{base}}/comunidade/recomendar?orcamento=1200&uso=DIARIO
+
+### Salvar favorito (idempotente)
+PUT {{base}}/comunidade/favoritos/{{produto}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{}
+
+### Remover favorito
+DELETE {{base}}/comunidade/favoritos/{{produto}}
+Authorization: Bearer {{token}}
+
+### Avisos da própria conta
+GET {{base}}/comunidade/notificacoes
+Authorization: Bearer {{token}}
+
+### Encerrar sessão no servidor
+POST {{base}}/auth/logout
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{}

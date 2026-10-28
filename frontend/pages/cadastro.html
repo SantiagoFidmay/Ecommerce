@@ -6,6 +6,7 @@
   <title>Criar Conta | Sport Kicks</title>
   <link rel="stylesheet" href="../css/global.css">
   <link rel="stylesheet" href="../css/auth.css">
+  <link rel="stylesheet" href="../css/loja.css">
 </head>
 <body class="auth-body">
 
@@ -68,8 +69,8 @@
             <div class="form-group">
               <label class="form-label" for="senha">Senha *</label>
               <div style="position:relative">
-                <input type="password" id="senha" class="form-control" placeholder="Mín. 6 caracteres"
-                  required minlength="6">
+                <input type="password" id="senha" class="form-control" placeholder="Mín. 8 caracteres"
+                  required minlength="8">
                 <button type="button" class="toggle-pass" onclick="togglePassword('senha', this)">👁</button>
               </div>
             </div>
@@ -94,13 +95,13 @@
 
             <div class="form-group mb-lg">
               <label class="form-label" for="rua">Rua / Logradouro *</label>
-              <input type="text" id="rua" class="form-control" placeholder="Preenchido pelo CEP" readonly required>
+              <input type="text" id="rua" class="form-control" placeholder="Informe sua rua" maxlength="200" autocomplete="address-line1" required>
             </div>
 
             <div class="form-row mb-lg">
               <div class="form-group">
                 <label class="form-label" for="bairro">Bairro *</label>
-                <input type="text" id="bairro" class="form-control" placeholder="Preenchido pelo CEP" readonly required>
+                <input type="text" id="bairro" class="form-control" placeholder="Informe seu bairro" maxlength="100" required>
               </div>
               <div class="form-group">
                 <label class="form-label" for="complemento">Complemento</label>
@@ -111,16 +112,17 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="cidade">Cidade *</label>
-                <input type="text" id="cidade" class="form-control" readonly required>
+                <input type="text" id="cidade" class="form-control" maxlength="100" autocomplete="address-level2" required>
               </div>
               <div class="form-group">
                 <label class="form-label" for="estado">Estado *</label>
-                <input type="text" id="estado" class="form-control" maxlength="2" readonly required>
+                <input type="text" id="estado" class="form-control" placeholder="Ex: SC" maxlength="2" autocomplete="address-level1" required>
               </div>
             </div>
+            <p class="auth-subtitle" style="margin-top:1rem">O CEP pode preencher apenas a cidade e o estado. Confira e complete o endereço manualmente quando necessário.</p>
           </div>
 
-          <div class="auth-error hidden" id="cadastroError" style="margin-top:1rem"></div>
+          <div class="auth-error hidden" id="cadastroError" style="margin-top:1rem" role="alert"></div>
 
           <button type="submit" class="btn btn-primary w-full btn-lg mt-xl" id="btnCadastro">
             Criar minha conta gratuita
@@ -137,7 +139,9 @@
   </div>
 
   <script src="../js/auth.js"></script>
+  <script src="../js/config.js"></script>
   <script src="../js/api.js"></script>
+  <script src="../js/loja.js"></script>
   <script src="../js/cadastro.js"></script>
 </body>
 </html>

@@ -36,13 +36,16 @@ const ItemPedido = db.define('item_pedido', {
         allowNull: false
     },
     tamanho: {
-        type: DataTypes.STRING(10),
+        type: DataTypes.STRING(20),
         allowNull: true
     },
     cor: {
         type: DataTypes.STRING(50),
         allowNull: true
-    }
+    },
+    idVariante: { type: DataTypes.INTEGER, allowNull: true },
+    nome_produto: { type: DataTypes.STRING(150), allowNull: true },
+    imagem_produto: { type: DataTypes.STRING(500), allowNull: true }
 }, {
     timestamps: false,
     tableName: 'itens_pedido'

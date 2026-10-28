@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const { Usuario } = require('../models/rel')
+const { Usuario, Sessao, Seguranca } = require('../models/rel')
 
 const autenticar = async (req, res, next) => {
     try {
@@ -10,7 +10,14 @@ const autenticar = async (req, res, next) => {
         }
 
         const token   = authHeader.split(' ')[1]
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] })
+        if (decoded.jti) {
+            const sessao = await Sessao.findByPk(decoded.jti)
+            if (!sessao || sessao.revogada || sessao.idUsuario !== decoded.id || sessao.expira_em <= new Date()) return res.status(401).json({ erro: 'Sessão encerrada. Faça login novamente.' })
+        } else {
+            const seguranca = await Seguranca.findByPk(decoded.id)
+            if (seguranca?.revogar_legados) return res.status(401).json({ erro: 'Sessão encerrada. Faça login novamente.' })
+        }
 
         const usuario = await Usuario.findByPk(decoded.id, {
             attributes: { exclude: ['senha'] }
@@ -21,6 +28,7 @@ const autenticar = async (req, res, next) => {
         }
 
         req.usuario = usuario
+        req.sessaoJti = decoded.jti || null
         next()
     } catch (err) {
         if (err.name === 'JsonWebTokenError')  return res.status(401).json({ erro: 'Token inválido.' })

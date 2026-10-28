@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="strict-origin-when-cross-origin"><title>Minha coleção | Sport Kicks</title><link rel="stylesheet" href="../css/global.css"><link rel="stylesheet" href="../css/conta.css"><link rel="stylesheet" href="../css/loja.css"></head>
+<body class="page-wrapper conta-body"><nav class="navbar scrolled" id="navbar" aria-label="Navegação principal">
+  <div class="navbar-inner">
+    <a href="../index.html" class="navbar-logo">SPORT<span>KICKS</span></a>
+    <div class="navbar-menu" id="navMenu">
+      <a class="navbar-link" href="../index.html">Início</a><a class="navbar-link" href="catalogo.html">Catálogo</a><a class="navbar-link" href="pedidos.html">Meus pedidos</a>
+    </div>
+    <div class="navbar-actions">
+      <a href="perfil.html" class="btn btn-ghost btn-sm" id="btnLogin">Minha conta</a>
+      <a href="carrinho.html" class="cart-btn" aria-label="Carrinho">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-badge" id="cartBadge" style="display:none">0</span>
+      </a>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav><div id="toastContainer" class="toast-container"></div><main class="container conta-page"><header class="conta-header"><span class="conta-eyebrow">SPORT KICKS · DESCUBRA</span><h1>Minha coleção</h1><p>Seus favoritos, avisos de reposição e pares organizados por uso.</p></header><nav class="loja-actions loja-section" aria-label="Minha conta"><a class="btn btn-outline btn-sm" href="perfil.html">Meu perfil</a><a class="btn btn-outline btn-sm" href="pedidos.html">Meus pedidos</a><button class="btn btn-ghost btn-sm" id="colecaoSair">Sair da conta</button></nav><p id="colecaoMessage" class="conta-message" role="status" hidden></p><section class="loja-section"><h2>Seus avisos</h2><div id="colecaoNotificacoes"></div></section><section class="loja-section"><h2>Favoritos</h2><div class="loja-grid" id="colecaoFavoritos"></div></section><section class="loja-section"><h2>Reposições que você acompanha</h2><div id="colecaoAlertas"></div></section><section class="loja-section"><h2>Sua rotação de tênis</h2><p class="loja-subtitle">Organize seus pares entre dia a dia, velocidade e provas. Essa organização é sua e não substitui a avaliação das características de cada modelo.</p><div class="loja-grid" id="colecaoRotacao"></div></section><footer class="conta-footer"><a href="catalogo.html">Explorar catálogo</a> · <a href="ajuda.html">Ajuda</a></footer></main><script src="../js/auth.js"></script><script src="../js/carrinho.js"></script><script src="../js/config.js"></script><script src="../js/api.js"></script><script src="../js/loja.js"></script><script src="../js/colecao.js"></script></body></html>

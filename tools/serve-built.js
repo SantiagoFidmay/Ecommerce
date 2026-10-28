@@ -1,0 +1,6 @@
+const path = require('node:path')
+const root = path.resolve(__dirname, '..')
+const express = require(path.join(root, 'backend/node_modules/express'))
+const app = express()
+app.use(express.static(path.join(root, 'dist')))
+app.listen(Number(process.env.FRONTEND_PORT) || 5500, '127.0.0.1', () => console.log('Prévia: http://localhost:' + (process.env.FRONTEND_PORT || 5500)))

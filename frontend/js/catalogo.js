@@ -34,6 +34,7 @@ function verificarQueryParams() {
     const sel = document.getElementById('selectCategoria');
     if (sel) sel.value = params.get('categoria');
   }
+  if (params.get('marca')) document.getElementById('selectMarca').value = params.get('marca');
   if (params.get('destaque') === 'true') {
     filtrosAtuais.destaque = 'true';
   }
@@ -103,44 +104,8 @@ function getImagemCatalogo(p) {
 }
 
 function renderizarGrid(produtos) {
-  const grid = document.getElementById('produtosGrid');
-  grid.innerHTML = produtos.map(p => {
-    p = { ...p, id: p.codProduto, estoque: p.estoqueProduto, categoria: p.categoriaProduto };
-    const semEstoque = p.estoque && p.estoque.quantidade === 0;
-    const temPromo = p.preco_promocional && parseFloat(p.preco_promocional) < parseFloat(p.preco);
-    const imgSrc = getImagemCatalogo(p);
-    return `
-      <div class="produto-card" id="prod-${p.id}" onclick="abrirDetalhe(${p.id})">
-        <div class="produto-card-img">
-          ${temPromo ? '<span class="produto-card-badge">Promoção</span>' : ''}
-          <img src="${imgSrc}" alt="${p.nome}" loading="lazy" onerror="this.onerror=null;this.src='../assets/images/placeholder.svg'">
-          ${semEstoque ? '<div class="produto-card-estoque-zero"><span>Esgotado</span></div>' : ''}
-        </div>
-        <div class="produto-card-body">
-          <div class="produto-card-marca">${p.marca || ''}</div>
-          <h3 class="produto-card-nome"><a href="produto.html?id=${p.id}">${p.nome}</a></h3>
-          <div class="produto-card-categoria">${p.categoria?.icone || ''} ${p.categoria?.nome || ''}</div>
-          <div class="produto-card-footer">
-            <div class="produto-card-preco">
-              ${temPromo ? `<span class="produto-card-preco-old">R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}</span>` : ''}
-              <span class="produto-card-preco-current${temPromo ? ' em-promo' : ''}">
-                R$ ${parseFloat(p.preco_promocional || p.preco).toFixed(2).replace('.', ',')}
-              </span>
-              <span class="produto-card-parcelas">10x de R$ ${(parseFloat(p.preco_promocional || p.preco) / 10).toFixed(2).replace('.', ',')}</span>
-            </div>
-            <button class="btn-cart" title="Adicionar ao carrinho"
-              onclick="event.stopPropagation(); addCart(${p.id})"
-              ${semEstoque ? 'disabled' : ''}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
+  const grid = document.getElementById('produtosGrid'); grid.replaceChildren();
+  produtos.forEach(p => grid.appendChild(Loja.card(p)));
 }
 
 function renderizarPaginacao(total) {
@@ -178,6 +143,8 @@ function filtrar(extra = {}) {
 
   const params = {};
   if (busca) params.busca = busca;
+  const marca = document.getElementById('selectMarca')?.value;
+  if (marca) params.marca = marca;
   if (categoria_id) params.categoria_id = categoria_id;
   if (precoMax && Number(precoMax) < Number(document.getElementById('rangePreco').max)) params.preco_max = precoMax;
   if (ordem) params.ordem = ordem;
@@ -190,7 +157,7 @@ function filtrar(extra = {}) {
 }
 
 function limparFiltros() {
-  ['inputBusca', 'selectCategoria', 'selectOrdem'].forEach(id => {
+  ['inputBusca', 'selectCategoria', 'selectOrdem', 'selectMarca'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = id === 'selectOrdem' ? 'recomendados' : '';
   });
@@ -212,7 +179,7 @@ function abrirDetalhe(id) {
 
 function addCart(id) {
   const produto = produtosCache.find(p => p.codProduto === id);
-  if (produto) Carrinho.adicionar({ ...produto, id: produto.codProduto, estoque: produto.estoqueProduto });
+  if (produto) abrirDetalhe(produto.codProduto);
 }
 
 window.filtrar = filtrar;

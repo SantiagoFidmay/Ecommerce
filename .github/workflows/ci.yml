@@ -1,0 +1,41 @@
+name: Qualidade do Sport Kicks
+on:
+  push:
+  pull_request:
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: teste-ci-local
+          MYSQL_DATABASE: ecommerce_ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -pteste-ci-local"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASS: teste-ci-local
+      DB_NAME: ecommerce_ci
+      JWT_SECRET: chave-exclusiva-dos-testes-ci-sem-uso-em-producao
+      NODE_ENV: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm run setup
+      - run: npx playwright install --with-deps chromium
+        working-directory: backend
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+      - run: npm audit --omit=dev
+        working-directory: backend

@@ -11,6 +11,7 @@
   
   <link rel="stylesheet" href="../css/global.css">
   <link rel="stylesheet" href="../css/checkout.css">
+  <link rel="stylesheet" href="../css/loja.css">
 </head>
 <body class="page-wrapper checkout-body">
 
@@ -22,7 +23,7 @@
       </a>
       <div style="font-weight: 600; color: var(--text-muted); display:flex; align-items:center; gap:0.5rem">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Checkout Seguro
+        Pedido de demonstração
       </div>
     </div>
   </nav>
@@ -181,13 +182,16 @@
       <p id="successMessage" style="color:var(--text-secondary); margin: 1rem 0 2rem;">
         Seu pedido foi registrado com pagamento pendente.
       </p>
-      <a id="successHome" href="../index.html" class="btn btn-primary">Voltar para a Home</a>
+      <a id="successOrder" href="pedidos.html" class="btn btn-primary">Ver meu pedido</a>
+      <a id="successHome" href="../index.html" class="btn btn-ghost mt-md">Continuar na loja</a>
     </div>
   </div>
 
   <script src="../js/auth.js"></script>
   <script src="../js/carrinho.js"></script>
+  <script src="../js/config.js"></script>
   <script src="../js/api.js"></script>
+  <script src="../js/loja.js"></script>
   <script src="../js/checkout.js"></script>
 </body>
 </html>

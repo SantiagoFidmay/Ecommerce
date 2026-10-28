@@ -1,5 +1,5 @@
-const { Op, literal }  = require('sequelize')
-const { Produto, Categoria, Estoque } = require('../models/rel')
+const { Op, literal, fn, col }  = require('sequelize')
+const { Produto, Categoria, Estoque, Variante, Midia, Ficha, Avaliacao, HistoricoPreco } = require('../models/rel')
 
 // GET /api/produtos (público)
 const listar = async (req, res) => {
@@ -21,8 +21,8 @@ const listar = async (req, res) => {
             where[Op.and] = [require('sequelize').where(precoEfetivo, { [Op.lte]: valorMaximo })]
         }
         const ordenacoes = {
-            // Mistura estável: o preço tem maior peso, sem repetir itens entre páginas.
-            recomendados: [[literal('COALESCE(`produto`.`preco_promocional`, `produto`.`preco`) * (0.7 + MOD(CRC32(CONCAT(\'sport-kicks-\', `produto`.`codProduto`)), 1000) / 1665.0)'), 'DESC'], ['codProduto', 'ASC']],
+            // Ordem estável com alternância entre marcas, sem repetir itens entre páginas.
+            recomendados: [[literal('(SELECT COUNT(*) FROM produtos similares WHERE similares.ativo=1 AND similares.marca=produto.marca AND similares.codProduto<produto.codProduto)'), 'ASC'], ['marca', 'ASC'], ['codProduto', 'ASC']],
             recent: [['codProduto', 'DESC']],
             nome: [['nome', 'ASC'], ['codProduto', 'ASC']],
             preco_asc: [[precoEfetivo, 'ASC'], ['codProduto', 'ASC']],
@@ -30,6 +30,7 @@ const listar = async (req, res) => {
         }
 
         if (categoria_id) where.idCategoria = categoria_id
+        if (req.query.marca) where.marca = String(req.query.marca).slice(0, 80)
         if (destaque === 'true') where.destaque = true
         if (busca) {
             where[Op.or] = [
@@ -45,7 +46,8 @@ const listar = async (req, res) => {
             where,
             include: [
                 { model: Categoria, as: 'categoriaProduto', attributes: ['codCategoria', 'nome', 'icone'] },
-                { model: Estoque,   as: 'estoqueProduto',   attributes: ['quantidade', 'quantidade_minima'] }
+                { model: Estoque, as: 'estoqueProduto', attributes: ['quantidade', 'quantidade_minima'] },
+                { model: Ficha, as: 'fichaTecnica' }
             ],
             order: Object.hasOwn(ordenacoes, ordem) ? ordenacoes[ordem] : ordenacoes.recomendados,
             limit: tamanhoPagina,
@@ -70,11 +72,16 @@ const getById = async (req, res) => {
             where: { codProduto: req.params.id, ativo: true },
             include: [
                 { model: Categoria, as: 'categoriaProduto' },
-                { model: Estoque,   as: 'estoqueProduto'   }
+                { model: Estoque, as: 'estoqueProduto' },
+                { model: Variante, as: 'variantes', where: { ativo: true }, required: false },
+                { model: Midia, as: 'midias' },
+                { model: Ficha, as: 'fichaTecnica' }
             ]
         })
         if (!produto) return res.status(404).json({ erro: 'Produto não encontrado.' })
-        return res.json(produto)
+        const [estatisticas] = await Avaliacao.findAll({ where: { idProduto: produto.codProduto, visivel: true }, attributes: [[fn('COUNT', col('codAvaliacao')), 'total'], [fn('AVG', col('nota')), 'media']], raw: true })
+        const historico = await HistoricoPreco.findAll({ where: { idProduto: produto.codProduto }, order: [['criado_em', 'DESC']], limit: 30, attributes: ['preco', 'criado_em'] })
+        return res.json({ ...produto.toJSON(), avaliacoes: { total: Number(estatisticas.total), media: estatisticas.media ? Number(estatisticas.media) : null }, historicoPrecos: historico })
     } catch (err) {
         return res.status(500).json({ erro: 'Erro ao buscar produto.', detalhe: err.message })
     }
@@ -101,71 +108,10 @@ const buscar = async (req, res) => {
     }
 }
 
-// POST /api/produtos (admin)
-const criar = async (req, res) => {
-    try {
-        const { nome, descricao, preco, preco_promocional, imagem_url, video_url, tamanhos_disponiveis, cores, marca, codigo_produto, idCategoria, destaque } = req.body
-
-        if (!nome || !preco || !idCategoria) {
-            return res.status(400).json({ erro: 'Nome, preço e categoria são obrigatórios.' })
-        }
-
-        const categoriaExiste = await Categoria.findByPk(idCategoria)
-        if (!categoriaExiste) return res.status(404).json({ erro: 'Categoria não encontrada.' })
-
-        const produto = await Produto.create({
-            nome, descricao, preco, preco_promocional, imagem_url, video_url,
-            tamanhos_disponiveis, cores, marca, codigo_produto, idCategoria, destaque
-        })
-
-        // Cria estoque zerado automaticamente
-        await Estoque.create({ idProduto: produto.codProduto, quantidade: 0 })
-
-        return res.status(201).json({ mensagem: 'Produto cadastrado com sucesso!', produto })
-    } catch (err) {
-        return res.status(500).json({ erro: 'Erro ao cadastrar produto.', detalhe: err.message })
-    }
-}
-
-// PUT /api/produtos/:id (admin)
-const atualizar = async (req, res) => {
-    try {
-        const produto = await Produto.findByPk(req.params.id)
-        if (!produto) return res.status(404).json({ erro: 'Produto não encontrado.' })
-        await produto.update(req.body)
-        return res.json({ mensagem: 'Produto atualizado com sucesso!', produto })
-    } catch (err) {
-        return res.status(500).json({ erro: 'Erro ao atualizar produto.', detalhe: err.message })
-    }
-}
-
-// PATCH /api/produtos/:id (admin)
-const atualizarParcial = async (req, res) => {
-    try {
-        const produto = await Produto.findByPk(req.params.id)
-        if (!produto) return res.status(404).json({ erro: 'Produto não encontrado.' })
-
-        const camposPermitidos = ['nome', 'descricao', 'preco', 'preco_promocional', 'imagem_url', 'marca', 'destaque', 'ativo']
-        const atualizacoes = {}
-        camposPermitidos.forEach(c => { if (req.body[c] !== undefined) atualizacoes[c] = req.body[c] })
-
-        await produto.update(atualizacoes)
-        return res.json({ mensagem: 'Produto atualizado com sucesso!' })
-    } catch (err) {
-        return res.status(500).json({ erro: 'Erro ao atualizar produto.', detalhe: err.message })
-    }
-}
-
-// DELETE /api/produtos/:id (admin — soft delete)
-const deletar = async (req, res) => {
-    try {
-        const produto = await Produto.findByPk(req.params.id)
-        if (!produto) return res.status(404).json({ erro: 'Produto não encontrado.' })
-        await produto.update({ ativo: false })
-        return res.json({ mensagem: 'Produto removido com sucesso.' })
-    } catch (err) {
-        return res.status(500).json({ erro: 'Erro ao remover produto.', detalhe: err.message })
-    }
-}
-
+const { salvarProduto } = require('../services/produto.service')
+const { handler, id } = require('../utils/api.util')
+const criar = handler(async (req, res) => res.status(201).json({ produto: await salvarProduto(req.body) }))
+const atualizar = handler(async (req, res) => res.json({ produto: await salvarProduto(req.body, id(req.params.id)) }))
+const atualizarParcial = atualizar
+const deletar = handler(async (req, res) => res.json({ produto: await salvarProduto({ ativo: false }, id(req.params.id)) }))
 module.exports = { listar, getById, buscar, criar, atualizar, atualizarParcial, deletar }

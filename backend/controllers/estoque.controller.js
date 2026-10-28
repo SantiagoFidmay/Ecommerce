@@ -1,4 +1,4 @@
-const { Estoque, Produto } = require('../models/rel')
+const { Estoque, Produto, Variante } = require('../models/rel')
 
 // GET /api/estoque (admin)
 const listar = async (req, res) => {
@@ -31,6 +31,8 @@ const getByProduto = async (req, res) => {
 const criar = async (req, res) => {
     try {
         const { idProduto, quantidade, quantidade_minima } = req.body
+        if (!Number.isSafeInteger(quantidade) || quantidade < 0 || (quantidade_minima !== undefined && (!Number.isSafeInteger(quantidade_minima) || quantidade_minima < 0))) return res.status(400).json({ erro: 'Quantidades devem ser inteiros não negativos.' })
+        if (await Variante.count({ where: { idProduto } })) return res.status(409).json({ erro: 'Este produto usa opções de tamanho e cor. Movimente o estoque da opção no painel.' })
 
         if (!idProduto || quantidade === undefined) {
             return res.status(400).json({ erro: 'idProduto e quantidade são obrigatórios.' })
@@ -61,6 +63,8 @@ const atualizar = async (req, res) => {
         if (!estoque) return res.status(404).json({ erro: 'Registro de estoque não encontrado.' })
 
         const { quantidade, quantidade_minima } = req.body
+        if (await Variante.count({ where: { idProduto: estoque.idProduto } })) return res.status(409).json({ erro: 'Movimente o estoque por tamanho e cor no painel.' })
+        if (!Number.isSafeInteger(quantidade) || quantidade < 0 || (quantidade_minima !== undefined && (!Number.isSafeInteger(quantidade_minima) || quantidade_minima < 0))) return res.status(400).json({ erro: 'Quantidades devem ser inteiros não negativos.' })
         await estoque.update({ quantidade, quantidade_minima, ultima_atualizacao: new Date() })
 
         return res.json({ mensagem: 'Estoque atualizado com sucesso!', estoque })
@@ -76,6 +80,8 @@ const movimentar = async (req, res) => {
         if (!estoque) return res.status(404).json({ erro: 'Estoque não encontrado.' })
 
         const { tipo, quantidade } = req.body
+        if (await Variante.count({ where: { idProduto: estoque.idProduto } })) return res.status(409).json({ erro: 'Movimente o estoque por tamanho e cor no painel.' })
+        if (!Number.isSafeInteger(quantidade) || quantidade < 1) return res.status(400).json({ erro: 'Quantidade deve ser um inteiro positivo.' })
         if (!tipo || !quantidade) return res.status(400).json({ erro: 'Tipo (entrada/saida) e quantidade são obrigatórios.' })
 
         let novaQtd = estoque.quantidade

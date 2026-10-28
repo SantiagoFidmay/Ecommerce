@@ -11,6 +11,8 @@ let admin, db, models, server, base, token, usuario, produto, categoria
 before(async () => {
     admin = await mysql.createConnection(config)
     await admin.query('CREATE DATABASE ' + mysql.escapeId(nomeTeste))
+    delete process.env.MYSQL_URL
+    delete process.env.DATABASE_URL
     process.env.DB_NAME = nomeTeste
     db = require('../db/conn')
     db.options.logging = false

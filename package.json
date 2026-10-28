@@ -1,0 +1,17 @@
+{
+  "name": "sport-kicks",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "setup": "npm --prefix backend ci",
+    "dev": "node tools/dev.js",
+    "build": "node tools/build-site.js",
+    "preview": "node tools/serve-built.js",
+    "test": "npm --prefix backend test",
+    "check": "node tools/check.js",
+    "demo": "npm --prefix backend run seed:demo"
+  },
+  "engines": {
+    "node": ">=22 <27"
+  }
+}

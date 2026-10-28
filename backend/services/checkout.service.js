@@ -1,4 +1,4 @@
-const { Produto, Estoque } = require('../models/rel')
+const { Produto, Estoque, Variante } = require('../models/rel')
 const { calcularDesconto, calcularFrete } = require('../utils/desconto.util')
 
 const falhar = (status, mensagem) => { throw Object.assign(new Error(mensagem), { status }) }
@@ -12,13 +12,14 @@ function validarItens(itens) {
             !Number.isSafeInteger(item.quantidade) || item.quantidade < 1 || item.quantidade > 999) {
             falhar(400, 'Produto inválido ou quantidade inválida. Use inteiros de 1 a 999.')
         }
-        for (const [campo, limite] of [['tamanho', 10], ['cor', 50]]) {
+        for (const [campo, limite] of [['tamanho', 20], ['cor', 50]]) {
             if (item[campo] != null && (typeof item[campo] !== 'string' || item[campo].length > limite)) {
                 falhar(400, `O campo ${campo} é inválido.`)
             }
         }
         // Não aceitar preço, subtotal ou outros campos enviados pelo navegador.
-        return { idProduto: item.idProduto, quantidade: item.quantidade,
+        if (item.idVariante != null && (!Number.isSafeInteger(item.idVariante) || item.idVariante < 1)) falhar(400, 'Opção de produto inválida.')
+        return { idProduto: item.idProduto, idVariante: item.idVariante ?? null, quantidade: item.quantidade,
             tamanho: item.tamanho?.trim() || null, cor: item.cor?.trim() || null }
     })
 }
@@ -48,6 +49,7 @@ async function calcularResumo(itens, transaction, bloquear = false) {
     const quantidades = new Map()
     for (const item of itens) quantidades.set(item.idProduto, (quantidades.get(item.idProduto) || 0) + item.quantidade)
     const produtos = new Map()
+    const opcoes = new Map()
     // Mesma ordem de bloqueio em todos os pedidos para reduzir deadlocks.
     for (const id of [...quantidades.keys()].sort((a, b) => a - b)) {
         const options = { transaction, ...(bloquear ? { lock: transaction.LOCK.UPDATE } : {}) }
@@ -56,6 +58,20 @@ async function calcularResumo(itens, transaction, bloquear = false) {
         const estoque = await Estoque.findOne({ where: { idProduto: id }, ...options })
         if (!estoque || estoque.quantidade < quantidades.get(id)) {
             falhar(409, `Estoque insuficiente para ${produto.nome}. Disponível: ${estoque?.quantidade || 0}.`)
+        }
+        const variantes = await Variante.findAll({ where: { idProduto: id }, order: [['codVariante', 'ASC']], ...options })
+        const solicitadas = itens.filter(item => item.idProduto === id)
+        const acumulado = new Map()
+        for (const item of solicitadas) {
+            const variante = item.idVariante ? variantes.find(v => v.codVariante === item.idVariante && v.ativo)
+                : variantes.length === 1 && variantes[0].legado && variantes[0].ativo ? variantes[0] : null
+            if ((item.idVariante || variantes.length) && !variante) falhar(409, `Selecione tamanho e cor disponíveis para ${produto.nome}.`)
+            if (variante) acumulado.set(variante.codVariante, (acumulado.get(variante.codVariante) || 0) + item.quantidade)
+            opcoes.set(item, variante)
+        }
+        for (const [codigo, quantidade] of acumulado) {
+            const variante = variantes.find(v => v.codVariante === codigo)
+            if (variante.quantidade < quantidade) falhar(409, `Estoque insuficiente para ${produto.nome}, tamanho ${variante.tamanho}, cor ${variante.cor}.`)
         }
         produtos.set(id, produto)
     }
@@ -66,7 +82,9 @@ async function calcularResumo(itens, transaction, bloquear = false) {
         if (!Number.isSafeInteger(centavos) || centavos <= 0) falhar(409, 'Produto com preço inválido. Entre em contato com a loja.')
         const subtotal = centavos * item.quantidade
         subtotalCentavos += subtotal
-        return { ...item, nome: produto.nome, imagem_url: produto.imagem_url, preco: centavos / 100, subtotal: subtotal / 100 }
+        const variante = opcoes.get(item)
+        return { ...item, idVariante: variante?.codVariante ?? null, tamanho: variante?.tamanho ?? item.tamanho, cor: variante?.cor ?? item.cor,
+            nome: produto.nome, imagem_url: produto.imagem_url, preco: centavos / 100, subtotal: subtotal / 100 }
     })
     if (!Number.isSafeInteger(subtotalCentavos) || subtotalCentavos > 9999999999) falhar(400, 'O pedido excede o valor máximo permitido.')
     const valorSubtotal = subtotalCentavos / 100

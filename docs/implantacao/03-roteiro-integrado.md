@@ -1,5 +1,8 @@
 # Roteiro integrado e rastreabilidade
 
+> Registro histórico do planejamento de 21/10/2026. As referências abaixo a carrinho incompleto, checkout simulado e telas de conta ausentes descrevem aquele estágio. Para os procedimentos atuais de compra, perfil e histórico, consulte o Manual do usuário, revisado em 27/10/2026. O plano será readequado antes de uma nova turma.
+
+
 **Sport Kicks — implantação e treinamento**  
 Avaliação prática SENAI/SC · 21/10/2026 · Versão 1.0  
 Conjunto: plano de treinamento + manual do usuário + roteiro integrado.

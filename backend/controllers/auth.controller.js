@@ -1,31 +1,20 @@
-const jwt      = require('jsonwebtoken')
 const bcrypt   = require('bcryptjs')
 const { Usuario } = require('../models/rel')
 const { validarCPF } = require('../utils/cpf.util')
 
-// Gera um JWT para o usuário
-const gerarToken = (usuario) => {
-    return jwt.sign(
-        {
-            id:   usuario.codUsuario,
-            email: usuario.email,
-            tipo: usuario.tipo_usuario
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-    )
-}
+const { criarSessao } = require('../services/sessao.service')
 
 // POST /api/login
 const login = async (req, res) => {
     try {
-        const { email, senha } = req.body
+        const { email, senha } = req.body || {}
+        if (typeof email !== 'string' || typeof senha !== 'string' || email.length > 150 || Buffer.byteLength(senha, 'utf8') > 72) return res.status(400).json({ erro: 'Credenciais inválidas.' })
 
         if (!email || !senha) {
             return res.status(400).json({ erro: 'E-mail e senha são obrigatórios.' })
         }
 
-        const usuario = await Usuario.findOne({ where: { email, ativo: true } })
+        const usuario = await Usuario.findOne({ where: { email: email.trim().toLowerCase(), ativo: true } })
 
         if (!usuario) {
             return res.status(401).json({ erro: 'Credenciais inválidas.' })
@@ -36,7 +25,7 @@ const login = async (req, res) => {
             return res.status(401).json({ erro: 'Credenciais inválidas.' })
         }
 
-        const token = gerarToken(usuario)
+        const token = await criarSessao(usuario)
 
         return res.json({
             mensagem: 'Login realizado com sucesso!',
@@ -58,15 +47,17 @@ const cadastrar = async (req, res) => {
     try {
         const { nome, email, cpf, senha, telefone, cep, rua, numero, complemento, bairro, cidade, estado } = req.body
 
-        if (!nome || !email || !cpf || !senha) {
-            return res.status(400).json({ erro: 'Nome, e-mail, CPF e senha são obrigatórios.' })
+        if (typeof nome !== 'string' || !nome.trim() || nome.length > 100 || typeof email !== 'string' || email.length > 150 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) || typeof cpf !== 'string' || typeof senha !== 'string' || senha.length < 8 || Buffer.byteLength(senha, 'utf8') > 72) {
+            return res.status(400).json({ erro: 'Confira nome, e-mail, CPF e senha (mínimo de 8 caracteres).' })
         }
 
         if (!validarCPF(cpf)) {
             return res.status(400).json({ erro: 'CPF inválido. Verifique os dígitos informados.' })
         }
 
-        const emailExiste = await Usuario.findOne({ where: { email } })
+        try { require('../services/checkout.service').validarEndereco({ cep, rua, numero, complemento, bairro, cidade, estado }) }
+        catch (erro) { return res.status(400).json({ erro: erro.message }) }
+        const emailExiste = await Usuario.findOne({ where: { email: email.trim().toLowerCase() } })
         if (emailExiste) {
             return res.status(409).json({ erro: 'E-mail já cadastrado.' })
         }
@@ -82,8 +73,8 @@ const cadastrar = async (req, res) => {
         const senhaHash  = await bcrypt.hash(senha, saltRounds)
 
         const usuario = await Usuario.create({
-            nome,
-            email,
+            nome: nome.trim(),
+            email: email.trim().toLowerCase(),
             cpf: cpfLimpo,
             senha: senhaHash,
             telefone,
@@ -96,7 +87,7 @@ const cadastrar = async (req, res) => {
             estado
         })
 
-        const token = gerarToken(usuario)
+        const token = await criarSessao(usuario)
 
         return res.status(201).json({
             mensagem: 'Cadastro realizado com sucesso!',

@@ -15,6 +15,7 @@ const Produto = db.define('produto', {
             key: 'codCategoria'
         }
     },
+    idMarca: { type: DataTypes.INTEGER, allowNull: true },
     nome: {
         type: DataTypes.STRING(150),
         allowNull: false

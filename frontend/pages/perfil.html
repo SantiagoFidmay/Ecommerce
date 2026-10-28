@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Meu perfil | Sport Kicks</title>
+  <link rel="stylesheet" href="../css/global.css"><link rel="stylesheet" href="../css/conta.css">
+  <link rel="stylesheet" href="../css/loja.css">
+</head>
+<body class="page-wrapper conta-body">
+
+<nav class="navbar scrolled" id="navbar" aria-label="Navegação principal">
+  <div class="navbar-inner">
+    <a href="../index.html" class="navbar-logo">SPORT<span>KICKS</span></a>
+    <div class="navbar-menu" id="navMenu">
+      <a class="navbar-link" href="../index.html">Início</a><a class="navbar-link" href="catalogo.html">Catálogo</a><a class="navbar-link" href="pedidos.html">Meus pedidos</a>
+    </div>
+    <div class="navbar-actions">
+      <a href="perfil.html" class="btn btn-ghost btn-sm" id="btnLogin">Minha conta</a>
+      <a href="carrinho.html" class="cart-btn" aria-label="Carrinho">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-badge" id="cartBadge" style="display:none">0</span>
+      </a>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<div class="toast-container" id="toastContainer"></div>
+<main class="container conta-page">
+  <header class="conta-header"><span class="conta-eyebrow">SUA CONTA SPORT KICKS</span><h1 id="contaNome">Meu perfil</h1><p>Seus dados, seu endereço e sua conta em um só lugar.</p></header>
+  <div class="conta-layout">
+    <nav class="conta-sidebar" aria-label="Minha conta"><a href="perfil.html" aria-current="page">Meu perfil</a><a href="pedidos.html">Meus pedidos</a><button id="sairConta" type="button">Sair da conta</button></nav>
+    <div class="conta-content">
+<section class="conta-card">
+  <h2>Dados pessoais</h2>
+  <p class="conta-muted">Mantenha seus dados e o endereço das próximas entregas atualizados.</p>
+  <p id="perfilMessage" role="status" aria-live="polite" hidden></p>
+  <button id="tentarPerfil" class="btn btn-outline" hidden>Tentar novamente</button>
+  <form id="perfilForm">
+    <fieldset id="perfilCampos" class="conta-fieldset" disabled>
+      <legend class="sr-only">Dados pessoais e endereço</legend>
+      <div class="conta-grid">
+        <div class="form-group conta-wide"><label class="form-label" for="nome">Nome completo</label><input class="form-control" id="nome" required minlength="2" maxlength="100" autocomplete="name"></div>
+        <div class="form-group"><label class="form-label" for="email">E-mail</label><input class="form-control" id="email" type="email" readonly autocomplete="email"></div>
+        <div class="form-group"><label class="form-label" for="cpf">CPF</label><input class="form-control" id="cpf" readonly></div>
+        <div class="form-group"><label class="form-label" for="telefone">Telefone com DDD</label><input class="form-control" id="telefone" type="tel" maxlength="20" autocomplete="tel" placeholder="(11) 99999-9999"></div>
+      </div>
+      <p class="conta-muted">E-mail e CPF são dados de identificação e ficam apenas para consulta nesta tela.</p>
+      <h3 class="conta-section-title">Endereço principal</h3>
+      <div class="conta-grid">
+        <div class="conta-cep conta-wide">
+          <div class="form-group"><label class="form-label" for="cep">CEP</label><input class="form-control" id="cep" required inputmode="numeric" maxlength="9" pattern="[0-9]{5}-?[0-9]{3}" autocomplete="postal-code" placeholder="00000-000" aria-describedby="cepMessage"></div>
+          <button type="button" id="buscarCepPerfil" class="btn btn-outline btn-sm">Buscar CEP</button>
+        </div>
+        <p class="conta-wide" id="cepMessage" role="status" hidden></p>
+        <div class="form-group conta-wide"><label class="form-label" for="rua">Rua / Avenida</label><input class="form-control" id="rua" required maxlength="200" autocomplete="address-line1"></div>
+        <div class="form-group"><label class="form-label" for="numero">Número</label><input class="form-control" id="numero" required maxlength="20" placeholder="Ex.: 123 ou s/n"></div>
+        <div class="form-group"><label class="form-label" for="complemento">Complemento (opcional)</label><input class="form-control" id="complemento" maxlength="100" autocomplete="address-line2"></div>
+        <div class="form-group"><label class="form-label" for="bairro">Bairro</label><input class="form-control" id="bairro" required maxlength="100"></div>
+        <div class="form-group"><label class="form-label" for="cidade">Cidade</label><input class="form-control" id="cidade" required maxlength="100" autocomplete="address-level2"></div>
+        <div class="form-group"><label class="form-label" for="estado">Estado (UF)</label><input class="form-control" id="estado" required maxlength="2" pattern="[A-Za-z]{2}" autocomplete="address-level1" placeholder="SP"></div>
+      </div>
+      <button id="salvarPerfil" type="submit" class="btn btn-primary">Salvar alterações</button>
+    </fieldset>
+  </form>
+</section>
+<section class="conta-card">
+  <h2>Alterar senha</h2>
+  <p class="conta-muted">Confirme sua senha atual para escolher uma nova.</p>
+  <p id="senhaMessage" role="status" aria-live="polite" hidden></p>
+  <form id="senhaForm">
+    <fieldset id="senhaCampos" class="conta-fieldset" disabled>
+      <legend class="sr-only">Alteração de senha</legend>
+      <div class="conta-grid">
+        <div class="form-group conta-wide"><label class="form-label" for="senhaAtual">Senha atual</label><input class="form-control" id="senhaAtual" type="password" required maxlength="72" autocomplete="current-password"></div>
+        <div class="form-group"><label class="form-label" for="novaSenha">Nova senha</label><input class="form-control" id="novaSenha" type="password" required minlength="8" maxlength="72" autocomplete="new-password" placeholder="Pelo menos 8 caracteres"></div>
+        <div class="form-group"><label class="form-label" for="confirmarSenha">Confirmar nova senha</label><input class="form-control" id="confirmarSenha" type="password" required minlength="8" maxlength="72" autocomplete="new-password"></div>
+      </div>
+      <button type="submit" class="btn btn-outline">Alterar senha</button>
+    </fieldset>
+  </form>
+</section>
+</div>
+  </div>
+  <footer class="conta-footer"><a href="ajuda.html">Precisa de ajuda? Consulte o manual da loja.</a></footer>
+</main>
+<script src="../js/auth.js"></script><script src="../js/carrinho.js"></script><script src="../js/config.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/loja.js"></script><script src="../js/conta.js"></script><script src="../js/perfil.js"></script>
+</body>
+</html>

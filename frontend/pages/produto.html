@@ -7,6 +7,7 @@
   <title>Produto | Sport Kicks</title>
   <link rel="stylesheet" href="../css/global.css">
   <link rel="stylesheet" href="../css/produto.css">
+  <link rel="stylesheet" href="../css/loja.css">
 </head>
 <body class="page-wrapper">
 
@@ -63,53 +64,28 @@
     <div class="pdp-info">
       <div class="pdp-brand" id="pdpBrand">CARREGANDO...</div>
       <h1 class="pdp-title" id="pdpTitle">Nome do Produto</h1>
-      <div class="pdp-rating">
-        <span style="color:#f59e0b; letter-spacing:2px; font-size:1.1rem">★★★★★</span> 
-        <span style="color:var(--text-muted); font-size: 0.9rem; margin-left:0.5rem">(41)</span>
-      </div>
+      <p class="pdp-rating conta-muted" id="pdpRating">Carregando avaliações…</p>
 
       <div class="pdp-price-container">
         <div id="pdpOldPrice" class="pdp-price-old" style="display:none">R$ 0,00</div>
         <div id="pdpPrice" class="pdp-price">R$ 0,00</div>
-        <div class="pdp-installments">Até 10x de <span id="pdpInstallment">R$ 0,00</span> sem juros</div>
-        <div style="font-size:0.8rem; text-decoration:underline; color:var(--text-secondary); margin-top:0.2rem">Outras opções de pagamento</div>
+        <div class="pdp-installments">Simulação: 10x de <span id="pdpInstallment">R$ 0,00</span> (sem cobrança real)</div>
+        <div style="font-size:0.8rem; text-decoration:underline; color:var(--text-secondary); margin-top:0.2rem">Pagamento somente em demonstração</div>
       </div>
 
-      <div class="pdp-alert">
-        ✨ <strong>Tendência!</strong> Este artigo tem muita procura.
-      </div>
-
-      <!-- Cores -->
-      <div class="pdp-section">
-        <h3 class="pdp-section-title">Cores</h3>
-        <div class="pdp-colors">
-          <div class="color-swatch active" style="background:#0d0d14"></div>
-          <div class="color-swatch" style="background:#e2e8f0"></div>
-          <div class="color-swatch" style="background:#ef4444"></div>
-        </div>
-      </div>
-
-      <!-- Tamanhos -->
-      <div class="pdp-section">
-        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
-          <h3 class="pdp-section-title">Tamanhos</h3>
-          <a href="#" style="font-size:0.8rem; color:var(--text-muted); text-decoration:underline;">Guia de tamanhos</a>
-        </div>
-        <div class="pdp-sizes">
-          <button class="size-btn">38</button>
-          <button class="size-btn">39</button>
-          <button class="size-btn active">40</button>
-          <button class="size-btn">41</button>
-          <button class="size-btn">42</button>
-          <button class="size-btn disabled">43</button>
-        </div>
-      </div>
-
+      <div class="pdp-section"><h3 class="pdp-section-title">Cor</h3><div class="pdp-colors" id="pdpColors"></div></div>
+      <div class="pdp-section"><h3 class="pdp-section-title">Tamanho</h3><div class="pdp-sizes" id="pdpSizes"></div></div>
+      <p id="pdpAvailability" class="loja-subtitle" role="status"></p>
       <!-- Ações -->
       <div class="pdp-actions">
         <button class="btn btn-primary btn-xl" id="btnAddToCart" style="width: 100%; justify-content:center">
-          Adicionar ao Carrinho
+          Adicionar ao carrinho
         </button>
+        <div class="loja-actions">
+          <button id="pdpNotify" class="btn btn-outline btn-sm" hidden>Avise quando chegar</button>
+          <button id="pdpCompare" class="btn btn-outline btn-sm">Comparar</button>
+          <button id="pdpFavorite" class="btn btn-ghost btn-sm">Salvar na coleção</button>
+        </div>
       </div>
 
     </div>
@@ -125,91 +101,17 @@
     <a class="pdp-review-link" id="pdpReviewLink" target="_blank" rel="noopener noreferrer">Assistir no YouTube ↗</a>
   </section>
 
-  <!-- ACCORDION DETALHES -->
-  <section class="container" style="margin-top: 4rem; margin-bottom: 6rem; max-width: 800px; margin-left: auto; margin-right: auto;">
-    
-    <!-- Características Topo -->
-    <div class="pdp-features-top">
-      <div class="feature-top-item">
-        <span style="font-size: 1.8rem;">🏃</span>
-        <div>
-          <div style="font-size: 0.8rem; color: var(--text-muted);">Ideal para</div>
-          <div style="font-weight: 700; letter-spacing: 1px;">CORRIDA DE RUA</div>
-        </div>
-      </div>
-      <div class="feature-top-item">
-        <span style="font-size: 1.8rem;">👣</span>
-        <div>
-          <div style="font-size: 0.8rem; color: var(--text-muted);">Tipo de pisada</div>
-          <div style="font-weight: 700; letter-spacing: 1px;">NEUTRA</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion">
-      <div class="accordion-item">
-        <button class="accordion-header" onclick="toggleAccordion(this)">
-          Avaliações (41)
-          <span class="accordion-icon">★★★★★ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
-        </button>
-        <div class="accordion-content">
-          <p>Os clientes elogiam bastante o amortecimento e o ajuste perfeito deste modelo. Excelente custo-benefício.</p>
-        </div>
-      </div>
-
-      <div class="accordion-item">
-        <button class="accordion-header" onclick="toggleAccordion(this)">
-          Tamanho e ajuste
-          <span class="accordion-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
-        </button>
-        <div class="accordion-content">
-          <p>Forma padrão. Recomendamos comprar o tamanho que você costuma usar para corrida. O cabedal se adapta bem a pés mais largos.</p>
-        </div>
-      </div>
-
-      <div class="accordion-item">
-        <button class="accordion-header" onclick="toggleAccordion(this)">
-          Descrição
-          <span class="accordion-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
-        </button>
-        <div class="accordion-content" id="pdpDescription">
-          <p>Carregando descrição do produto...</p>
-        </div>
-      </div>
-
-      <div class="accordion-item">
-        <button class="accordion-header" onclick="toggleAccordion(this)">
-          Detalhes
-          <span class="accordion-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
-        </button>
-        <div class="accordion-content">
-          <ul style="padding-left:1.5rem; color:var(--text-secondary); line-height:1.6">
-            <li>Cabedal em malha respirável para maior ventilação</li>
-            <li>Entressola com amortecimento responsivo e tecnologia de retorno de energia</li>
-            <li>Solado de borracha continental para máxima aderência</li>
-            <li>Peso: aprox. 250g</li>
-            <li>Drop da entressola: 10mm</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="accordion-item">
-        <button class="accordion-header" onclick="toggleAccordion(this)">
-          Tecnologia
-          <span class="accordion-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
-        </button>
-        <div class="accordion-content">
-          <p>Equipado com a mais recente espuma de dupla densidade, garante absorção de impacto no calcanhar e impulso extra na ponta dos pés.</p>
-        </div>
-      </div>
-    </div>
+  <section class="container" style="margin-top:3rem;margin-bottom:5rem">
+    <div class="loja-panel"><h2>Sobre este modelo</h2><p id="pdpDescription" class="loja-subtitle"></p><dl id="pdpFicha" class="loja-ficha"></dl><a id="pdpFonte" target="_blank" rel="noopener noreferrer" hidden>Consultar fonte da ficha técnica ↗</a></div>
+    <div class="loja-panel"><h2>Histórico de preço</h2><p class="loja-subtitle">Preços registrados nesta loja desde o início do acompanhamento.</p><div id="pdpHistory"></div></div>
+    <div class="loja-panel"><h2>Avaliações de compras verificadas</h2><div id="pdpReviews"></div><p class="loja-subtitle">Após a entrega, avalie o ajuste e sua experiência pelos detalhes do pedido.</p></div>
   </section>
-
-  <!-- FOOTER OMITTED FOR BREVITY, WILL JUST USE THE NAVBAR ONE -->
 
   <script src="../js/auth.js"></script>
   <script src="../js/carrinho.js"></script>
+  <script src="../js/config.js"></script>
   <script src="../js/api.js"></script>
+  <script src="../js/loja.js"></script>
   <script src="../js/produto.js"></script>
 </body>
 </html>

@@ -2,6 +2,10 @@
 
 Material elaborado para a atividade de 21/10/2026, alinhado ao documento `Sistema_ecommerce_7_tabelas (1).md` e ao estágio atual da Sport Kicks. O sistema permanece em desenvolvimento. Esta entrega acrescenta documentação e acesso à ajuda; não conclui as funcionalidades pendentes.
 
+## Revisão de 27/10/2026
+
+O manual foi atualizado para o carrinho integrado, o registro de pedidos, o perfil e o histórico. Plano e roteiro de 21/10 permanecem como registros históricos, identificados no início de cada documento. As etapas e testes atuais estão em [evolucao.md](../evolucao.md). Os registros de verificação abaixo referem-se à entrega documental original.
+
 ## Arquivos para revisão
 
 | Entrega | Fonte editável | PDF para entrega |

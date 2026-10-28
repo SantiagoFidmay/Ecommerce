@@ -80,8 +80,8 @@ function renderizarResumo(resumo) {
 }
 
 function redirecionarLoginCheckout() {
-  sessionStorage.setItem('sk_redirect', window.location.pathname);
-  window.location.href = 'login.html';
+  Auth.clearSession();
+  Auth.requireAuth();
 }
 
 function togglePaymentView() {
@@ -111,16 +111,26 @@ async function processarPagamento() {
   document.getElementById('btnText').textContent = 'Registrando pedido…';
   document.getElementById('btnLoader').classList.remove('hidden');
   try {
+    const impressao = JSON.stringify({ itens, endereco_entrega, pagamento: document.querySelector('input[name="payment"]:checked').value });
+    let tentativa;
+    try { tentativa = JSON.parse(sessionStorage.getItem('sk_checkout_attempt')); } catch { tentativa = null; }
+    if (!tentativa || tentativa.impressao !== impressao) {
+      tentativa = { impressao, chave: crypto.randomUUID() };
+      sessionStorage.setItem('sk_checkout_attempt', JSON.stringify(tentativa));
+    }
     const res = await Api.criarPedido({ itens, endereco_entrega,
+      chaveCheckout: tentativa.chave,
       forma_pagamento: pagamentos[document.querySelector('input[name="payment"]:checked').value],
       valorTotalEsperado: resumoCheckout.valorTotal });
     if (!res.pedido?.id) throw new Error('A resposta do pedido não pôde ser confirmada.');
     pedidoConcluido = true;
+    sessionStorage.removeItem('sk_checkout_attempt');
     // Preserva alterações feitas em outra aba durante o envio.
     if (JSON.stringify(Carrinho.toApiPayload()) === carrinhoConferido) Carrinho.limpar();
     document.getElementById('successMessage').textContent = `Pedido #${res.pedido.id} registrado. Total: ${moedaCheckout(res.pedido.valorTotal)}. Pagamento pendente; nenhum valor foi cobrado.`;
     document.getElementById('successModal').classList.remove('hidden');
-    document.getElementById('successHome').focus();
+    document.getElementById('successOrder').href = `pedido.html?id=${encodeURIComponent(res.pedido.id)}`;
+    document.getElementById('successOrder').focus();
   } catch (err) {
     if (err.status === 401) redirecionarLoginCheckout();
     if (err.status === 409) await carregarResumoCheckout();
