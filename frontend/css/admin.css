@@ -15,5 +15,26 @@
 .admin-tab textarea { resize: vertical; }
 .admin-tab button:disabled { opacity: 0.55; }
 .admin-tab .form-control { max-width: 100%; }
+.admin-gestao-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 1rem 0; flex-wrap: wrap; }
+.admin-gestao-toolbar { display: grid; grid-template-columns: minmax(140px,1fr) minmax(140px,1fr) minmax(170px,1.5fr); gap: 1rem; align-items: end; }
+.admin-gestao-toolbar > div { min-width: 0; }
+.admin-gestao-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+.admin-gestao-toolbar .admin-gestao-actions { grid-column: 1 / -1; }
+#gestaoResultados, #gestaoEditor, #gestaoDetalhes { min-width: 0; }
+#gestaoResultados td { overflow-wrap: anywhere; max-width: 330px; }
+#gestaoResultados td:nth-child(4) { min-width: 150px; overflow-wrap: normal; }
+#gestaoEditor, #gestaoDetalhes, #produtoForm { scroll-margin-top: calc(var(--navbar-h) + 1rem); }
+#gestaoResultados .admin-gestao-actions { min-width: 180px; }
+.admin-gestao-item { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1.2fr) minmax(80px,0.6fr) auto; gap: 0.75rem; align-items: end; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; margin: 1rem 0; }
+.admin-gestao-item > div { min-width: 0; }
+.admin-gestao-detalhes { display: grid; grid-template-columns: minmax(120px,1fr) minmax(0,2fr); gap: 0.75rem 1.5rem; margin: 1rem 0; }
+.admin-gestao-detalhes dt { color: var(--text-secondary); }
+.admin-gestao-detalhes dd { margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+.admin-gestao-help { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.4rem; }
+.admin-gestao-danger { color: #fca5a5; border-color: rgba(239,68,68,0.5); }
+#gestaoMensagem[hidden], #gestaoEditor[hidden], #gestaoDetalhes[hidden], #gestaoItensArea[hidden], #gestaoTotais[hidden], #gestaoSalvarCompleto[hidden], #gestaoCalcular[hidden] { display: none; }
+#produtoSalvarCompleto[hidden], .gestao-remover-item[hidden] { display: none; }
+#gestaoCamposGrid :disabled { opacity: 0.8; }
 @media(max-width:900px) { .admin-charts { grid-template-columns: 1fr; } .admin-metrics { grid-template-columns: 1fr 1fr; } }
 @media(max-width:480px) { .admin-metrics { grid-template-columns: 1fr; } .admin-tabs .btn { flex: 1 1 40%; } }
+@media(max-width:650px) { .admin-gestao-toolbar, .admin-gestao-item { grid-template-columns: 1fr; } .admin-gestao-toolbar .admin-gestao-actions { grid-column: auto; } .admin-gestao-detalhes { grid-template-columns: 1fr; gap: 0.3rem; } .admin-gestao-detalhes dd { margin-bottom: 0.75rem; } #gestaoEditor, #gestaoDetalhes { padding: 1rem; } }

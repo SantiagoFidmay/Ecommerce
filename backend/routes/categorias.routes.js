@@ -4,6 +4,8 @@ const { autenticar, apenasAdmin } = require('../middlewares/auth.middleware');
 
 // Rotas públicas
 router.get('/', ctrl.listar);
+router.get('/buscar', autenticar, apenasAdmin, ctrl.buscarPorNome);
+router.get('/buscar/:nome', autenticar, apenasAdmin, ctrl.buscarPorNome);
 router.get('/:id', ctrl.getById);
 
 // Rotas privadas (admin)

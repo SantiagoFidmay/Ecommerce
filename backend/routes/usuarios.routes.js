@@ -5,6 +5,8 @@ const { autenticar, apenasAdmin } = require('../middlewares/auth.middleware');
 router.get('/perfil', autenticar, ctrl.getPerfil);
 router.patch('/perfil', autenticar, ctrl.atualizarParcial);
 router.get('/', autenticar, apenasAdmin, ctrl.listarTodos);
+router.get('/buscar', autenticar, apenasAdmin, ctrl.buscarPorNome);
+router.get('/buscar/:nome', autenticar, apenasAdmin, ctrl.buscarPorNome);
 router.get('/:id', autenticar, ctrl.getById);
 router.put('/:id', autenticar, ctrl.atualizar);
 router.patch('/:id', autenticar, ctrl.atualizarParcial);

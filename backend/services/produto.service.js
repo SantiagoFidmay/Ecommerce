@@ -34,7 +34,7 @@ async function salvarProduto(body, codigo = null) {
     const campos = { nome: 150, descricao: 10000, marca: 80, codigo_produto: 50 }
     const permitidos = [...Object.keys(campos), 'preco', 'preco_promocional', 'imagem_url', 'video_url', 'idCategoria', 'ativo', 'destaque', 'ficha', 'midias']
     if (Object.keys(body).some(c => !permitidos.includes(c))) falhar(400, 'Campo de produto não permitido.')
-    for (const [campo, max] of Object.entries(campos)) if (body[campo] !== undefined) dados[campo] = texto(body[campo], max, campo === 'nome')
+    for (const [campo, max] of Object.entries(campos)) if (body[campo] !== undefined) dados[campo] = body[campo] === null && campo === 'codigo_produto' ? null : texto(body[campo], max, campo === 'nome')
     for (const campo of ['preco', 'preco_promocional']) if (body[campo] !== undefined) {
         if (campo === 'preco_promocional' && (body[campo] === null || body[campo] === '')) dados[campo] = null
         else {

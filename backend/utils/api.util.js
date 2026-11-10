@@ -31,4 +31,10 @@ const handler = func => async (req, res) => {
         res.status(status).json({ erro: status === 409 && !erro.status ? 'Já existe um registro com esses dados.' : erro.status ? erro.message : 'Não foi possível concluir a operação.' })
     }
 }
-module.exports = { falhar, id, texto, youtube, urlPublica, handler }
+const validarCampos = (body, permitidos, obrigatorios = []) => {
+    if (!body || typeof body !== 'object' || Array.isArray(body) || !Object.keys(body).length) falhar(400, 'Informe os dados da operação.')
+    if (Object.keys(body).some(campo => !permitidos.includes(campo))) falhar(400, 'Campo não permitido.')
+    if (obrigatorios.some(campo => body[campo] === undefined)) falhar(400, `Campos obrigatórios: ${obrigatorios.join(', ')}.`)
+}
+const nomeBusca = req => texto(req.params.nome ?? req.query.nome, 100, true)
+module.exports = { falhar, id, texto, youtube, urlPublica, handler, validarCampos, nomeBusca }

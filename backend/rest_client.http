@@ -4,6 +4,11 @@
 @produto = 1
 @variante = 1
 @pedido = 1
+@categoria = 1
+@usuario = 1
+@estoque = 1
+@entrega = 1
+@item = 1
 
 ### Saúde e modo demonstrativo
 GET {{base}}/health
@@ -123,3 +128,129 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {}
+
+### CRUD administrativo: buscas por nome (produto/cliente conforme a entidade)
+GET {{base}}/usuarios/buscar?nome=Cliente
+Authorization: Bearer {{admin}}
+
+### Categoria por nome
+GET {{base}}/categorias/buscar?nome=Corrida
+Authorization: Bearer {{admin}}
+
+### Estoque por nome de produto
+GET {{base}}/estoque/buscar?nome=Boston
+Authorization: Bearer {{admin}}
+
+### Pedido por nome do cliente
+GET {{base}}/pedidos/buscar?nome=Cliente
+Authorization: Bearer {{admin}}
+
+### Entrega por nome do cliente
+GET {{base}}/entregas/buscar?nome=Cliente
+Authorization: Bearer {{admin}}
+
+### Estoque por código do registro
+GET {{base}}/estoque/{{estoque}}
+Authorization: Bearer {{admin}}
+
+### Atualização completa da categoria (opcionais omitidos são limpos)
+PUT {{base}}/categorias/{{categoria}}
+Authorization: Bearer {{admin}}
+Content-Type: application/json
+
+{"nome":"Corrida","descricao":"Tênis para corrida","icone":null,"ativo":true}
+
+### Atualizar somente estoque mínimo; saldo por variante continua no painel
+PATCH {{base}}/estoque/{{estoque}}
+Authorization: Bearer {{admin}}
+Content-Type: application/json
+
+{"quantidade_minima":2}
+
+### Atualização completa de pedido pendente (recalcula preços e reserva)
+PUT {{base}}/pedidos/{{pedido}}
+Authorization: Bearer {{admin}}
+Content-Type: application/json
+
+{"forma_pagamento":"PIX","observacoes":null,"itens":[{"idProduto":{{produto}},"idVariante":{{variante}},"quantidade":2}]}
+
+### Atualização parcial de observações do pedido pendente
+PATCH {{base}}/pedidos/{{pedido}}
+Authorization: Bearer {{admin}}
+Content-Type: application/json
+
+{"observacoes":"Conferir a embalagem."}
+
+### Listar itens de um pedido
+GET {{base}}/itens-pedido?idPedido={{pedido}}
+Authorization: Bearer {{admin}}
+
+### Buscar itens pelo nome do produto
+GET {{base}}/itens-pedido/buscar?nome=Boston
+Authorization: Bearer {{admin}}
+
+### Cadastrar item em pedido pendente (preço calculado pelo servidor)
+POST {{base}}/itens-pedido
+Authorization: Bearer {{admin}}
+Content-Type: application/json
+
+{"idPedido":{{pedido}},"idProduto":{{produto}},"idVariante":{{variante}},"quantidade":1}
+
+### Consultar item por código
+GET {{base}}/itens-pedido/{{item}}
+Authorization: Bearer {{admin}}
+
+### Atualização completa do item
+PUT {{base}}/itens-pedido/{{item}}
+Authorization: Bearer {{admin}}
+Content-Type: application/json
+
+{"idPedido":{{pedido}},"idProduto":{{produto}},"idVariante":{{variante}},"quantidade":2}
+
+### Atualização parcial do item
+PATCH {{base}}/itens-pedido/{{item}}
+Authorization: Bearer {{admin}}
+Content-Type: application/json
+
+{"quantidade":1}
+
+### Excluir um item (o pedido precisa manter pelo menos um)
+DELETE {{base}}/itens-pedido/{{item}}
+Authorization: Bearer {{admin}}
+
+### Consultar entrega por código
+GET {{base}}/entregas/{{entrega}}
+Authorization: Bearer {{admin}}
+
+### Cadastrar entrega somente se o pedido ainda não possuir uma
+POST {{base}}/entregas
+Authorization: Bearer {{admin}}
+Content-Type: application/json
+
+{"idPedido":{{pedido}},"endereco_entrega":"Rua Exemplo, 10 - Centro, São Paulo/SP","cep_entrega":"01001000"}
+
+### Atualização completa da entrega pendente
+PUT {{base}}/entregas/{{entrega}}
+Authorization: Bearer {{admin}}
+Content-Type: application/json
+
+{"idPedido":{{pedido}},"endereco_entrega":"Rua Exemplo, 10 - Centro, São Paulo/SP","cep_entrega":"01001000","status":"PENDENTE"}
+
+### Atualizar rastreio da entrega
+PATCH {{base}}/entregas/{{entrega}}
+Authorization: Bearer {{admin}}
+Content-Type: application/json
+
+{"codigo_rastreio":"BR123456789","transportadora":"Transportadora de teste"}
+
+### Excluir entrega pendente de pedido pendente/cancelado
+DELETE {{base}}/entregas/{{entrega}}
+Authorization: Bearer {{admin}}
+
+### Excluir pedido pendente/cancelado sem pagamento processado e devolver estoque
+DELETE {{base}}/pedidos/{{pedido}}
+Authorization: Bearer {{admin}}
+
+### Excluir estoque zerado sem variantes ou itens de pedido vinculados
+DELETE {{base}}/estoque/{{estoque}}
+Authorization: Bearer {{admin}}

@@ -43,9 +43,18 @@ const ItemPedido = db.define('item_pedido', {
         type: DataTypes.STRING(50),
         allowNull: true
     },
-    idVariante: { type: DataTypes.INTEGER, allowNull: true },
-    nome_produto: { type: DataTypes.STRING(150), allowNull: true },
-    imagem_produto: { type: DataTypes.STRING(500), allowNull: true }
+    idVariante: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    nome_produto: {
+        type: DataTypes.STRING(150),
+        allowNull: true
+    },
+    imagem_produto: {
+        type: DataTypes.STRING(500),
+        allowNull: true
+    }
 }, {
     timestamps: false,
     tableName: 'itens_pedido'

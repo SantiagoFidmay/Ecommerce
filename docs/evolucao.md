@@ -65,7 +65,7 @@ Limites mantidos para próximas etapas: recuperação de senha por e-mail e ence
 
 ## Etapas 3–6 — Versão demonstrativa completa
 
-Implementadas após autorização para concluir o escopo restante, com duas decisões do responsável: **manter pagamento somente em demonstração** e **preparar arquivos/instruções de Vercel e Railway sem publicar**.
+Implementadas após autorização para concluir o escopo restante, mantendo pagamento somente em demonstração. A preparação de hospedagem realizada nesta etapa foi removida posteriormente, a pedido do responsável, na limpeza dos arquivos sem uso local.
 
 ### Operação
 
@@ -91,7 +91,7 @@ Implementadas após autorização para concluir o escopo restante, com duas deci
 - Recuperação por token de uso único, condicionada ao SMTP. Permanece indisponível sem credenciais de envio.
 - Rate limiting, Helmet, validação de campos, origens CORS configuráveis e tratamento de erros sem detalhes internos em produção.
 - Dependências auditadas e override de uuid compatível com os usos do Sequelize, validado pelos testes; não foi aplicado downgrade do ORM.
-- Build público isolado em dist/, configuração de API por ambiente, Vercel, Docker/Railway, health check e GitHub Actions.
+- Build público isolado em dist/, configuração de API por ambiente, health check e GitHub Actions. As configurações específicas de hospedagem foram removidas na limpeza posterior.
 - Backup local anterior à migração preservado em .backups/ e ignorado pelo Git. Migrações aditivas aplicadas; os 18 produtos, preços, saldos e reviews locais foram preservados.
 - Manual e PDFs atualizados, requisitos/infraestrutura em engenharia.md e engenharia.pdf, diagramas UML/casos de uso em PNG/SVG e requisições REST de exemplo.
 
@@ -103,7 +103,7 @@ A suíte cobre os fluxos anteriores e os novos: API em bancos separados, reenvio
 
 ### O que depende de configuração externa
 
-- Criação das contas/projetos de Vercel e Railway e configuração das variáveis, conforme publicacao.md.
+- Uma eventual publicação exige configurar novamente a hospedagem; o projeto mantém a execução e a prévia locais.
 - SMTP para recuperação por e-mail; avisos de estoque já funcionam dentro da conta.
 - Preenchimento operacional de numerações/cores, fonte da ficha técnica e créditos de cada vídeo quando conhecidos.
 - Um primeiro administrador: cadastrar conta e executar `npm run admin -- SEU-EMAIL` na pasta backend.

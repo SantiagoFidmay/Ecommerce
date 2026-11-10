@@ -1,4 +1,7 @@
-const { Categoria } = require('../models/rel')
+const db = require('../db/conn')
+const { Op } = require('sequelize')
+const { Categoria, Produto } = require('../models/rel')
+const { handler, id, texto, falhar, validarCampos, nomeBusca } = require('../utils/api.util')
 
 // GET /api/categorias (público)
 const listar = async (req, res) => {
@@ -40,36 +43,36 @@ const criar = async (req, res) => {
     }
 }
 
-// PUT /api/categorias/:id (admin)
-const atualizar = async (req, res) => {
-    try {
-        const categoria = await Categoria.findByPk(req.params.id)
-        if (!categoria) return res.status(404).json({ erro: 'Categoria não encontrada.' })
-        await categoria.update(req.body)
-        return res.json({ mensagem: 'Categoria atualizada!', categoria })
-    } catch (err) {
-        return res.status(500).json({ erro: 'Erro ao atualizar categoria.', detalhe: err.message })
-    }
-}
+const buscarPorNome = handler(async (req, res) => {
+    const categorias = await Categoria.findAll({ where: { nome: { [Op.like]: '%' + nomeBusca(req) + '%' } }, order: [['nome', 'ASC']] })
+    res.json({ total: categorias.length, categorias })
+})
 
-// PATCH /api/categorias/:id (admin)
-const atualizarParcial = async (req, res) => {
-    try {
-        const categoria = await Categoria.findByPk(req.params.id)
-        if (!categoria) return res.status(404).json({ erro: 'Categoria não encontrada.' })
-        const { nome, descricao, icone, ativo } = req.body
-        await categoria.update({ nome, descricao, icone, ativo })
-        return res.json({ mensagem: 'Categoria atualizada!' })
-    } catch (err) {
-        return res.status(500).json({ erro: 'Erro ao atualizar categoria.', detalhe: err.message })
+const salvar = completa => handler(async (req, res) => {
+    validarCampos(req.body, ['nome', 'descricao', 'icone', 'ativo'], completa ? ['nome'] : [])
+    const dados = completa ? { descricao: null, icone: null, ativo: true, ...req.body } : { ...req.body }
+    if (dados.nome !== undefined) dados.nome = texto(dados.nome, 80, true)
+    for (const [campo, max] of [['descricao', 2000], ['icone', 50]]) {
+        if (dados[campo] != null) dados[campo] = texto(dados[campo], max)
     }
-}
+    if (dados.ativo !== undefined && typeof dados.ativo !== 'boolean') falhar(400, 'Disponibilidade inválida.')
+    const categoria = await db.transaction(async transaction => {
+        const registro = await Categoria.findByPk(id(req.params.id), { transaction, lock: transaction.LOCK.UPDATE })
+        if (!registro) falhar(404, 'Categoria não encontrada.')
+        if (dados.ativo === false && await Produto.count({ where: { idCategoria: registro.codCategoria, ativo: true }, transaction })) falhar(409, 'Desative os produtos antes de desativar a categoria.')
+        return registro.update(dados, { transaction })
+    })
+    res.json({ mensagem: 'Categoria atualizada!', categoria })
+})
+const atualizar = salvar(true)
+const atualizarParcial = salvar(false)
 
 // DELETE /api/categorias/:id (admin)
 const deletar = async (req, res) => {
     try {
         const categoria = await Categoria.findByPk(req.params.id)
         if (!categoria) return res.status(404).json({ erro: 'Categoria não encontrada.' })
+        if (await Produto.count({ where: { idCategoria: categoria.codCategoria, ativo: true } })) return res.status(409).json({ erro: 'Desative os produtos antes de desativar a categoria.' })
         await categoria.update({ ativo: false })
         return res.json({ mensagem: 'Categoria desativada.' })
     } catch (err) {
@@ -77,4 +80,4 @@ const deletar = async (req, res) => {
     }
 }
 
-module.exports = { listar, getById, criar, atualizar, atualizarParcial, deletar }
+module.exports = { listar, getById, buscarPorNome, criar, atualizar, atualizarParcial, deletar }

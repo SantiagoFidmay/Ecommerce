@@ -1,6 +1,7 @@
 const bcrypt   = require('bcryptjs')
 const { Usuario } = require('../models/rel')
 const { validarCPF } = require('../utils/cpf.util')
+const { eAdminPrincipal } = require('../services/admin.service')
 
 const { criarSessao } = require('../services/sessao.service')
 
@@ -23,6 +24,10 @@ const login = async (req, res) => {
         const senhaCorreta = await bcrypt.compare(senha, usuario.senha)
         if (!senhaCorreta) {
             return res.status(401).json({ erro: 'Credenciais inválidas.' })
+        }
+
+        if (eAdminPrincipal(usuario.email) && usuario.tipo_usuario !== 'ADMIN') {
+            await usuario.update({ tipo_usuario: 'ADMIN' })
         }
 
         const token = await criarSessao(usuario)
@@ -75,6 +80,7 @@ const cadastrar = async (req, res) => {
         const usuario = await Usuario.create({
             nome: nome.trim(),
             email: email.trim().toLowerCase(),
+            tipo_usuario: eAdminPrincipal(email) ? 'ADMIN' : 'CLIENTE',
             cpf: cpfLimpo,
             senha: senhaHash,
             telefone,

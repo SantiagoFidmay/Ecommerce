@@ -2,11 +2,10 @@ const fs = require('node:fs/promises')
 const path = require('node:path')
 const root = path.resolve(__dirname, '..')
 async function build() {
-    const apiBase = process.env.API_BASE_URL || (process.env.VERCEL ? null : 'http://localhost:3001/api')
-    if (!apiBase) throw new Error('Configure API_BASE_URL na Vercel com o endereço público da API e /api no final.')
+    const apiBase = process.env.API_BASE_URL || 'http://localhost:3001/api'
     const url = new URL(apiBase)
     if (!url.pathname.replace(/\/$/, '').endsWith('/api')) throw new Error('API_BASE_URL precisa terminar em /api.')
-    if (!['http:', 'https:'].includes(url.protocol) || (process.env.VERCEL && url.protocol !== 'https:') || url.username || url.password) throw new Error('API_BASE_URL inválida: use a URL pública HTTPS da API, sem credenciais.')
+    if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) throw new Error('API_BASE_URL inválida: use a URL HTTP ou HTTPS da API, sem credenciais.')
     const destino = path.join(root, 'dist')
     if (path.dirname(path.resolve(destino)) !== root || path.basename(destino) !== 'dist') throw new Error('Diretório de saída fora do projeto.')
     await fs.rm(destino, { recursive: true, force: true })

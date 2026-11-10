@@ -90,7 +90,8 @@ const getById = async (req, res) => {
 // GET /api/produtos/buscar?nome=... (público)
 const buscar = async (req, res) => {
     try {
-        const { nome, categoria, marca } = req.query
+        const { categoria, marca } = req.query
+        const nome = req.params.nome ?? req.query.nome
         const where = { ativo: true }
         if (nome)  where.nome  = { [Op.like]: `%${nome}%` }
         if (marca) where.marca = { [Op.like]: `%${marca}%` }
@@ -109,9 +110,14 @@ const buscar = async (req, res) => {
 }
 
 const { salvarProduto } = require('../services/produto.service')
-const { handler, id } = require('../utils/api.util')
+const { handler, id, validarCampos } = require('../utils/api.util')
 const criar = handler(async (req, res) => res.status(201).json({ produto: await salvarProduto(req.body) }))
-const atualizar = handler(async (req, res) => res.json({ produto: await salvarProduto(req.body, id(req.params.id)) }))
-const atualizarParcial = atualizar
+const atualizar = handler(async (req, res) => {
+    const campos = ['nome', 'descricao', 'marca', 'codigo_produto', 'preco', 'preco_promocional', 'imagem_url', 'video_url', 'idCategoria', 'ativo', 'destaque', 'ficha', 'midias']
+    validarCampos(req.body, campos, ['nome', 'marca', 'preco', 'idCategoria'])
+    const dados = { descricao: '', codigo_produto: null, preco_promocional: null, imagem_url: null, video_url: null, ativo: true, destaque: false, ficha: {}, midias: [], ...req.body }
+    res.json({ produto: await salvarProduto(dados, id(req.params.id)) })
+})
+const atualizarParcial = handler(async (req, res) => res.json({ produto: await salvarProduto(req.body, id(req.params.id)) }))
 const deletar = handler(async (req, res) => res.json({ produto: await salvarProduto({ ativo: false }, id(req.params.id)) }))
 module.exports = { listar, getById, buscar, criar, atualizar, atualizarParcial, deletar }

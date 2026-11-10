@@ -9,6 +9,7 @@ const { movimentarVariante, saldoProduto } = require('../services/estoque.servic
 const { expirarReservas } = require('../services/pedido.service')
 
 router.use(autenticar, apenasAdmin)
+router.post('/pedidos', require('../controllers/pedidos.controller').criarAdministrativo)
 router.get('/categorias', handler(async (req, res) => res.json({ categorias: await Categoria.findAll({ order: [['nome', 'ASC']] }) })))
 router.get('/usuarios', handler(async (req, res) => res.json({ usuarios: await Usuario.findAll({ attributes: { exclude: ['senha'] }, order: [['codUsuario', 'DESC']], limit: 100 }) })))
 router.patch('/usuarios/:id/acesso', handler(async (req, res) => {
@@ -37,6 +38,11 @@ router.get('/produtos', handler(async (req, res) => {
     const produtos = await Produto.findAll({ where: busca ? { nome: { [Op.like]: `%${busca}%` } } : {},
         include: [{ model: Categoria, as: 'categoriaProduto' }, { model: Estoque, as: 'estoqueProduto' }, { model: Variante, as: 'variantes' }, { model: Midia, as: 'midias' }, { model: Ficha, as: 'fichaTecnica' }], order: [['codProduto', 'DESC']], limit: 100 })
     res.json({ produtos })
+}))
+router.get('/produtos/:id', handler(async (req, res) => {
+    const produto = await Produto.findByPk(id(req.params.id), { include: [{ model: Categoria, as: 'categoriaProduto' }, { model: Estoque, as: 'estoqueProduto' }, { model: Variante, as: 'variantes' }, { model: Midia, as: 'midias' }, { model: Ficha, as: 'fichaTecnica' }] })
+    if (!produto) falhar(404, 'Produto não encontrado.')
+    res.json(produto)
 }))
 router.post('/produtos', handler(async (req, res) => res.status(201).json({ produto: await salvarProduto(req.body) })))
 router.patch('/produtos/:id', handler(async (req, res) => res.json({ produto: await salvarProduto(req.body, id(req.params.id)) })))

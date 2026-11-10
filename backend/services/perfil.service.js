@@ -3,6 +3,7 @@ const { Op } = require('sequelize')
 const { Usuario } = require('../models/rel')
 const { validarCPF } = require('../utils/cpf.util')
 const { validarEndereco, falhar } = require('./checkout.service')
+const { eAdminPrincipal } = require('./admin.service')
 
 const camposEndereco = ['cep', 'rua', 'numero', 'complemento', 'bairro', 'cidade', 'estado']
 const limites = { nome: 100, telefone: 20, cep: 10, rua: 200, numero: 20, complemento: 100, bairro: 100, cidade: 100, estado: 2 }
@@ -44,6 +45,9 @@ async function prepararAtualizacao(body, usuario, autor, completa = false) {
         dados.email = body.email.trim().toLowerCase()
         dados.cpf = body.cpf.replace(/\D/g, '')
         if (dados.email.length > 150 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dados.email)) falhar(400, 'E-mail inválido.')
+        if (dados.email !== usuario.email && (eAdminPrincipal(usuario.email) || eAdminPrincipal(dados.email))) {
+            falhar(409, 'O e-mail do administrador principal é reservado e não pode ser alterado pelo perfil.')
+        }
         if (!validarCPF(dados.cpf)) falhar(400, 'CPF inválido.')
         alteraIdentidade = dados.email !== usuario.email || dados.cpf !== usuario.cpf
         const duplicado = await Usuario.findOne({ where: {

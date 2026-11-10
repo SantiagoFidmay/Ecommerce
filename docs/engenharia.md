@@ -107,7 +107,7 @@ classDiagram
 
 ![Diagrama UML das sete classes de base](diagramas/classes.png)
 
-O diagrama resume associações de domínio, não todas as colunas/constraints. `idMarca` e `idVariante` são opcionais para compatibilidade com registros antigos. O código de referência dos modelos fica em `backend/models/rel.js` e `backend/models/evolucao.js`.
+O diagrama resume associações de domínio, não todas as colunas/constraints. `idMarca` e `idVariante` são opcionais para compatibilidade com registros antigos. Cada tabela possui um arquivo próprio em `backend/models/`; os relacionamentos e a exportação dos models ficam em `backend/models/rel.js`.
 
 ### Casos de uso
 
@@ -142,8 +142,7 @@ As exportações em PNG dos diagramas principais estão em `docs/diagramas/`. S�
 | --- | --- |
 | Desenvolvimento | Windows/Linux/macOS; Node.js 22–24; npm; MySQL 8+; navegador; editor; Git |
 | Validação | Usuário MySQL com criação de bancos de teste; Playwright/Chrome ou Chromium; Python com Markdown para regenerar o manual em PDF |
-| Vercel | Site estático gerado em `dist`, variável pública `API_BASE_URL`, domínio HTTPS |
-| Railway | Serviço Node/Docker, serviço MySQL persistente, conexão privada, segredo JWT, origens CORS e health check |
+| Prévia local | Site estático gerado em `dist`, variável pública `API_BASE_URL`, API local e MySQL |
 | SMTP opcional | Credenciais do serviço de envio para recuperação de senha; alertas de estoque continuam dentro da conta |
 | Operação | Backups do MySQL testados em restauração, logs sem credenciais, revisão de contas ADMIN e atualização de dependências |
 
@@ -153,4 +152,4 @@ Dimensionamento depende da carga e deve ser medido. Esta implementação não fi
 
 As suítes em `backend/tests` combinam APIs e bancos isolados, navegador com respostas controladas e fluxos reais de navegador/API/MySQL. Cobrem permissões, concorrência, rollback, duplicação, validade de reserva, demonstração de pagamento/estorno, estoque, alertas, avaliações, recuperação e responsividade.
 
-`backend/rest_client.http` contém exemplos para inspeção manual. A publicação e seu teste externo ainda dependem de criação e configuração das contas de hospedagem, conforme `docs/publicacao.md`.
+`backend/rest_client.http` contém exemplos para inspeção manual. As configurações específicas de hospedagem foram removidas; a validação atual utiliza execução local.

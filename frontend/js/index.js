@@ -31,8 +31,22 @@ function initShowcaseHover() {
         }
         const video = item.querySelector('.showcase-video')
         if (!video) return
-        item.addEventListener('mouseenter', () => video.play().catch(() => {}))
-        item.addEventListener('mouseleave', () => { video.pause(); video.currentTime = 0 })
+        const inicio = Number(video.dataset.inicio) || 0
+        const reiniciar = () => { if (video.readyState >= 1) video.currentTime = inicio }
+        if (inicio > 0) {
+            if (video.readyState >= 1) reiniciar()
+            else video.addEventListener('loadedmetadata', reiniciar, { once: true })
+            video.loop = false
+            video.addEventListener('ended', () => {
+                reiniciar()
+                if (item.matches(':hover')) video.play().catch(() => {})
+            })
+        }
+        item.addEventListener('mouseenter', () => {
+            if (video.currentTime < inicio) reiniciar()
+            video.play().catch(() => {})
+        })
+        item.addEventListener('mouseleave', () => { video.pause(); reiniciar() })
     })
 }
 

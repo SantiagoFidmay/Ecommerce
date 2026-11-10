@@ -5,7 +5,25 @@ const ItemPedido = require('./ItemPedido')
 const Entrega = require('./Entrega')
 const Estoque = require('./Estoque')
 const Categoria = require('./Categoria')
-const evolucao = require('./evolucao')
+const Marca = require('./Marca')
+const Variante = require('./Variante')
+const Midia = require('./Midia')
+const Ficha = require('./Ficha')
+const HistoricoPreco = require('./HistoricoPreco')
+const Movimento = require('./Movimento')
+const CheckoutChave = require('./CheckoutChave')
+const Reserva = require('./Reserva')
+const Pagamento = require('./Pagamento')
+const EventoPagamento = require('./EventoPagamento')
+const Favorito = require('./Favorito')
+const Alerta = require('./Alerta')
+const Notificacao = require('./Notificacao')
+const Avaliacao = require('./Avaliacao')
+const Rotacao = require('./Rotacao')
+const Seguranca = require('./Seguranca')
+const Sessao = require('./Sessao')
+const Recuperacao = require('./Recuperacao')
+const Migracao = require('./Migracao')
 
 
 // 1. RELACIONAMENTOS CATEGORIA & PRODUTO
@@ -88,26 +106,91 @@ Estoque.belongsTo(Produto, {
 })
 
 
-Produto.hasMany(evolucao.Variante, { foreignKey: 'idProduto', as: 'variantes', onDelete: 'RESTRICT' })
-Produto.belongsTo(evolucao.Marca, { foreignKey: 'idMarca', as: 'marcaProduto', onDelete: 'RESTRICT' })
-evolucao.Variante.belongsTo(Produto, { foreignKey: 'idProduto', as: 'produto' })
-Produto.hasMany(evolucao.Midia, { foreignKey: 'idProduto', as: 'midias', onDelete: 'CASCADE' })
-Produto.hasOne(evolucao.Ficha, { foreignKey: 'idProduto', as: 'fichaTecnica', onDelete: 'CASCADE' })
-for (const model of [evolucao.HistoricoPreco, evolucao.Movimento, evolucao.Favorito, evolucao.Avaliacao, evolucao.Rotacao]) {
-    model.belongsTo(Produto, { foreignKey: 'idProduto', as: 'produto', onDelete: 'RESTRICT' })
+Produto.hasMany(Variante, {
+    foreignKey: 'idProduto',
+    as: 'variantes',
+    onDelete: 'RESTRICT'
+})
+Produto.belongsTo(Marca, {
+    foreignKey: 'idMarca',
+    as: 'marcaProduto',
+    onDelete: 'RESTRICT'
+})
+Variante.belongsTo(Produto, {
+    foreignKey: 'idProduto',
+    as: 'produto'
+})
+Produto.hasMany(Midia, {
+    foreignKey: 'idProduto',
+    as: 'midias',
+    onDelete: 'CASCADE'
+})
+Produto.hasOne(Ficha, {
+    foreignKey: 'idProduto',
+    as: 'fichaTecnica',
+    onDelete: 'CASCADE'
+})
+for (const model of [HistoricoPreco, Movimento, Favorito, Avaliacao, Rotacao]) {
+    model.belongsTo(Produto, {
+        foreignKey: 'idProduto',
+        as: 'produto',
+        onDelete: 'RESTRICT'
+    })
 }
-for (const model of [evolucao.Favorito, evolucao.Alerta, evolucao.Notificacao, evolucao.Avaliacao, evolucao.Rotacao, evolucao.Sessao, evolucao.Recuperacao, evolucao.Seguranca, evolucao.CheckoutChave]) {
-    model.belongsTo(Usuario, { foreignKey: 'idUsuario', as: 'usuario', onDelete: 'CASCADE' })
+for (const model of [Favorito, Alerta, Notificacao, Avaliacao, Rotacao, Sessao, Recuperacao, Seguranca, CheckoutChave]) {
+    model.belongsTo(Usuario, {
+        foreignKey: 'idUsuario',
+        as: 'usuario',
+        onDelete: 'CASCADE'
+    })
 }
-evolucao.Alerta.belongsTo(evolucao.Variante, { foreignKey: 'idVariante', as: 'variante', onDelete: 'RESTRICT' })
-evolucao.Pagamento.belongsTo(Pedido, { foreignKey: 'idPedido', as: 'pedido', onDelete: 'RESTRICT' })
-Pedido.hasOne(evolucao.Pagamento, { foreignKey: 'idPedido', as: 'pagamentoPedido' })
-Pedido.hasOne(evolucao.Reserva, { foreignKey: 'idPedido', as: 'reservaPedido' })
-evolucao.EventoPagamento.belongsTo(evolucao.Pagamento, { foreignKey: 'idPagamento', onDelete: 'RESTRICT' })
-ItemPedido.belongsTo(evolucao.Variante, { foreignKey: 'idVariante', as: 'varianteItem', onDelete: 'RESTRICT' })
-
+Alerta.belongsTo(Variante, {
+    foreignKey: 'idVariante',
+    as: 'variante',
+    onDelete: 'RESTRICT'
+})
+Pagamento.belongsTo(Pedido, {
+    foreignKey: 'idPedido',
+    as: 'pedido',
+    onDelete: 'RESTRICT'
+})
+Pedido.hasOne(Pagamento, {
+    foreignKey: 'idPedido',
+    as: 'pagamentoPedido'
+})
+Pedido.hasOne(Reserva, {
+    foreignKey: 'idPedido',
+    as: 'reservaPedido'
+})
+EventoPagamento.belongsTo(Pagamento, {
+    foreignKey: 'idPagamento',
+    onDelete: 'RESTRICT'
+})
+ItemPedido.belongsTo(Variante, {
+    foreignKey: 'idVariante',
+    as: 'varianteItem',
+    onDelete: 'RESTRICT'
+})
 module.exports = {
-    ...evolucao,
+    Marca,
+    Variante,
+    Midia,
+    Ficha,
+    HistoricoPreco,
+    Movimento,
+    CheckoutChave,
+    Reserva,
+    Pagamento,
+    EventoPagamento,
+    Favorito,
+    Alerta,
+    Notificacao,
+    Avaliacao,
+    Rotacao,
+    Seguranca,
+    Sessao,
+    Recuperacao,
+    Migracao,
     Usuario,
     Pedido,
     Produto,

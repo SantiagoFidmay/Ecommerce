@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "sync": "node sync.js",
+    "sync": "npm run migrate",
     "test:integration": "node --test tests/*.integration.test.js",
     "test:browser": "node --test tests/*.browser.test.js",
     "migrate": "node migrations/index.js",

@@ -26,6 +26,7 @@ function abrirTabAdmin(nome) {
   if (nome === 'pedidos') executarAdmin(carregarPedidosAdmin);
   if (nome === 'cadastros') executarAdmin(carregarCadastrosAdmin);
   if (nome === 'estoque') executarAdmin(carregarEstoqueAdmin);
+  if (nome === 'gestao') window.GestaoAdmin.abrir();
 }
 document.addEventListener('DOMContentLoaded', async () => {
   if (!Auth.requireAdmin()) return;
@@ -82,9 +83,10 @@ async function carregarProdutosAdmin() {
   adminProdutos.forEach(p => { const opt = Loja.el('option', '', p.nome); opt.value = p.codProduto; select.appendChild(opt); });
   if (adminProdutos.some(p => String(p.codProduto) === atual)) select.value = atual;
 }
-function limparProdutoAdmin() { document.getElementById('produtoForm').reset(); document.getElementById('produtoId').value = ''; document.getElementById('produtoFormTitle').textContent = 'Novo produto'; }
+function limparProdutoAdmin() { document.getElementById('produtoForm').reset(); document.getElementById('produtoId').value = ''; document.getElementById('produtoFormTitle').textContent = 'Novo produto'; document.getElementById('produtoSalvarCompleto').hidden = true; }
 function editarProdutoAdmin(p) {
   limparProdutoAdmin(); const dados = { produtoId: p.codProduto, produtoNome: p.nome, produtoMarca: p.marca, produtoCategoria: p.idCategoria, produtoCodigo: p.codigo_produto, produtoPreco: p.preco, produtoPromo: p.preco_promocional, produtoImagem: p.imagem_url, produtoDescricao: p.descricao };
+  document.getElementById('produtoSalvarCompleto').hidden = false;
   const ficha = p.fichaTecnica?.dados || {};
   Object.assign(dados, { fichaPeso: ficha.peso_g, fichaDrop: ficha.drop_mm, fichaPlaca: ficha.placa == null ? '' : String(ficha.placa), fichaAmortecimento: ficha.amortecimento, fichaSuperficie: ficha.superficie, fichaFonte: ficha.fonte });
   const review = (p.midias || []).find(m => m.tipo === 'REVIEW'); dados.produtoReview = review?.url; dados.produtoCredito = review?.credito;
@@ -106,7 +108,7 @@ async function salvarProdutoAdmin(event) {
     const midias = valorAdmin('produtoImagens').split('\n').map(v => v.trim()).filter(Boolean).map((url, ordem) => ({ tipo: 'IMAGEM', url, titulo: `${valorAdmin('produtoNome')} - Foto ${ordem + 1}` }));
     if (valorAdmin('produtoReview')) midias.push({ tipo: 'REVIEW', url: valorAdmin('produtoReview'), credito: valorAdmin('produtoCredito'), titulo: `Review de ${valorAdmin('produtoNome')}` });
     const dados = { nome: valorAdmin('produtoNome'), marca: valorAdmin('produtoMarca'), idCategoria: Number(valorAdmin('produtoCategoria')), codigo_produto: valorAdmin('produtoCodigo') || undefined, preco: Number(valorAdmin('produtoPreco')), preco_promocional: valorAdmin('produtoPromo') ? Number(valorAdmin('produtoPromo')) : null, imagem_url: valorAdmin('produtoImagem'), descricao: valorAdmin('produtoDescricao'), ativo: document.getElementById('produtoAtivo').checked, destaque: document.getElementById('produtoDestaque').checked, ficha, midias };
-    const codigo = valorAdmin('produtoId'); await (codigo ? Api.patch(`/admin/produtos/${codigo}`, dados) : Api.post('/admin/produtos', dados));
+    const codigo = valorAdmin('produtoId'); await (codigo ? event.submitter?.value === 'completo' ? Api.put(`/produtos/${codigo}`, dados) : Api.patch(`/admin/produtos/${codigo}`, dados) : Api.post('/admin/produtos', dados));
     limparProdutoAdmin(); await carregarProdutosAdmin();
   }); campos.disabled = false;
 }

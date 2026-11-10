@@ -6,6 +6,24 @@ const crypto = require('node:crypto')
 const { registrar } = require('../services/estoque.service')
 const { cancelarPedido, mudarStatus } = require('../services/pedido.service')
 const { validarItens, validarEndereco, calcularResumo, falhar } = require('../services/checkout.service')
+const { Op } = require('sequelize')
+const { handler, id, nomeBusca } = require('../utils/api.util')
+const { editarPedido, excluirPedido } = require('../services/edicao-pedido.service')
+
+const buscarPorNome = handler(async (req, res) => {
+    const pedidos = await Pedido.findAll({ include: [{ model: Usuario, as: 'usuarioPedido', attributes: ['codUsuario', 'nome', 'email'], where: { nome: { [Op.like]: `%${nomeBusca(req)}%` } } }], order: [['codPedido', 'DESC']] })
+    res.json({ total: pedidos.length, pedidos })
+})
+const atualizar = handler(async (req, res) => {
+    res.json({ pedido: await editarPedido(id(req.params.id), req.body, true, req.usuario) })
+})
+const atualizarParcial = handler(async (req, res) => {
+    res.json({ pedido: await editarPedido(id(req.params.id), req.body, false, req.usuario) })
+})
+const deletar = handler(async (req, res) => {
+    await excluirPedido(id(req.params.id), req.usuario)
+    res.json({ mensagem: 'Pedido excluído e estoque liberado.' })
+})
 
 const responderErro = (res, err) => res.status(err.status || 500).json({
     erro: err.status ? err.message : 'Não foi possível registrar o pedido. Tente novamente.'
@@ -70,7 +88,7 @@ const criar = async (req, res) => {
                     preco_unitario: item.preco, subtotal: item.subtotal, tamanho: item.tamanho, cor: item.cor, idVariante: item.idVariante, nome_produto: item.nome, imagem_produto: item.imagem_url
                 }, { transaction })
                 const variante = item.idVariante ? await Variante.findByPk(item.idVariante, { transaction, lock: transaction.LOCK.UPDATE }) : null
-                await registrar({ idProduto: item.idProduto, variante, delta: -item.quantidade, tipo: 'VENDA', motivo: `Pedido #${pedido.codPedido}`, idUsuario: usuario.codUsuario, idPedido: pedido.codPedido, transaction })
+                await registrar({ idProduto: item.idProduto, variante, delta: -item.quantidade, tipo: 'VENDA', motivo: `Pedido #${pedido.codPedido}`, idUsuario: req.autorAdministrativo?.codUsuario ?? usuario.codUsuario, idPedido: pedido.codPedido, transaction })
             }
             await Entrega.create({
                 idPedido: pedido.codPedido, status: 'PENDENTE', endereco_entrega: endereco.texto, cep_entrega: endereco.cep
@@ -174,4 +192,12 @@ const atualizarStatus = async (req, res) => {
     catch (err) { return responderErro(res, err) }
 }
 
-module.exports = { criar, resumo, cancelar, meusPedidos, getById, listarTodos, atualizarStatus }
+const criarAdministrativo = async (req, res) => {
+    try {
+        const usuario = await Usuario.findByPk(id(req.body?.idUsuario))
+        if (!usuario || !usuario.ativo) falhar(404, 'Selecione um cliente ativo.')
+        return criar({ body: req.body, usuario, autorAdministrativo: req.usuario }, res)
+    } catch (err) { return responderErro(res, err) }
+}
+
+module.exports = { criar, criarAdministrativo, resumo, cancelar, meusPedidos, getById, buscarPorNome, listarTodos, atualizar, atualizarParcial, deletar, atualizarStatus }

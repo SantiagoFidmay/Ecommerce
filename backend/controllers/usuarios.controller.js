@@ -1,6 +1,13 @@
 const db = require('../db/conn')
 const { revogarSessoes } = require('../services/sessao.service')
 const { Usuario } = require('../models/rel')
+const { Op } = require('sequelize')
+const { handler, nomeBusca } = require('../utils/api.util')
+
+const buscarPorNome = handler(async (req, res) => {
+    const usuarios = await Usuario.findAll({ where: { nome: { [Op.like]: `%${nomeBusca(req)}%` } }, attributes: { exclude: ['senha'] }, order: [['nome', 'ASC']] })
+    res.json({ total: usuarios.length, usuarios })
+})
 
 // GET /api/usuarios/perfil (privado)
 const getPerfil = async (req, res) => {
@@ -72,4 +79,4 @@ const desativar = async (req, res) => {
     } catch (erro) { return responderErroPerfil(res, erro) }
 }
 
-module.exports = { getPerfil, listarTodos, getById, atualizar, atualizarParcial, desativar }
+module.exports = { getPerfil, listarTodos, getById, buscarPorNome, atualizar, atualizarParcial, desativar }

@@ -16,17 +16,19 @@ npm run dev
 
 Abra **http://localhost:5500**. A API usa a porta 3001. Encerre processos antigos nessas portas antes de iniciar. As migrações são executadas na inicialização; não apagam tabelas ou reiniciam o estoque.
 
+Para começar com outro banco, siga o [passo a passo de criação e carga do banco](docs/banco-de-dados.md). No PowerShell com execução de scripts bloqueada, use `npm.cmd` no lugar de `npm`.
+
 Também é possível executar `npm start` na pasta `backend` e abrir o frontend pelo Live Server a partir da raiz do repositório.
 
 ### Catálogo e primeiro administrador
 
-O banco local já possui os 18 modelos e reviews. Para preencher **um banco novo** com os exemplos:
+Para preencher **um banco novo** com os 18 produtos de exemplo e seus reviews:
 
 ```sh
 npm run demo
 ```
 
-Esse comando cria somente modelos ausentes e preserva registros existentes. Os exemplos têm 20 unidades por produto na opção **Não informado / Original**. No painel, cadastre os tamanhos reais e transfira o saldo; não são inventadas numerações disponíveis. Não execute os scripts antigos de preparação para reabastecer um banco em uso: o comando atual é `seed:demo`.
+Esse comando cria somente produtos ausentes e preserva registros existentes. Os exemplos têm 20 unidades por produto na opção **Não informado / Original**. No painel, cadastre os tamanhos reais e transfira o saldo; não são inventadas numerações disponíveis. A carga do catálogo está centralizada em `backend/scripts/seed-demo.js`.
 
 Cadastre sua conta pela loja. Depois, na pasta `backend`:
 
@@ -64,15 +66,16 @@ Os testes criam bancos MySQL isolados `sportkicks_test_*`, removidos ao final; o
 O GitHub Actions contém a mesma rotina com MySQL 8.4. A execução remota dependerá do envio do código ao GitHub.
 
 - [Requisitos, regras e modelagem](docs/engenharia.md)
-- [Publicação na Vercel e no Railway](docs/publicacao.md)
+- [Criar e inicializar um banco novo](docs/banco-de-dados.md)
+- [CRUD administrativo: operações e regras](docs/crud-administrativo.md)
 - [Evolução e decisões](docs/evolucao.md)
 - [Manual e treinamento](docs/implantacao/README.md)
 - [Requisições REST de exemplo](backend/rest_client.http)
 
-## Publicação e limites atuais
+## Build local e limites atuais
 
-`npm run build` prepara **dist/** somente com os arquivos públicos. `API_BASE_URL` configura a API no build e precisa terminar em `/api`. A Vercel requer HTTPS. `npm run preview` serve o resultado localmente.
+`npm run build` prepara **dist/** somente com os arquivos públicos. `API_BASE_URL` configura a API no build e precisa terminar em `/api`; o padrão é `http://localhost:3001/api`. `npm run preview` serve o resultado localmente. A pasta `dist/` é gerada e pode ser removida; execute o build novamente antes da prévia.
 
-As contas Vercel/Railway ainda precisam ser criadas e configuradas conforme o roteiro. O projeto não foi publicado automaticamente. Cobrança real, emissão fiscal, consulta automática de transportadoras e envio de alertas por e-mail não fazem parte desta demonstração. Os avisos de reposição aparecem na coleção. A recuperação de senha por e-mail está implementada, mas só funciona após configurar SMTP e `FRONTEND_URL`.
+As configurações específicas de hospedagem foram removidas; o projeto está preparado para execução local. Cobrança real, emissão fiscal, consulta automática de transportadoras e envio de alertas por e-mail não fazem parte desta demonstração. Os avisos de reposição aparecem na coleção. A recuperação de senha por e-mail está implementada, mas só funciona após configurar SMTP e `FRONTEND_URL`.
 
 Faça `npm run backup` na pasta `backend` antes de alterações de dados; a exportação local contém esquema e registros e fica em `.backups/`, ignorada pelo Git. Na hospedagem, configure backups persistentes do MySQL; o sistema de arquivos do container não é um local permanente para guardá-los.

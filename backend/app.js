@@ -18,7 +18,7 @@ app.use('/api/login', loginLimiter)
 app.use('/api/auth/recuperar', rateLimit({ windowMs: 60 * 60000, limit: 5, standardHeaders: 'draft-8', legacyHeaders: false, message: { erro: 'Aguarde antes de solicitar outra recuperação.' } }))
 app.use('/api', require('./routes/auth.routes'))
 app.use('/api/auth', require('./routes/seguranca.routes'))
-for (const rota of ['usuarios', 'produtos', 'categorias', 'estoque', 'pedidos', 'entregas', 'relatorios', 'admin', 'comunidade', 'pagamentos']) app.use(`/api/${rota}`, require(`./routes/${rota}.routes`))
+for (const rota of ['usuarios', 'produtos', 'categorias', 'estoque', 'pedidos', 'itens-pedido', 'entregas', 'relatorios', 'admin', 'comunidade', 'pagamentos']) app.use(`/api/${rota}`, require(`./routes/${rota}.routes`))
 app.get('/api/health', async (req, res) => {
     try { await db.authenticate(); res.json({ status: 'ok', modo_pagamento: 'demonstracao' }) }
     catch { res.status(503).json({ status: 'indisponivel' }) }

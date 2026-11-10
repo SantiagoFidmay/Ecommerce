@@ -11,7 +11,7 @@ async function saldoProduto(idProduto, transaction) {
     }
 }
 
-async function registrar({ idProduto, variante, delta, tipo, motivo, idUsuario = null, idPedido = null, transaction }) {
+async function registrar({ idProduto, variante, delta, tipo, motivo, idUsuario = null, idPedido = null, transaction, notificar = true }) {
     const estoque = await Estoque.findOne({ where: { idProduto }, transaction, lock: transaction.LOCK.UPDATE })
     if (!estoque) falhar(409, 'Produto sem registro de estoque.')
     const anterior = variante ? variante.quantidade : estoque.quantidade
@@ -22,15 +22,19 @@ async function registrar({ idProduto, variante, delta, tipo, motivo, idUsuario =
         await saldoProduto(idProduto, transaction)
     } else await estoque.update({ quantidade: saldo, ultima_atualizacao: new Date() }, { transaction })
     await Movimento.create({ idProduto, idVariante: variante?.codVariante ?? null, idUsuario, idPedido, tipo, quantidade: delta, saldo, motivo }, { transaction })
+    if (notificar) await avisarDisponibilidade(variante, anterior, saldo, transaction)
+    return saldo
+}
+
+async function avisarDisponibilidade(variante, anterior, saldo, transaction) {
     if (variante?.ativo && anterior === 0 && saldo > 0) {
-        const produto = await Produto.findByPk(idProduto, { transaction })
+        const produto = await Produto.findByPk(variante.idProduto, { transaction })
         const alertas = await Alerta.findAll({ where: { idVariante: variante.codVariante, ativo: true }, transaction, lock: transaction.LOCK.UPDATE })
         for (const alerta of alertas) {
-            await Notificacao.create({ idUsuario: alerta.idUsuario, idProduto, titulo: 'Seu tamanho voltou!', mensagem: `${produto.nome}, tamanho ${variante.tamanho}, cor ${variante.cor}, está disponível novamente.` }, { transaction })
+            await Notificacao.create({ idUsuario: alerta.idUsuario, idProduto: variante.idProduto, titulo: 'Seu tamanho voltou!', mensagem: `${produto.nome}, tamanho ${variante.tamanho}, cor ${variante.cor}, está disponível novamente.` }, { transaction })
             await alerta.update({ ativo: false }, { transaction })
         }
     }
-    return saldo
 }
 
 async function movimentarVariante(id, { tipo, quantidade, motivo, destino }, idUsuario) {
@@ -54,4 +58,4 @@ async function movimentarVariante(id, { tipo, quantidade, motivo, destino }, idU
         return variante
     })
 }
-module.exports = { registrar, saldoProduto, movimentarVariante }
+module.exports = { registrar, saldoProduto, movimentarVariante, avisarDisponibilidade }
