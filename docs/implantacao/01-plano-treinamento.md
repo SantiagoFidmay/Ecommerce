@@ -3,7 +3,7 @@
 > Registro histórico do planejamento de 21/10/2026. As referências abaixo a carrinho incompleto, checkout simulado e telas de conta ausentes descrevem aquele estágio. Para os procedimentos atuais de compra, perfil e histórico, consulte o Manual do usuário, revisado em 27/10/2026. O plano será readequado antes de uma nova turma.
 
 
-**Sport Kicks — ecommerce de artigos esportivos**  
+**SGF RUN — ecommerce de artigos esportivos**  
 Avaliação prática de Implantação de Sistemas — SENAI/SC  
 Data: 21/10/2026 · Versão: 1.0 · Situação: projeto em desenvolvimento  
 Estudante: ____________________ · Docente: José Ricardo Maçaneiro

@@ -173,7 +173,7 @@ async function handleCadastro(e) {
   try {
     const res = await Api.cadastrar(dados);
     Auth.setToken(res.token, res.usuario);
-    showToast('Conta criada com sucesso! Bem-vindo à Sport Kicks! 🎉', 'success');
+    showToast('Conta criada com sucesso! Bem-vindo à SGF RUN! 🎉', 'success');
     setTimeout(() => window.location.href = Auth.consumeRedirect(), 1500);
   } catch (err) {
     errEl.textContent = err.message || 'Erro ao criar conta.';

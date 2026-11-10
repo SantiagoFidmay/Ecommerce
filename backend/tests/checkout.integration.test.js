@@ -4,7 +4,7 @@ const path = require('node:path')
 const crypto = require('node:crypto')
 require('dotenv').config({ path: path.join(__dirname, '../.env'), quiet: true })
 const mysql = require('mysql2/promise')
-const nomeTeste = `sportkicks_test_${crypto.randomBytes(6).toString('hex')}`
+const nomeTeste = `sgfrun_test_${crypto.randomBytes(6).toString('hex')}`
 const config = { host: process.env.DB_HOST, port: process.env.DB_PORT, user: process.env.DB_USER, password: process.env.DB_PASS }
 let admin, db, models, server, base, token, usuario, produto, categoria
 
@@ -37,7 +37,7 @@ after(async () => {
     if (db) await db.close()
     if (admin) {
         // Nunca usa DB_NAME: só remove o banco isolado criado por este teste.
-        assert.match(nomeTeste, /^sportkicks_test_[0-9a-f]{12}$/)
+        assert.match(nomeTeste, /^sgfrun_test_[0-9a-f]{12}$/)
         await admin.query('DROP DATABASE IF EXISTS ' + mysql.escapeId(nomeTeste))
         await admin.end()
     }

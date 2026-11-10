@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   SPORT KICKS — Design System Global
+   SGF RUN — Design System Global
    Dark Mode Premium | Outfit + Inter | Electric Blue Accent
 ═══════════════════════════════════════════════════════════════ */
 
@@ -103,6 +103,7 @@ a {
 }
 
 button {
+  color: inherit;
   cursor: pointer;
   border: none;
   background: none;
@@ -111,6 +112,22 @@ button {
 
 input, select, textarea {
   font-family: var(--font-body);
+}
+
+select {
+  color-scheme: dark;
+  color: var(--text-primary);
+  background-color: var(--bg-card);
+}
+
+select option, select optgroup {
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+}
+
+button:focus-visible, select:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
 }
 
 ul, ol {

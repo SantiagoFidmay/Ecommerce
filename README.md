@@ -1,4 +1,4 @@
-# Sport Kicks
+# SGF RUN
 
 Ecommerce demonstrativo de calçados com HTML/CSS/JavaScript, API Express, Sequelize e MySQL. Pagamento e estorno são **somente simulações**, sem cobrança real.
 
@@ -28,7 +28,9 @@ Para preencher **um banco novo** com os 18 produtos de exemplo e seus reviews:
 npm run demo
 ```
 
-Esse comando cria somente produtos ausentes e preserva registros existentes. Os exemplos têm 20 unidades por produto na opção **Não informado / Original**. No painel, cadastre os tamanhos reais e transfira o saldo; não são inventadas numerações disponíveis. A carga do catálogo está centralizada em `backend/scripts/seed-demo.js`.
+Esse comando cria somente produtos ausentes e preserva registros existentes. Os exemplos têm 20 unidades por produto, distribuídas entre os tamanhos **38 a 44**, na cor **Original**: três unidades de 38 a 43 e duas de 44. Essa distribuição pertence ao catálogo demonstrativo; o estoque pode ser ajustado pelo painel. A carga está centralizada em `backend/scripts/seed-demo.js`.
+
+Para converter um catálogo demonstrativo antigo que ainda possui somente a opção **Não informado**, execute `npm --prefix backend run numeracao`. O comando distribui o saldo existente sem aumentá-lo e registra as transferências; produtos que já possuem outras opções são preservados. Na compra, escolha o tamanho antes de adicionar ao carrinho.
 
 Cadastre sua conta pela loja. Depois, na pasta `backend`:
 
@@ -61,7 +63,7 @@ npm test
 npm run build
 ```
 
-Os testes criam bancos MySQL isolados `sportkicks_test_*`, removidos ao final; o usuário precisa de permissão para criar e remover esses bancos. Não executam vendas no banco da loja. Testes reais de navegador usam API e MySQL isolados; os anteriores também incluem respostas controladas. No Linux, prepare o navegador com `npx playwright install --with-deps chromium` na pasta `backend`.
+Os testes criam bancos MySQL isolados `sgfrun_test_*`, removidos ao final; o usuário precisa de permissão para criar e remover esses bancos. Não executam vendas no banco da loja. Testes reais de navegador usam API e MySQL isolados; os anteriores também incluem respostas controladas. No Linux, prepare o navegador com `npx playwright install --with-deps chromium` na pasta `backend`.
 
 O GitHub Actions contém a mesma rotina com MySQL 8.4. A execução remota dependerá do envio do código ao GitHub.
 

@@ -167,7 +167,7 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 390, height: 844 
             assert.equal(await page.locator('#novaSenha').inputValue(), '')
             assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true)
             await page.evaluate(() => scrollTo(0, 0))
-            await page.screenshot({ path: path.join(os.tmpdir(), `sportkicks-perfil-${viewport.width}.png`), fullPage: true })
+            await page.screenshot({ path: path.join(os.tmpdir(), `sgfrun-perfil-${viewport.width}.png`), fullPage: true })
             assert.deepEqual(erros, [])
         } finally { await context.close() }
     })
@@ -187,7 +187,7 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 390, height: 844 
             assert.equal(await page.locator('.conta-order').count(), 1)
             await page.selectOption('#filtroStatus', 'ENVIADO')
             await page.waitForFunction(() => document.getElementById('pedidosCount').textContent === '1 pedido encontrado')
-            await page.screenshot({ path: path.join(os.tmpdir(), `sportkicks-pedidos-${viewport.width}.png`), fullPage: true })
+            await page.screenshot({ path: path.join(os.tmpdir(), `sgfrun-pedidos-${viewport.width}.png`), fullPage: true })
             await page.getByRole('link', { name: 'Ver detalhes do pedido 701' }).click()
             await page.waitForFunction(() => document.getElementById('pedidoDetalhe')?.getAttribute('aria-busy') === 'false')
             assert.match(await page.locator('#pedidoDetalhe').innerText(), /Rua da compra, 25/)
@@ -195,7 +195,7 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 390, height: 844 
             assert.match(await page.locator('#pedidoDetalhe').innerText(), /215,90/)
             assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true)
             await page.evaluate(() => scrollTo(0, 0))
-            await page.screenshot({ path: path.join(os.tmpdir(), `sportkicks-pedido-${viewport.width}.png`), fullPage: true })
+            await page.screenshot({ path: path.join(os.tmpdir(), `sgfrun-pedido-${viewport.width}.png`), fullPage: true })
             assert.deepEqual(erros, [])
         } finally { await context.close() }
     })

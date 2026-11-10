@@ -1,4 +1,4 @@
-# Evolução do Sport Kicks
+# Evolução do SGF RUN
 
 As melhorias serão entregues em etapas verificáveis, preservando o catálogo e os reviews. O Markdown original continua sendo a referência do trabalho; este arquivo acompanha a implementação.
 
@@ -35,7 +35,7 @@ npm run test:integration
 npm run test:browser
 ```
 
-Os testes de integração usam a conexão MySQL do `.env`, criam um banco exclusivo `sportkicks_test_<identificador>` e o removem ao terminar. O usuário do MySQL precisa de permissão para criar/remover esse banco. Eles não executam vendas no banco `ecommerce`.
+Os testes de integração usam a conexão MySQL do `.env`, criam um banco exclusivo `sgfrun_test_<identificador>` e o removem ao terminar. O usuário do MySQL precisa de permissão para criar/remover esse banco. Eles não executam vendas no banco `ecommerce`.
 
 Os testes de navegador usam respostas de API controladas, sem gravar no banco. Usam Chrome instalado no caminho padrão do Windows, quando disponível. Em outros ambientes, instale o Chromium do Playwright com `npx playwright install chromium`.
 

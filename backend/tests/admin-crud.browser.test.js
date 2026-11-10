@@ -151,7 +151,7 @@ for (const width of [1366, 390]) {
             await page.waitForSelector('#gestaoDetalhes:not([hidden])')
             assert.match(await page.locator('#gestaoDetalhesConteudo').innerText(), /Edição completa pela administração/)
             assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true)
-            await page.screenshot({ path: path.join(os.tmpdir(), `sportkicks-gestao-cadastros-${width}.png`), fullPage: true })
+            await page.screenshot({ path: path.join(os.tmpdir(), `sgfrun-gestao-cadastros-${width}.png`), fullPage: true })
             assert.deepEqual(erros, [])
         } finally { await context.close() }
     })
@@ -215,7 +215,7 @@ for (const width of [1366, 390]) {
             await page.waitForSelector('#gestaoDetalhes:not([hidden])')
             assert.match(await page.locator('#gestaoDetalhesConteudo').innerText(), /Pedido revisado no painel/)
             assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true)
-            await page.screenshot({ path: path.join(os.tmpdir(), `sportkicks-gestao-pedidos-${width}.png`), fullPage: true })
+            await page.screenshot({ path: path.join(os.tmpdir(), `sgfrun-gestao-pedidos-${width}.png`), fullPage: true })
             await excluir(page, `/pedidos/${pedido.id}`)
             assert.equal((await variante.reload()).quantidade, 5)
             assert.equal(await a.models.Pedido.findByPk(pedido.id), null)

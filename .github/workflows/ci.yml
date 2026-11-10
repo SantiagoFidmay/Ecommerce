@@ -1,4 +1,4 @@
-name: Qualidade do Sport Kicks
+name: Qualidade do SGF RUN
 on:
   push:
   pull_request:

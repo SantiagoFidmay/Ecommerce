@@ -10,7 +10,7 @@ async function iniciar() {
     await garantirAdminPrincipal()
     const app = require('./app')
     const port = Number(process.env.PORT) || 3001
-    const server = app.listen(port, '0.0.0.0', () => console.log(`Sport Kicks API na porta ${port}. Pagamento somente em demonstração.`))
+    const server = app.listen(port, '0.0.0.0', () => console.log(`SGF RUN API na porta ${port}. Pagamento somente em demonstração.`))
     let expirando = false
     const expirar = async () => {
         if (expirando) return

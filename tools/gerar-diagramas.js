@@ -10,7 +10,7 @@ function caixa(x,y,nome,campos) {
 }
 const linha = (x1,y1,x2,y2,label,tx,ty) => `<path d="M${x1},${y1}L${x2},${y2}" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#seta)"/>${text(tx,ty,label,16,'middle')}`
 function classes() {
-    let svg=inicio(1800,1040,'Sport Kicks — UML das sete classes de base')
+    let svg=inicio(1800,1040,'SGF RUN — UML das sete classes de base')
     for(const [x,y,nome,campos] of [
         [60,80,'Usuario',['codUsuario: int (PK)','nome, email, cpf: string','senha: hash bcrypt','tipo_usuario: CLIENTE | ADMIN','endereço, telefone: string']],
         [520,80,'Pedido',['codPedido: int (PK)','idUsuario: int (FK)','dataPedido: datetime','status: enum','valorSubtotal, valorTotal: decimal']],
@@ -32,8 +32,8 @@ function oval(x,y,label) {
     return `<ellipse cx="${x}" cy="${y}" rx="210" ry="55" fill="#eff6ff" stroke="#334155" stroke-width="2"/>${text(x,y+(b?-7:7),a,17,'middle')}${b?text(x,y+19,b,17,'middle'):''}`
 }
 function casos() {
-    let svg=inicio(1800,1320,'Sport Kicks — casos de uso da demonstração')
-    svg+='<rect x="350" y="100" width="1100" height="1160" rx="8" fill="none" stroke="#334155" stroke-width="2"/>'+text(900,135,'Sistema Sport Kicks',22,'middle')
+    let svg=inicio(1800,1320,'SGF RUN — casos de uso da demonstração')
+    svg+='<rect x="350" y="100" width="1100" height="1160" rx="8" fill="none" stroke="#334155" stroke-width="2"/>'+text(900,135,'Sistema SGF RUN',22,'middle')
     svg+=ator(140,190,'Visitante')+ator(140,750,'Cliente')+ator(1660,570,'Administrador')
     const esquerdas=['Consultar catálogo e marcas','Comparar e responder quiz','Cadastrar conta e entrar','Gerenciar perfil e coleção','Comprar e simular pagamento','Consultar e cancelar pedido','Avaliar compra entregue']
     const direitas=['Gerenciar catálogo e categorias','Movimentar e transferir estoque','Operar pedidos e entregas','Gráficos e exportação CSV','Moderar avaliações e acessos']

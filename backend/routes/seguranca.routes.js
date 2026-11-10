@@ -25,7 +25,7 @@ router.post('/recuperar', handler(async (req, res) => {
         await Recuperacao.create({ token_hash, idUsuario: usuario.codUsuario, expira_em: new Date(Date.now() + 20 * 60000) })
         const link = new URL('pages/recuperar.html', process.env.FRONTEND_URL.endsWith('/') ? process.env.FRONTEND_URL : process.env.FRONTEND_URL + '/')
         link.hash = token
-        await mail.enviar({ to: usuario.email, subject: 'Redefinição de senha — Sport Kicks', text: `Você solicitou a redefinição de senha. Abra ${link.href} em até 20 minutos. Se não foi você, ignore esta mensagem.` })
+        await mail.enviar({ to: usuario.email, subject: 'Redefinição de senha — SGF RUN', text: `Você solicitou a redefinição de senha. Abra ${link.href} em até 20 minutos. Se não foi você, ignore esta mensagem.` })
     }
     res.json({ mensagem: 'Se houver uma conta com esse e-mail, enviaremos as instruções de recuperação.' })
 }))

@@ -13,7 +13,8 @@
     "admin": "node scripts/promover-admin.js",
     "expirar": "node scripts/expirar-reservas.js",
     "test": "npm run test:integration && npm run test:browser",
-    "seed:demo": "node scripts/seed-demo.js"
+    "seed:demo": "node scripts/seed-demo.js",
+    "numeracao": "node scripts/configurar-numeracao.js"
   },
   "keywords": [],
   "author": "",

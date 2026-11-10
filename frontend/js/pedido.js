@@ -19,7 +19,7 @@ async function carregarDetalhesPedido() {
   try {
     const pedido = await Api.getPedido(id);
     document.getElementById('contaNome').textContent = `Pedido #${pedido.codPedido}`;
-    document.title = `Pedido #${pedido.codPedido} | Sport Kicks`;
+    document.title = `Pedido #${pedido.codPedido} | SGF RUN`;
     Conta.mensagem('pedidoMessage', '');
     renderizarDetalhesPedido(pedido, area);
   } catch (err) {

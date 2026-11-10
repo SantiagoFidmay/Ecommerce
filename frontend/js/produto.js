@@ -21,7 +21,7 @@ async function carregarProduto(id) {
 }
 
 function renderizarProduto(p) {
-  document.title = `${p.nome} | Sport Kicks`;
+  document.title = `${p.nome} | SGF RUN`;
   document.getElementById('breadcrumbProduto').textContent = p.nome;
   document.getElementById('pdpTitle').textContent = p.nome;
   document.getElementById('pdpBrand').textContent = p.marca || '';
@@ -49,7 +49,7 @@ function renderizarProduto(p) {
   const variantes = p.variantes || [];
   const primeira = variantes.find(v => v.quantidade > 0) || variantes[0];
   corAtual = primeira?.cor || null;
-  varianteAtual = primeira || null;
+  varianteAtual = null;
   renderizarOpcoes();
   document.getElementById('pdpCompare').onclick = () => Loja.comparar(p.codProduto);
   document.getElementById('pdpFavorite').onclick = () => Loja.favorito(p.codProduto);
@@ -75,20 +75,22 @@ function renderizarOpcoes() {
   for (const cor of [...new Set((p.variantes || []).map(v => v.cor))]) {
     const btn = Loja.el('button', `btn btn-sm ${cor === corAtual ? 'btn-primary' : 'btn-outline'}`, cor);
     btn.type = 'button'; btn.setAttribute('aria-pressed', String(cor === corAtual));
-    btn.onclick = () => { corAtual = cor; varianteAtual = p.variantes.find(v => v.cor === cor && v.quantidade > 0) || p.variantes.find(v => v.cor === cor); renderizarOpcoes(); };
+    btn.onclick = () => { corAtual = cor; varianteAtual = null; renderizarOpcoes(); };
     cores.appendChild(btn);
   }
-  for (const v of (p.variantes || []).filter(v => v.cor === corAtual)) {
+  for (const v of (p.variantes || []).filter(v => v.cor === corAtual).sort((a, b) => a.tamanho.localeCompare(b.tamanho, 'pt-BR', { numeric: true }))) {
     const btn = Loja.el('button', `size-btn${v.codVariante === varianteAtual?.codVariante ? ' active' : ''}`, v.tamanho);
     btn.type = 'button'; btn.title = v.quantidade > 0 ? `${v.quantidade} disponível(is)` : 'Sem estoque · ative um aviso';
+    btn.classList.toggle('sem-estoque', v.quantidade < 1);
+    btn.setAttribute('aria-label', `Tamanho ${v.tamanho}${v.quantidade < 1 ? ', sem estoque' : ''}`);
     btn.setAttribute('aria-pressed', String(v.codVariante === varianteAtual?.codVariante)); btn.onclick = () => { varianteAtual = v; renderizarOpcoes(); };
     tamanhos.appendChild(btn);
   }
   const comprar = document.getElementById('btnAddToCart');
   const disponivel = varianteAtual ? varianteAtual.quantidade : 0;
-  comprar.disabled = disponivel < 1; comprar.textContent = disponivel > 0 ? 'Adicionar ao carrinho' : 'Indisponível nesta opção';
-  comprar.onclick = () => Carrinho.adicionar({ ...p, estoque: { quantidade: disponivel } }, 1, varianteAtual.tamanho, varianteAtual.cor, varianteAtual.codVariante);
-  document.getElementById('pdpAvailability').textContent = varianteAtual ? `${varianteAtual.tamanho} · ${varianteAtual.cor} · ${disponivel > 0 ? 'Disponível' : 'Aguardando reposição'}` : 'Nenhuma opção disponível no momento.';
+  comprar.disabled = disponivel < 1; comprar.textContent = !varianteAtual ? 'Selecione seu tamanho' : disponivel > 0 ? 'Adicionar ao carrinho' : 'Indisponível nesta opção';
+  comprar.onclick = () => { if (varianteAtual && disponivel > 0) Carrinho.adicionar({ ...p, estoque: { quantidade: disponivel } }, 1, varianteAtual.tamanho, varianteAtual.cor, varianteAtual.codVariante); };
+  document.getElementById('pdpAvailability').textContent = varianteAtual ? `${varianteAtual.tamanho} · ${varianteAtual.cor} · ${disponivel > 0 ? 'Disponível' : 'Aguardando reposição'}` : 'Escolha seu tamanho para continuar.';
   const avisar = document.getElementById('pdpNotify'); avisar.hidden = !varianteAtual || disponivel > 0;
   avisar.onclick = async () => {
     if (!Auth.requireAuth()) return;

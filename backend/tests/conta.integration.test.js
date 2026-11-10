@@ -5,7 +5,7 @@ const crypto = require('node:crypto')
 const bcrypt = require('bcryptjs')
 const mysql = require('mysql2/promise')
 require('dotenv').config({ path: path.join(__dirname, '../.env'), quiet: true })
-const nomeTeste = `sportkicks_test_${crypto.randomBytes(6).toString('hex')}`
+const nomeTeste = `sgfrun_test_${crypto.randomBytes(6).toString('hex')}`
 const config = { host: process.env.DB_HOST, port: process.env.DB_PORT, user: process.env.DB_USER, password: process.env.DB_PASS }
 let conexao, db, models, server, base, cliente, outro, admin, compra
 const endereco = { cep: '01001000', rua: 'Praça da Sé', numero: '1', bairro: 'Sé', cidade: 'São Paulo', estado: 'SP' }
@@ -50,7 +50,7 @@ after(async () => {
     if (server) await new Promise(resolve => server.close(resolve))
     if (db) await db.close()
     if (conexao) {
-        assert.match(nomeTeste, /^sportkicks_test_[0-9a-f]{12}$/)
+        assert.match(nomeTeste, /^sgfrun_test_[0-9a-f]{12}$/)
         await conexao.query('DROP DATABASE IF EXISTS ' + mysql.escapeId(nomeTeste))
         await conexao.end()
     }

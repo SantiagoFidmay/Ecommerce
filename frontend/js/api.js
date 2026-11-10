@@ -2,7 +2,7 @@
  * api.js — Abstração de chamadas para a API backend
  */
 
-const API_BASE = window.SPORTKICKS_CONFIG?.apiBase || 'http://localhost:3001/api';
+const API_BASE = window.SGFRUN_CONFIG?.apiBase || 'http://localhost:3001/api';
 
 const Api = {
   /**

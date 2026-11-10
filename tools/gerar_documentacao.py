@@ -44,14 +44,14 @@ def generate():
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="{escape(label)} da Sport Kicks, versão em desenvolvimento.">
-  <title>{escape(label)} | Sport Kicks</title>
+  <meta name="description" content="{escape(label)} da SGF RUN, versão em desenvolvimento.">
+  <title>{escape(label)} | SGF RUN</title>
   <link rel="stylesheet" href="../css/ajuda.css">
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
   <header class="help-header">
-    <a class="help-brand" href="../index.html">SPORT<span>KICKS</span></a>
+    <a class="help-brand" href="../index.html">SGF <span>RUN</span></a>
     <nav aria-label="Navegação da loja">
       <a href="../index.html">Início</a>
       <a href="catalogo.html">Catálogo</a>
@@ -69,7 +69,7 @@ def generate():
     <aside aria-label="Sumário"><p class="eyebrow">NESTE DOCUMENTO</p>{renderer.toc}</aside>
     <main id="conteudo" tabindex="-1">{content}</main>
   </div>
-  <footer class="help-footer">Sport Kicks · Material de apoio à implantação · Manual revisado em 27/10/2026</footer>
+  <footer class="help-footer">SGF RUN · Material de apoio à implantação · Manual revisado em 27/10/2026</footer>
 </body>
 </html>
 '''
@@ -86,7 +86,7 @@ def generate_pdfs(chrome):
         raise SystemExit('Navegador não encontrado. Use --chrome CAMINHO ou imprima as páginas pelo navegador.')
     for source, page, _ in DOCUMENTS:
         target = DOWNLOADS / f'{source}.pdf'
-        with tempfile.TemporaryDirectory(prefix='sportkicks-docs-') as profile:
+        with tempfile.TemporaryDirectory(prefix='sgfrun-docs-') as profile:
             subprocess.run([
                 str(browser), '--headless', '--disable-gpu', '--no-first-run',
                 '--no-default-browser-check', '--disable-extensions',
@@ -111,7 +111,7 @@ def generate_engineering_pdf(chrome):
     html = f'''<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><base href="{(ROOT / 'docs').as_uri()}/"><style>
     @page{{size:A4;margin:15mm}}body{{font:12px/1.5 Arial,sans-serif;color:#172033}}h1,h2,h3{{break-after:avoid}}h1{{font-size:25px}}h2{{margin-top:25px;color:#1d4ed8}}table{{width:100%;border-collapse:collapse;font-size:10px}}th,td{{padding:6px;border:1px solid #cbd5e1;vertical-align:top;text-align:left}}th{{background:#eff6ff}}tr{{break-inside:avoid}}img{{max-width:100%;break-inside:avoid}}pre{{white-space:pre-wrap;overflow-wrap:anywhere}}a{{color:#1d4ed8}}code{{font-size:10px}}
     </style></head><body>{content}</body></html>'''
-    with tempfile.TemporaryDirectory(prefix='sportkicks-engenharia-') as folder:
+    with tempfile.TemporaryDirectory(prefix='sgfrun-engenharia-') as folder:
         page = Path(folder) / 'engenharia.html'
         page.write_text(html, encoding='utf-8')
         subprocess.run([str(browser), '--headless', '--disable-gpu', '--no-first-run', '--no-default-browser-check',

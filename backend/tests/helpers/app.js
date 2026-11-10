@@ -6,7 +6,7 @@ require('dotenv').config({ path: path.join(__dirname, '../../.env'), quiet: true
 async function ambiente() {
     const mysql = require('mysql2/promise')
     const admin = await mysql.createConnection({ host: process.env.DB_HOST, port: process.env.DB_PORT, user: process.env.DB_USER, password: process.env.DB_PASS })
-    const nome = `sportkicks_test_${crypto.randomBytes(6).toString('hex')}`
+    const nome = `sgfrun_test_${crypto.randomBytes(6).toString('hex')}`
     await admin.query('CREATE DATABASE ' + mysql.escapeId(nome))
     delete process.env.MYSQL_URL; delete process.env.DATABASE_URL
     process.env.DB_NAME = nome; process.env.NODE_ENV = 'test'; process.env.BCRYPT_SALT_ROUNDS = '4'; process.env.JWT_SECRET ||= crypto.randomBytes(32).toString('hex')
@@ -16,7 +16,7 @@ async function ambiente() {
     const fechar = async () => {
         if (server) await new Promise(resolve => server.close(resolve))
         await db.close()
-        assert.match(nome, /^sportkicks_test_[0-9a-f]{12}$/)
+        assert.match(nome, /^sgfrun_test_[0-9a-f]{12}$/)
         await admin.query('DROP DATABASE IF EXISTS ' + mysql.escapeId(nome)); await admin.end()
     }
     try {

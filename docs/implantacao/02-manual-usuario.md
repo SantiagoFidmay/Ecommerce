@@ -1,6 +1,6 @@
 # Manual do usuário
 
-**Sport Kicks — ecommerce de artigos esportivos**  
+**SGF RUN — ecommerce de artigos esportivos**  
 Versão demonstrativa completa · 2.0 · 27/10/2026<br>
 Sistema em desenvolvimento — leia as limitações antes de praticar.
 
@@ -33,7 +33,7 @@ Abra a loja pelo endereço fornecido pelo responsável. Visitantes podem consult
 
 **Público:** todos. **Pré-condições:** navegador, acesso ao endereço da loja e serviço disponível. Não exige conta.
 
-1. Abra a página inicial da Sport Kicks.
+1. Abra a página inicial da SGF RUN.
 2. Selecione **Catálogo**. Em celular, utilize o menu disponível no cabeçalho quando necessário.
 3. Aguarde os cartões de produtos carregarem.
 4. Leia nome, preço e categoria do item desejado.
@@ -233,7 +233,7 @@ Se o preço ou a disponibilidade tiver mudado, revise o resumo e confirme novame
 
 1. Abra **Marcas** no menu.
 2. Cada fabricante oferece os mesmos controles: **Ver modelos**, **Site oficial** e **Atendimento oficial**.
-3. Para pedidos desta demonstração, use a própria conta Sport Kicks. Os canais dos fabricantes não operam esses pedidos.
+3. Para pedidos desta demonstração, use a própria conta SGF RUN. Os canais dos fabricantes não operam esses pedidos.
 
 **Resultado esperado:** acesso equilibrado a Adidas, ASICS, New Balance, Nike e Olympikus, sem alegação de parceria oficial.
 

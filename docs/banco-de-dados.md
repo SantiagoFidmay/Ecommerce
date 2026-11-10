@@ -77,7 +77,7 @@ Este passo é opcional. Para carregar os 18 produtos com fotos, reviews e estoqu
 npm.cmd run demo
 ```
 
-A carga adiciona apenas produtos ausentes pelo código do produto. Não atualiza os preços nem repõe o saldo dos produtos existentes. Cada produto novo recebe 20 unidades na variante **Não informado / Original**. Cadastre os tamanhos e cores reais no painel e transfira o saldo para essas variantes.
+A carga adiciona apenas produtos ausentes pelo código do produto. Não atualiza os preços nem repõe o saldo dos produtos existentes. Cada produto novo recebe 20 unidades de demonstração na cor **Original**: três de cada tamanho entre 38 e 43 e duas de tamanho 44. Para converter o catálogo antigo sem numeração, execute `npm --prefix backend run numeracao` na raiz. A conversão preserva o saldo total e os produtos que já possuem opções cadastradas.
 
 ## 5. Iniciar a loja e criar o administrador
 
@@ -103,7 +103,7 @@ npm.cmd test
 npm.cmd run build
 ```
 
-Os testes de integração criam e removem bancos isolados com prefixo `sportkicks_test_`; o usuário de testes precisa ter essas permissões. Os testes de navegador precisam do Chromium do Playwright; instale-o se necessário com `backend/node_modules/.bin/playwright.cmd install chromium`.
+Os testes de integração criam e removem bancos isolados com prefixo `sgfrun_test_`; o usuário de testes precisa ter essas permissões. Os testes de navegador precisam do Chromium do Playwright; instale-o se necessário com `backend/node_modules/.bin/playwright.cmd install chromium`.
 
 - `Unknown database`: crie o banco e confira `DB_NAME` ou a URL de conexão.
 - `Access denied`: confira usuário, senha e permissões no MySQL.

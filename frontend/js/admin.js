@@ -73,7 +73,7 @@ async function carregarRelatoriosAdmin() {
 function exportarRelatorioAdmin() {
   const csv = dadosRelatorio.map(row => row.map(value => { let str = String(value ?? ''); if (/^[\s]*[=+\-@]/.test(str)) str = "'" + str; return '"' + str.replaceAll('"', '""') + '"'; }).join(';')).join('\r\n');
   const url = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }));
-  const link = Loja.el('a'); link.href = url; link.download = 'sportkicks-relatorios-demo.csv'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  const link = Loja.el('a'); link.href = url; link.download = 'sgfrun-relatorios-demo.csv'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 async function carregarProdutosAdmin() {
   const res = await Api.get(`/admin/produtos?busca=${encodeURIComponent(valorAdmin('produtoBusca'))}`); adminProdutos = res.produtos;

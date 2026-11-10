@@ -15,7 +15,7 @@ async function build() {
     }
     await fs.copyFile(path.join(root, 'frontend/index.html'), path.join(destino, 'index.html'))
     for (const pasta of ['imagens', 'videos']) await fs.cp(path.join(root, pasta), path.join(destino, pasta), { recursive: true })
-    await fs.writeFile(path.join(destino, 'js/config.js'), 'window.SPORTKICKS_CONFIG = ' + JSON.stringify({ apiBase: url.href.replace(/\/$/, '') }) + ';\n')
+    await fs.writeFile(path.join(destino, 'js/config.js'), 'window.SGFRUN_CONFIG = ' + JSON.stringify({ apiBase: url.href.replace(/\/$/, '') }) + ';\n')
     const sitemapUrl = process.env.SITE_URL ? new URL(process.env.SITE_URL) : null
     const rotas = ['', 'pages/catalogo.html', 'pages/quiz.html', 'pages/comparar.html', 'pages/marcas.html']
     if (sitemapUrl) {

@@ -8,7 +8,7 @@ async function migrar() {
     const connection = await db.connectionManager.getConnection()
     let locked = false
     try {
-        const [rows] = await connection.promise().query("SELECT GET_LOCK('sportkicks-migrations-v1', 30) AS adquirido")
+        const [rows] = await connection.promise().query("SELECT GET_LOCK('sgfrun-migrations-v1', 30) AS adquirido")
         if (!rows[0].adquirido) throw new Error('Outra migração está em execução.')
         locked = true
         await db.sync() // Cria somente tabelas ausentes; nunca usa force/alter.
@@ -68,7 +68,7 @@ async function migrar() {
             fields: ['idVariante'], type: 'foreign key', name: 'fk_itens_variante', references: { table: 'produto_variantes', field: 'codVariante' }, onDelete: 'RESTRICT', onUpdate: 'CASCADE'
         })
     } finally {
-        if (locked) await connection.promise().query("SELECT RELEASE_LOCK('sportkicks-migrations-v1')")
+        if (locked) await connection.promise().query("SELECT RELEASE_LOCK('sgfrun-migrations-v1')")
         await db.connectionManager.releaseConnection(connection)
     }
 }

@@ -1,4 +1,4 @@
-# Engenharia do Sport Kicks
+# Engenharia do SGF RUN
 
 Revisão de implementação: 27/10/2026. A especificação original de sete tabelas foi adaptada para calçados e ampliada. O original permanece no repositório como referência da atividade. Esta versão usa pagamento somente de demonstração, conforme decisão do responsável.
 

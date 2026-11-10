@@ -2,6 +2,7 @@ const db = require('../db/conn')
 const { Produto, Categoria, Marca, Estoque, Variante, Midia, HistoricoPreco } = require('../models/rel')
 const { migrar } = require('../migrations')
 const { reviews } = require('../data/catalogo')
+const { tamanhos } = require('../services/numeracao.service')
 const modelos = [
     ['BOSTON-13','Adizero Boston 13','Adidas','1099.90','899.90','boston13-1.webp'],
     ['ADIOS-PRO-4','Adizero Adios Pro 4','Adidas','1599.90',null,'adiospro1.avif'],
@@ -33,7 +34,9 @@ async function seedDemo() {
             if (!novo) continue // Nunca altera preços, disponibilidade ou saldo já cadastrados.
             criados++
             await Estoque.create({ idProduto: produto.codProduto, quantidade: 20 }, { transaction })
-            await Variante.create({ idProduto: produto.codProduto, tamanho: 'Não informado', cor: 'Original', sku: `LEGADO-${produto.codProduto}`, quantidade: 20, legado: true }, { transaction })
+            for (const [indice, tamanho] of tamanhos.entries()) {
+                await Variante.create({ idProduto: produto.codProduto, tamanho, cor: 'Original', sku: `NUM-${produto.codProduto}-${tamanho}`, quantidade: Math.floor(20 / tamanhos.length) + (indice < 20 % tamanhos.length ? 1 : 0) }, { transaction })
+            }
             await HistoricoPreco.create({ idProduto: produto.codProduto, preco: preco_promocional ?? preco }, { transaction })
             const review = reviews.find(([regex]) => regex.test(nome))
             if (review) {
